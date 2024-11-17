@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<header th:fragment="common">
+    <div class="left">
+        <a th:href="@{/}" class="logo">
+            <img th:src="@{/front/images/main_logo.png}">
+        </a>
+        <ul class="main-menu">
+            <li>
+                <a href="#">
+                    <div>
+                    <i class="icon news"></i>
+                        <th:block th:text="#{소식}">
+                        </th:block>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <div>
+                    <i class="icon game"></i>
+                        <th:block th:text="#{게임}">
+                        </th:block>
+                    </div>
+
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <div>
+                    <i class="icon card-game"></i>
+                        <th:block th:text="#{카드_게임}">
+                        </th:block>
+                    </div>
+
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <div>
+                    <i class="icon animation"></i>
+                        <th:block th:text="#{애니메이션}">
+
+                        </th:block>
+
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <div>
+                    <i class="icon products"></i>
+                        <th:block th:text="#{상품}">
+                        </th:block>
+                    </div>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="right">
+        <ul>
+            <li>
+                <a href="#">
+                    <i class="icon catalog"></i>
+                        <th:block th:text="#{포켓몬_도감}"></th:block>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/member/login}">
+                        <i class="icon login"></i>
+                        <th:block th:text="#{로그인}"></th:block>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                        <i class="icon search"></i>
+                        <th:block th:text="#{통합검색}"></th:block>
+                </a>
+            </li>
+        </ul>
+        <a href="#" class="move-to-store"></a>
+    </div>
+</header>
+</html>
