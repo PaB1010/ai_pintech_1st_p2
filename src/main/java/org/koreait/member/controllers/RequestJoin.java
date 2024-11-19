@@ -1,12 +1,10 @@
 package org.koreait.member.controllers;
 
 import jakarta.annotation.Nonnull;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 import org.koreait.member.constants.Gender;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -32,7 +30,9 @@ public class RequestJoin extends RequestAgree {
     private String nickName;
 
     @NotNull
-    private LocalDate brithDT;
+    // @PastOrPresent // 현재 날짜 포함
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate birthDt;
 
     @NotNull
     private Gender gender; // Enum class - 성별 (member.constants.Gender)

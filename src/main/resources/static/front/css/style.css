@@ -271,7 +271,7 @@ footer .foot-top {
 footer .foot-top-left {
   display: flex;
   align-items: center;
-  padding-left: 35vh;
+  /* padding-left: 35vh; */
 }
 
 footer .foot-top-center {
@@ -311,7 +311,7 @@ footer .foot-mid-left {
   flex-direction: column;
   gap: 5px;
   align-items: flex-start;
-  padding-left: 35vh;
+  /* padding-left: 35vh; */
 }
 
 /* 임시 */
