@@ -105,10 +105,12 @@ public class MemberController {
      * @return
      */
     @PostMapping("/join")
-    public String join(@Valid RequestAgree agree, Errors errors, @ModelAttribute RequestJoin form, Model model) {
+    public String join(RequestAgree agree, Errors errors, @ModelAttribute RequestJoin form, Model model) {
         
         // 회원 가입 공통 처리
         commonProcess("join", model);
+
+        joinValidator.validate(agree, errors);
 
         // log.info(form.toString());
 

@@ -20,6 +20,7 @@ public class RequestJoin extends RequestAgree {
     private String name; // 회원명
 
     @NotBlank
+    @Size(min=8, max=40)
     private String password;
 
     @NotBlank

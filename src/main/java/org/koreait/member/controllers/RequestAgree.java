@@ -9,14 +9,14 @@ import java.util.List;
 @Data
 public class RequestAgree {
 
-    @AssertTrue
+    // @AssertTrue
     // 필수 약관 동의 여부
     private boolean requiredTerms1;
 
-    @AssertTrue
+    // @AssertTrue
     private boolean requiredTerms2;
 
-    @AssertTrue
+    // @AssertTrue
     private boolean requiredTerms3;
 
     // 선택 약관 동의 여부 - 문구 입력
