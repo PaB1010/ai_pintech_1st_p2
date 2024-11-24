@@ -3,7 +3,9 @@ package org.koreait.global.exceptions;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
+import java.util.List;
 import java.util.Objects;
 
 /**

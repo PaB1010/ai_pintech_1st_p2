@@ -256,7 +256,7 @@ header .move-to-store::after {
 footer {
   display: flex;
   flex-direction: column;
-  width: 100vw;
+  width: 100%;
 }
 
 footer .foot-top {
@@ -271,7 +271,7 @@ footer .foot-top {
 footer .foot-top-left {
   display: flex;
   align-items: center;
-  /* padding-left: 35vh; */
+  padding-left: 32vh;
 }
 
 footer .foot-top-center {
@@ -296,7 +296,7 @@ footer .foot-top-right {
 
 footer .foot-mid {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
   background: #1a1a1a;
   color: #f7f7ff;
@@ -310,15 +310,14 @@ footer .foot-mid-left {
   display: flex;
   flex-direction: column;
   gap: 5px;
-  align-items: flex-start;
   /* padding-left: 35vh; */
 }
 
 /* 임시 */
-footer .foot-mid-right {
+/* footer .foot-mid-right {
   position: relative;
   left: 15vw;
-}
+} */
 
 footer .foot-mid-right .foot-mid-sns {
   display: flex;
@@ -334,10 +333,50 @@ footer .foot-mid-sns > img {
 }
 
 footer .foot-bot {
+  display: flex;
+  justify-content: space-evenly;
   background-color: #000;
+  color: #f7f7ff;
 
   /* 임시 */
   height: 25vh;
+}
+
+footer .foot-bot-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+footer .foot-bot-left-top {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+footer .foot-bot-left-top-left {
+  font-weight: bold;
+}
+
+footer .foot-bot-left-top-right {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+footer .foot-bot-left-top-right-top {
+  display: flex;
+  flex-direction: column;
+}
+
+footer .foot-bot-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+footer .foot-bot-right-top {
+  display: flex;
+  flex-direction: column;
 }
 
 /* 사이트 하단 푸터 E*/

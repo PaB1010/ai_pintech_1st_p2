@@ -11,9 +11,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -90,6 +93,16 @@ public class CommonControllerAdvice {
             }
         }
 
+        List<String> addCss = (List<String>) data.get("addCss");
+
+        if (addCss == null) {
+            addCss = new ArrayList<>();
+            data.put("addCss", addCss);
+        }
+
+        // error/style 추가
+        addCss.add("error/style");
+
         // 숫자 형태
         data.put("status", status.value());
         // 문자 형태
@@ -97,12 +110,17 @@ public class CommonControllerAdvice {
 
         data.put("message", message);
 
+        // data.put("addCss", List.of("error/style"));
+
         ModelAndView mv = new ModelAndView();
 
         mv.setStatus(status);
         mv.addAllObjects(data);
         mv.setViewName(tpl);
 
+        System.out.println("addCss: " + addCss);
+
         return mv;
     }
+
 }
