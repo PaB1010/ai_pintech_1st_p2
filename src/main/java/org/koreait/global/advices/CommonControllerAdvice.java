@@ -93,20 +93,6 @@ public class CommonControllerAdvice {
             }
         }
 
-        // addCss S
-
-        List<String> addCss = (List<String>) data.get("addCss");
-
-        if (addCss == null) {
-            addCss = new ArrayList<>();
-            data.put("addCss", addCss);
-        }
-
-        // error/style 추가
-        addCss.add("error/style");
-
-        // addCss E
-
         // 숫자 형태
         data.put("status", status.value());
         // 문자 형태
@@ -121,8 +107,6 @@ public class CommonControllerAdvice {
         mv.setStatus(status);
         mv.addAllObjects(data);
         mv.setViewName(tpl);
-
-        System.out.println("addCss: " + addCss);
 
         return mv;
     }
