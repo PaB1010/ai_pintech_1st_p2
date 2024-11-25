@@ -3,7 +3,8 @@ package org.koreait.pokemon.api.services;
 import lombok.RequiredArgsConstructor;
 import org.koreait.pokemon.api.entities.ApiPokemon;
 import org.koreait.pokemon.api.entities.ApiResponse;
-import org.koreait.pokemon.api.entities.Pokemon;
+import org.koreait.pokemon.api.entities.FlavorText;
+import org.koreait.pokemon.entities.Pokemon;
 import org.koreait.pokemon.api.entities.UrlItem;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -29,11 +30,11 @@ public class ApiUpdateService {
      *
      * @param page
      */
-    public void update(int page) {
+    public void update(int page, String version) {
 
         /* 전체 목록 처리 S */
 
-        int limit = 100;
+        int limit = 3;
         
         // 시작 레코드 번호, 0, 100, 200, ...
         int offset = (page - 1) * limit;
@@ -90,10 +91,14 @@ public class ApiUpdateService {
             // 한글 이름
             String nameKr = data2.getNames().stream().filter(d -> d.getLanguage().getName().equals("ko")).map(d -> d.getName()).collect(Collectors.joining());
 
-            // 한글 설명
-            String flavorText = data2.getFlavorTextEntries().stream().filter(d -> d.getLanguage().getName().equals("ko")).map((d -> d.getFlavorText())).collect(Collectors.joining());
+            // collect.joining
+            String verse2asfda2 = data2.getFlavorTextEntries().stream().filter(d -> d.getVersion().getName().equals("x")).map(d -> d.getFlavorText()).collect(Collectors.joining());
+
+            // 버전에 맞는 포켓몬 한글 설명
+            String flavorText = data2.getFlavorTextEntries().stream().filter(d -> d.getLanguage().getName().equals("ko")).filter(d -> d.getVersion().getName().equals(version)).map((FlavorText::getFlavorText)).collect(Collectors.joining());
 
             pokemon.setFlavorText(flavorText);
+            pokemon.setName(nameKr);
 
             pokemons.add(pokemon);
         }

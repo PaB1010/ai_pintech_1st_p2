@@ -1,4 +1,4 @@
-package org.koreait.pokemon.api.entities;
+package org.koreait.pokemon.entities;
 
 import lombok.Data;
 
