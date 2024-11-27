@@ -1,0 +1,7 @@
+# 배포후 설정
+
+spring:
+  # 타임리프 설정 - 작업 편의상 캐시 해제
+  thymeleaf:
+    cache: true
+    prefix: classpath:/templates/
