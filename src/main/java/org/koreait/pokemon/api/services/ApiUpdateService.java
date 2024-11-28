@@ -6,6 +6,7 @@ import org.koreait.pokemon.api.entities.ApiResponse;
 import org.koreait.pokemon.api.entities.FlavorText;
 import org.koreait.pokemon.entities.Pokemon;
 import org.koreait.pokemon.api.entities.UrlItem;
+import org.koreait.pokemon.repositories.PokemonRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -24,6 +25,8 @@ public class ApiUpdateService {
 
     // global.configs.BeansConfig 에서 싱글톤 객체 의존 주입
     private final RestTemplate tpl;
+
+    private final PokemonRepository repository;
 
     /**
      * 1page 당 100개씩 DB update 반영
@@ -105,5 +108,7 @@ public class ApiUpdateService {
         /* 상세 정보 처리 E */
 
         pokemons.forEach(System.out::println);
+
+        repository.saveAllAndFlush(pokemons); // DB 영구 저장 처리
     }
 }
