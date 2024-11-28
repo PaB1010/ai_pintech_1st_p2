@@ -37,7 +37,7 @@ public class ApiUpdateService {
 
         /* 전체 목록 처리 S */
 
-        int limit = 3;
+        int limit = 100;
         
         // 시작 레코드 번호, 0, 100, 200, ...
         int offset = (page - 1) * limit;
@@ -107,8 +107,9 @@ public class ApiUpdateService {
         }
         /* 상세 정보 처리 E */
 
-        pokemons.forEach(System.out::println);
+        // pokemons.forEach(System.out::println);
 
-        repository.saveAllAndFlush(pokemons); // DB 영구 저장 처리
+        // DB 영구 저장 처리
+        repository.saveAllAndFlush(pokemons);
     }
 }

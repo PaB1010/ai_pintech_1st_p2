@@ -6,16 +6,23 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-// 설정 클래스이기 때문에 넣음
+/**
+ * File 설정
+ *
+ * FileUpload와 연결할 정적 경로 설정
+ */
 @Configuration
 @RequiredArgsConstructor
 @EnableConfigurationProperties(FileProperties.class)
 public class FileConfig implements WebMvcConfigurer {
+    
+    // File 설정 주입
     private final FileProperties properties;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler(properties.getUrl() + "**").addResourceLocations("file:///" + properties.getPath());
-
+        
+        registry.addResourceHandler(properties.getUrl() + "**")
+                .addResourceLocations("file:///" + properties.getPath());
     }
 }

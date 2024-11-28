@@ -25,11 +25,14 @@ public abstract class BaseEntity {
 
     @CreatedDate
     @Column(updatable = false)
-    private LocalDateTime createAt; // 등록일시
+    private LocalDateTime createdAt;
+    // 등록일시
 
     @LastModifiedDate
     @Column(insertable = false)
-    private LocalDateTime ModifiedAt; // 수정일시
+    private LocalDateTime ModifiedAt;
+    // 수정일시
 
-    private LocalDateTime deletedAt; // 삭제일시
+    private LocalDateTime deletedAt;
+    // 삭제일시, 삭제 표기만 해두고 추후 관리자가 복구하거나 영구 삭제처리 하도록 할 예정
 }
