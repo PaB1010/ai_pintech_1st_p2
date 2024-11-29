@@ -33,6 +33,12 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+	implementation 'org.modelmapper:modelmapper:3.2.1'
+
+
 	annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
 	annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
 	runtimeOnly 'com.oracle.database.jdbc:ojdbc11'
@@ -41,11 +47,44 @@ dependencies {
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.projectlombok:lombok'
 
+	implementation 'com.querydsl:querydsl-jpa:5.1.0:jakarta'
+	annotationProcessor'com.querydsl:querydsl-apt:5.1.0:jakarta'
+
+	testImplementation ('com.github.javafaker:javafaker:1.0.2') { exclude module: 'snakeyaml' }
+	testImplementation 'org.yaml:snakeyaml:2.2'
+
 	testImplementation 'com.h2database:h2'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	testImplementation 'org.springframework.security:spring-security-test'
+
+	// 문제 있을 시 제거
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+// 자동생성될 Querydsl Code 경로 설정
+def querydslDir = layout.buildDirectory.dir("generated/querydsl").get().asFile
+
+// Java 코드에서 접근 가능하게 설정
+sourceSets {
+	main.java.srcDirs += [ querydslDir ]
+}
+
+// 설정 연결
+tasks.withType(JavaCompile) {
+	options.getGeneratedSourceOutputDirectory().set(file(querydslDir))
+}
+
+// clean시 Generate도 같이 삭제되도록
+clean.doLast {
+	file(querydslDir).deleteDir()
 }
