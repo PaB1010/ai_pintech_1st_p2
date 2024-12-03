@@ -1,11 +1,14 @@
 package org.koreait.global.configs;
 
+import org.koreait.member.services.LoginFailureHandler;
+import org.koreait.member.services.LoginSucessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
  * Spring Security 설정
@@ -23,7 +26,43 @@ public class SecurityConfig {
     // Spring 관리 @Bean 필수
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-     
+
+        /**
+         * Spring Security가 모르는 부분들 설정 S
+         *
+         *  1) login.html에서 email, password를 사용한다는 것
+         *  2) 로그인 성공시 & 실패시 연산 처리
+         */
+
+        /* 인증 설정 S - 로그인 & 로그아웃
+            - DSL (람다, 도메인 특화)*/
+
+        http.formLogin(c -> {
+
+            // 로그인 값을 넘길 곳, 로그인 양식을 처리할 주소
+            c.loginPage("/member/login")
+                    .usernameParameter("email") // 유저 ID로 사용할 값
+                    .passwordParameter("password") // 유저 비밀번호로 사용할 값
+                    /*
+                    이 두가지는 거의 사용하지 않고 Handler를 사용해 상세 처리를 함
+
+                    .failureUrl("/member/login?error=1") // 로그인 실패시
+                    .defaultSuccessUrl("/"); // 로그인 성공시
+                     */
+                    .failureHandler(new LoginFailureHandler())
+                    .successHandler(new LoginSucessHandler());
+        });
+
+        // 로그아웃시 어디로 갈 것인지 & 자세한 처리
+        http.logout(c-> {
+
+            c.logoutRequestMatcher(new AntPathRequestMatcher("/member/logout"))
+                    .logoutSuccessUrl("/member/login");
+        });
+
+        /* 인증 설정 E - 로그인 & 로그아웃 */
+        /* Spring Security가 모르는 부분들 설정 E */
+
         // 설정 무력화
         return http.build();
     }

@@ -20,7 +20,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/member")
 @RequiredArgsConstructor
-@SessionAttributes("requestAgree")
+@SessionAttributes({"requestAgree", "requestLogin"})
 public class MemberController {
 
     // 공통 기능 의존 주입
@@ -38,22 +38,48 @@ public class MemberController {
     }
 
     /* 회원 페이지 CSS */
-
     @ModelAttribute("addCss")
     public List<String> addCss() {
 
         return List.of("member/style");
     }
 
+    @ModelAttribute("requestLogin")
+    public RequestLogin requestLogin() {
+        return new RequestLogin();
+    }
+
     @GetMapping("/login")
-    public String login(@ModelAttribute RequestLogin form, Model model) {
+    public String login(@ModelAttribute RequestLogin form, Errors errors, Model model) {
 
         // 로그인 페이지 공통 처리
         commonProcess("login", model);
 
+        // 로그인 검증 실패해서 에러코드가 있을 경우
+        if (form.getErrorCodes() != null) {
+
+            // NotBlank_email, NotBlank_password로 만든 Errorcodes를 Field & ErrorCode로 쪼개서
+            // validations.properties와 같도록
+            form.getErrorCodes().stream().map(s -> s.split("_"))
+                    .forEach(s -> {
+                        // s[1]이 있을 경우 NotBlank.email, NotBlank.password
+                        if (StringUtils.hasText(s[1])) {
+                            errors.rejectValue(s[1], s[0]);
+                            // s[1]이 없을 경우 글로벌 오류
+                            // Failure.validate.login
+                        } else {
+                            errors.reject(s[0]);
+                        }
+                    });
+        }
+
         // uilts.tpl = PC / Mobile 분리
         return utils.tpl("member/login");
     }
+
+    /*
+    Spring Security로 대체
+
 
     @PostMapping("/login")
     public String loginPs(@Valid RequestLogin form, Errors erros, Model model) {
@@ -73,7 +99,7 @@ public class MemberController {
          *  로그인 완료 후 페이지 이동
          *  1) redirectUrl 값이 전달 된 경우는 해당 경로로 이동
          *  2) 없는 경우 main page로 이동
-         */
+         /
 
         String redirectUrl = form.getRedirectUrl();
 
@@ -83,6 +109,7 @@ public class MemberController {
         // 이전 page OR main page 이동
         return "redirect:" + redirectUrl;
     }
+    */
 
     /**
      * 회원가입 약관 동의

@@ -12,7 +12,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -25,13 +27,14 @@ import java.util.stream.Collectors;
 @Lazy
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class MemberUpdateService {
 
     private final MemberRepository memberRepository;
 
     private final AuthoritiesRepository authoritiesRepository;
 
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     // ModelMapper
     // 같은 getter setter 처리시 일괄 처리해주는 Reflection API 편의 기능
@@ -94,6 +97,7 @@ public class MemberUpdateService {
             /*
              * 기존 권한을 삭제하고 다시 등록
              */
+
             QAuthorities qAuthorities = QAuthorities.authorities;
 
             List<Authorities> items = (List<Authorities>) authoritiesRepository.findAll(qAuthorities.member.eq(member));
@@ -101,9 +105,13 @@ public class MemberUpdateService {
             if (items != null) {
 
                 authoritiesRepository.deleteAll(items);
+
+                authoritiesRepository.flush();
             }
 
+
             authoritiesRepository.saveAllAndFlush(authorities);
+
         }
         /* 회원 권한 업데이트 처리 E */
     }
