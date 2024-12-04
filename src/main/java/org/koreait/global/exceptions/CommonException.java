@@ -3,9 +3,11 @@ package org.koreait.global.exceptions;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -21,6 +23,7 @@ public class CommonException extends RuntimeException{
     // 에러 코드가 맞나 체크
     private boolean errorCode;
 
+    private Map<String, Object> errorMessages;
 
     public CommonException(String message, HttpStatus status) {
 
@@ -28,5 +31,19 @@ public class CommonException extends RuntimeException{
         
         // status = null일 경우 HttpStatus.INTERNAL_SERVER_ERROR로 대체
         this.status = Objects.requireNonNullElse(status, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    /**
+     * @RestController 쪽에서 커맨드 객체 검증 실패시 가공한
+     * Error Message 정보
+     * 
+     * @param errorMessages
+     * @param status
+     */
+    // 같은 Field에 메세지가 여러개인 경우도 있고 하나인 경우도 있어서 <Object>
+    public CommonException(Map<String, Object> errorMessages, HttpStatus status) {
+
+        this.errorMessages = errorMessages;
+        this.status = status;
     }
 }
