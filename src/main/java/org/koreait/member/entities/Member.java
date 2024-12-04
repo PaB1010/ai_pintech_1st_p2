@@ -7,6 +7,7 @@ import org.koreait.global.entities.BaseEntity;
 import org.koreait.member.constants.Gender;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -60,4 +61,8 @@ public class Member extends BaseEntity {
     @ToString.Exclude
     @OneToMany(mappedBy = "member") // 관계의 주인은 Many 쪽인 Authorities_member
     private List<Authorities> authorities; // 회원쪽에서도 권한 조회 가능하도록
+
+    // 비밀번호 변경 일시
+    private LocalDateTime credentialChangedAt;
+
 }

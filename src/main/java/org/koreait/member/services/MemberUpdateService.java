@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -71,6 +72,8 @@ public class MemberUpdateService {
         // 비밀번호 해시화 - BCrypt (단방성, 유동 해시)
         String hash = passwordEncoder.encode(form.getPassword());
         member.setPassword(hash);
+
+        member.setCredentialChangedAt(LocalDateTime.now());
 
         // 회원 권한 부여
         Authorities auth = new Authorities();

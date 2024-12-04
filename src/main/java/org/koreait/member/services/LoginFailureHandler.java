@@ -7,6 +7,8 @@ import jakarta.servlet.http.HttpSession;
 import org.koreait.member.controllers.RequestJoin;
 import org.koreait.member.controllers.RequestLogin;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.CredentialsExpiredException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.util.StringUtils;
@@ -36,6 +38,11 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
+        form.setEmail(email);
+        form.setPassword(password);
+
+        String redirectUrl = request.getContextPath() + "/member/login";
+
         // ID | PW를 입력하지 않은 경우
         // ID 조회 X, PW 일치 X -> 둘중 뭐가 X인지 모르게 애매한 메세지
         if (exception instanceof BadCredentialsException) {
@@ -62,11 +69,20 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
 
             // 원래 있던 객체라면 set 안해도 되지만 NonNullElse로 새로운 ArrayList 객체가 생성될 수도 있으므로 set
             form.setErrorCodes(errorCodes);
+        } else if (exception instanceof CredentialsExpiredException) { //  비밀번호가 만료된 경우
+
+            redirectUrl = request.getContextPath() + "/member/password/change";
+
+        } else if (exception instanceof DisabledException) { // 탈퇴한 회원
+
+            form.setErrorCodes(List.of("Failure.disabled.login"));
         }
+
+        System.out.println(exception);
 
         session.setAttribute("requestLogin", form);
 
         // 로그인 실패시 다시 로그인 페이지로 이동
-        response.sendRedirect(request.getContextPath() + "/member/login");
+        response.sendRedirect(redirectUrl);
     }
 }
