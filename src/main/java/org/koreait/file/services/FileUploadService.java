@@ -103,6 +103,8 @@ public class FileUploadService {
 
                 uploadedItems.add(item);
 
+                // 여기서 done True?
+
             } catch (IOException e) {
                 // File Upload 실패시, DB 저장된 Data 삭제
                 fileInfoRepository.delete(item);

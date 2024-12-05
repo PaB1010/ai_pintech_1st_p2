@@ -5,6 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * File Data Class
+ *
  */
 @Data
 @ConfigurationProperties(prefix = "file.upload")

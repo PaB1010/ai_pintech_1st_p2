@@ -55,6 +55,9 @@ public class MemberUpdateService {
         Member member = new Member();
         member.setEmail(form.getEmail());
         member.setName(form.getName());
+        ..
+        ...
+
          */
         Member member = modelMapper.map(form, Member.class);
 
