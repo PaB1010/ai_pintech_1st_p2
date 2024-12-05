@@ -1,6 +1,5 @@
 package org.koreait.global.advices;
 
-import org.koreait.global.annotations.RestExceptionHandling;
 import org.koreait.global.exceptions.CommonException;
 import org.koreait.global.rests.JSONData;
 import org.springframework.http.HttpStatus;
@@ -9,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,7 +18,7 @@ import java.util.Map;
  * 범위 @RestController
  *
  */
-@RestControllerAdvice(annotations = RestExceptionHandling.class)
+@RestControllerAdvice(annotations = RestController.class)
 public class CommonRestControllerAdvice {
 
     // Error 도 항상 동일한 형식(JSONData 형식)
@@ -36,7 +36,7 @@ public class CommonRestControllerAdvice {
 
             status = commonException.getStatus();
 
-            Map<String, Object> errorMessages = commonException.getErrorMessages();
+            Map<String, List<String>> errorMessages = commonException.getErrorMessages();
 
             if (errorMessages != null) {
 

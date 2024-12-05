@@ -23,7 +23,7 @@ public class CommonException extends RuntimeException{
     // 에러 코드가 맞나 체크
     private boolean errorCode;
 
-    private Map<String, Object> errorMessages;
+    private Map<String, List<String>> errorMessages;
 
     public CommonException(String message, HttpStatus status) {
 
@@ -41,7 +41,7 @@ public class CommonException extends RuntimeException{
      * @param status
      */
     // 같은 Field에 메세지가 여러개인 경우도 있고 하나인 경우도 있어서 <Object>
-    public CommonException(Map<String, Object> errorMessages, HttpStatus status) {
+    public CommonException(Map<String, List<String>> errorMessages, HttpStatus status) {
 
         this.errorMessages = errorMessages;
         this.status = status;
