@@ -12,6 +12,6 @@ spring:
 
 # File Upload 경로
 file:
-  # upload.path: E:/[uploads]/
-  upload.path: D:/uploads/
+  upload.path: E:/[uploads]/
+  # upload.path: D:/uploads/
   upload.url: /uploads/

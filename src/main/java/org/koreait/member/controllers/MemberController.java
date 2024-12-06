@@ -5,6 +5,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.koreait.global.annotations.ApplyErrorPage;
 import org.koreait.global.libs.Utils;
+import org.koreait.global.rests.JSONData;
+import org.koreait.member.entities.Member;
+import org.koreait.member.services.MemberDeleteService;
 import org.koreait.member.services.MemberUpdateService;
 import org.koreait.member.validators.JoinValidator;
 import org.springframework.stereotype.Controller;
@@ -33,6 +36,8 @@ public class MemberController {
 
     // 회원 가입 처리 의존 주입
     private final MemberUpdateService updateService;
+
+    private final MemberDeleteService deleteService;
 
     @ModelAttribute("requestAgree")
     public RequestAgree requestAgree() {
@@ -187,6 +192,21 @@ public class MemberController {
         // 회원가입 처리 완료 후 -> Login page 이동
         return "redirect:/member/login";
     }
+
+    /**
+     * Member 삭제
+     * @param email
+     * @return
+     */
+    @DeleteMapping("/delete/{seq}")
+    public JSONData delete (@PathVariable("email") String email) {
+
+        Member member = deleteService.delete(email);
+
+        return new JSONData(member);
+    }
+
+
 
     /**
      *

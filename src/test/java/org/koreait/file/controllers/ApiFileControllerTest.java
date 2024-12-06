@@ -114,8 +114,8 @@ public class ApiFileControllerTest {
     void test3() {
 
         // 단일 삭제
-//        FileInfo item = deleteService.delete(102L);
-//        System.out.println(item);
+        // FileInfo item = deleteService.delete(102L);
+        // System.out.println(item);
 
 
        List<FileInfo> items = deleteService.deletes("testgid", "testlocation");
