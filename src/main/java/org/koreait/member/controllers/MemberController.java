@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.koreait.global.annotations.ApplyErrorPage;
-import org.koreait.global.exceptions.BadRequestException;
 import org.koreait.global.libs.Utils;
 import org.koreait.member.services.MemberUpdateService;
 import org.koreait.member.validators.JoinValidator;
@@ -191,7 +190,7 @@ public class MemberController {
 
     /**
      *
-     * 공통 처리 부분
+     * Controller 공통 처리 부분
      *
      * @param mode
      * @param model

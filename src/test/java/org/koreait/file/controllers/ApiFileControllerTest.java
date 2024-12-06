@@ -1,10 +1,12 @@
 package org.koreait.file.controllers;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.koreait.file.entities.FileInfo;
 import org.koreait.file.repositories.FileInfoRepository;
+import org.koreait.file.services.FileDeleteService;
 import org.koreait.file.services.FileInfoService;
+import org.koreait.member.constants.Gender;
+import org.koreait.member.controllers.RequestJoin;
 import org.koreait.member.services.MemberUpdateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -13,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -24,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
  *
  */
 @SpringBootTest
-// @ActiveProfiles({"default", "test"})
+//@ActiveProfiles({"default", "test"})
 @AutoConfigureMockMvc
 public class ApiFileControllerTest {
 
@@ -40,12 +43,15 @@ public class ApiFileControllerTest {
     @Autowired
     private FileInfoService infoService;
 
-    @BeforeEach
+    @Autowired
+    private FileDeleteService deleteService;
+    //private String email = "user" + System.currentTimeMillis() + "@test.org";
+
+    //@BeforeEach
     void setup() {
 
         // mockMvc = MockMvcBuilders.standaloneSetup(ApiFileController.class).build();
 
-        /*
         RequestJoin form = new RequestJoin();
 
         form.setEmail("user01@test.org");
@@ -59,43 +65,37 @@ public class ApiFileControllerTest {
 
         updateService.process(form);
 
-         */
     }
 
     @Test
     // 인증 정보 확인용(AuditorAwareImpl) 가짜 회원 정보
     // @WithMockUser(username = "user01@test.org", authorities = {"USER"})
     // 실제 유저 DB Data
-    // @WithUserDetails(value = "user01@test.org", userDetailsServiceBeanName = "memberInfoService")
+    //@WithUserDetails(value="user01@test.org", userDetailsServiceBeanName = "memberInfoService", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void test1() throws Exception {
-
         /**
          * MockMultipartFile
-         *
          */
         MockMultipartFile file1 = new MockMultipartFile("file", "test1.png", MediaType.IMAGE_PNG_VALUE, new byte[] {1, 2, 3});
-
         MockMultipartFile file2 = new MockMultipartFile("file", "test2.png", MediaType.IMAGE_PNG_VALUE, new byte[] {1, 2, 3});
 
         mockMvc.perform(multipart("/api/file/upload")
                         .file(file1)
                         .file(file2)
                         .param("gid", "testgid")
-                        .param("location", "testlocaition")
+                        .param("location", "testlocation")
                         .with(csrf().asHeader()))
                 .andDo(print());
 
         // 5초 지연
         // Thread.sleep(5000);
 
-        /*
-        List<FileInfo> items = repository.getList("testgid");
+        List<FileInfo> items = infoService.getList("testgid", null, null);
         
-        // 자동으로 들어가지는지 확인
+        // 자동으로 들어가지나 확인
         for (FileInfo item : items) {
             System.out.println(item.getCreatedBy());
         }
-         */
     }
 
     @Test
@@ -108,5 +108,18 @@ public class ApiFileControllerTest {
         List<FileInfo> items = infoService.getList("testgid", null, null);
 
         items.forEach(System.out::println);
+    }
+
+    @Test
+    void test3() {
+
+        // 단일 삭제
+//        FileInfo item = deleteService.delete(102L);
+//        System.out.println(item);
+
+
+       List<FileInfo> items = deleteService.deletes("testgid", "testlocation");
+
+       items.forEach(System.out::println);
     }
 }

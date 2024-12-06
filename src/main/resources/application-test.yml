@@ -8,7 +8,7 @@ spring:
     password:
   jpa:
     hibernate:
-      ddlAuto: create
+      ddlAuto: update
 
 # File Upload 경로
 file:

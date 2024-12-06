@@ -77,6 +77,7 @@ public class FileInfoService {
 
         // 생성일자 오름차순으로 정렬해서 반환
         List<FileInfo> items =  (List<FileInfo>)infoRepository.findAll(andBuilder, Sort.by(asc("createdAt")));
+        System.out.println(items);
 
         // List 추가 정보 2차 가공 처리
         items.forEach(this::addInfo);

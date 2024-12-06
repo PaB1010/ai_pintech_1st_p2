@@ -2,8 +2,10 @@
 
 package org.koreait.global.configs;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.web.filter.HiddenHttpMethodFilter;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -24,5 +26,21 @@ public class MvcConfig implements WebMvcConfigurer {
         // Ant 패턴 ** = 하위 경로를 포함한 모든 경로
         registry.addResourceHandler("/**")
                 .addResourceLocations("classpath:/static/");
+    }
+
+    /**
+     * PATCH & PUT & DELETE 등등에서 사용
+     * PATCH METHOD 로 요청 보내는 경우
+     *
+     * <form method='POST' ...>
+     *      <input type = 'hidden' name = '_method' value = 'PATCH'>
+     * </form>
+     *
+     * @return
+     */
+    @Bean
+    public HiddenHttpMethodFilter hiddenHttpMethodFilter() {
+
+        return new HiddenHttpMethodFilter();
     }
 }

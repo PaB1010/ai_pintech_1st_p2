@@ -7,8 +7,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.koreait.file.constants.FileStatus;
 import org.koreait.file.entities.FileInfo;
+import org.koreait.file.services.FileDeleteService;
 import org.koreait.file.services.FileDownloadService;
+import org.koreait.file.services.FileInfoService;
 import org.koreait.file.services.FileUploadService;
 import org.koreait.global.exceptions.BadRequestException;
 import org.koreait.global.libs.Utils;
@@ -37,6 +40,10 @@ public class ApiFileController {
     private final FileUploadService uploadService;
 
     private final FileDownloadService downloadService;
+
+    private final FileInfoService infoService;
+
+    private final FileDeleteService deleteService;
 
     /**
      * File Upload
@@ -93,7 +100,9 @@ public class ApiFileController {
     @GetMapping("/info/{seq}")
     public JSONData info(@PathVariable("seq") Long seq) {
 
-        return null;
+        FileInfo item = infoService.get(seq);
+
+        return new JSONData(item);
     }
 
     /**
@@ -103,11 +112,13 @@ public class ApiFileController {
      * @return
      */
     @GetMapping({"/list/{gid}", "list/{gid}/{location}"})
-    public JSONData list( // gid는 필수, location은 옵션이라 required = false
-                         @PathVariable("gid") String gid,
-                         @PathVariable(name = "location", required = false) String location) {
+    public JSONData list( // gid는 필수, location, status는 옵션이라 required = false
+                          @PathVariable("gid") String gid,
+                          @PathVariable(name = "location", required = false) String location, @RequestParam(name = "status", defaultValue = "DONE") FileStatus status) {
 
-        return null;
+        List<FileInfo> items = infoService.getList(gid, location, status);
+
+        return new JSONData(items);
     }
 
     /**
@@ -118,7 +129,9 @@ public class ApiFileController {
     @DeleteMapping("/delete/{seq}")
     public JSONData delete(@PathVariable("seq") Long seq) {
 
-        return null;
+        FileInfo item = deleteService.delete(seq);
+
+        return new JSONData(item);
     }
 
     /**
@@ -132,6 +145,8 @@ public class ApiFileController {
                             @PathVariable("gid") String gid,
                             @PathVariable(name = "location", required = false) String location) {
 
-        return null;
+        List<FileInfo> items = deleteService.deletes(gid, location);
+
+        return new JSONData(items);
     }
 }
