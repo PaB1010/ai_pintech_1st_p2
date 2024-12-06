@@ -5,20 +5,15 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.Nonnull;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.koreait.file.entities.FileInfo;
+import org.koreait.file.services.FileDownloadService;
 import org.koreait.file.services.FileUploadService;
 import org.koreait.global.exceptions.BadRequestException;
 import org.koreait.global.libs.Utils;
 import org.koreait.global.rests.JSONData;
-import org.koreait.member.controllers.RequestLogin;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.lang.NonNull;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,14 +29,14 @@ import java.util.List;
 @Tag(name = "File API", description = "File Upload & Download & 조회 & 삭제")
 @RestController
 @RequestMapping("/api/file")
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class ApiFileController {
 
-    @Autowired
-    private Utils utils;
+    private final Utils utils;
 
-    @Autowired
-    private FileUploadService uploadService;
+    private final FileUploadService uploadService;
+
+    private final FileDownloadService downloadService;
 
     /**
      * File Upload
@@ -87,7 +82,7 @@ public class ApiFileController {
     // @PathVariable("경로변수") URL 경로에서 변경 가능한 부분, Handler Adapter가 처리
     public void download(@PathVariable("seq") Long seq) {
 
-
+        downloadService.process(seq);
     }
 
     /**
