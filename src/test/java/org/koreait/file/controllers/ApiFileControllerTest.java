@@ -2,41 +2,71 @@ package org.koreait.file.controllers;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.koreait.file.entities.FileInfo;
+import org.koreait.file.repositories.FileInfoRepository;
+import org.koreait.file.services.FileInfoService;
+import org.koreait.member.services.MemberUpdateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureWebMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.List;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
 
 /**
  * FileController Test
  *
  */
 @SpringBootTest
-@ActiveProfiles({"default", "test"})
+// @ActiveProfiles({"default", "test"})
 @AutoConfigureMockMvc
 public class ApiFileControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private FileInfoRepository repository;
+
+    @Autowired
+    private MemberUpdateService updateService;
+
+    @Autowired
+    private FileInfoService infoService;
+
     @BeforeEach
     void setup() {
 
         // mockMvc = MockMvcBuilders.standaloneSetup(ApiFileController.class).build();
+
+        /*
+        RequestJoin form = new RequestJoin();
+
+        form.setEmail("user01@test.org");
+        form.setPassword("_aA123456");
+        form.setGender(Gender.MALE);
+        form.setBirthDt(LocalDate.now().minusYears(20));
+        form.setName("이이름");
+        form.setNickName("이이름닉네임");
+        form.setZipCode("00000");
+        form.setAddress("주소");
+
+        updateService.process(form);
+
+         */
     }
 
     @Test
+    // 인증 정보 확인용(AuditorAwareImpl) 가짜 회원 정보
+    // @WithMockUser(username = "user01@test.org", authorities = {"USER"})
+    // 실제 유저 DB Data
+    // @WithUserDetails(value = "user01@test.org", userDetailsServiceBeanName = "memberInfoService")
     void test1() throws Exception {
 
         /**
@@ -54,5 +84,29 @@ public class ApiFileControllerTest {
                         .param("location", "testlocaition")
                         .with(csrf().asHeader()))
                 .andDo(print());
+
+        // 5초 지연
+        // Thread.sleep(5000);
+
+        /*
+        List<FileInfo> items = repository.getList("testgid");
+        
+        // 자동으로 들어가지는지 확인
+        for (FileInfo item : items) {
+            System.out.println(item.getCreatedBy());
+        }
+         */
+    }
+
+    @Test
+    void test2() {
+
+        FileInfo item = infoService.get(1L);
+
+        System.out.println(item);
+
+        List<FileInfo> items = infoService.getList("testgid", null, null);
+
+        items.forEach(System.out::println);
     }
 }

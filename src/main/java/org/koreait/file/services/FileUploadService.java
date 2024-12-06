@@ -33,6 +33,8 @@ public class FileUploadService {
 
     private final FileInfoRepository fileInfoRepository;
 
+    private final FileInfoService infoService;
+
     // Upload 완료된 파일의 목록(List) 반환
     public List<FileInfo> upload(RequestUpload form) {
 
@@ -100,10 +102,11 @@ public class FileUploadService {
             try {
                 // File Upload 성공
                 file.transferTo(_file);
+                
+                // 추가 정보 2차 가공 처리
+                infoService.addInfo(item);
 
                 uploadedItems.add(item);
-
-                // 여기서 done True?
 
             } catch (IOException e) {
                 // File Upload 실패시, DB 저장된 Data 삭제

@@ -1,6 +1,8 @@
 package org.koreait.global.advices;
 
+import lombok.RequiredArgsConstructor;
 import org.koreait.global.exceptions.CommonException;
+import org.koreait.global.libs.Utils;
 import org.koreait.global.rests.JSONData;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +21,10 @@ import java.util.Map;
  *
  */
 @RestControllerAdvice(annotations = RestController.class)
+@RequiredArgsConstructor
 public class CommonRestControllerAdvice {
+
+    private final Utils utils;
 
     // Error 도 항상 동일한 형식(JSONData 형식)
     @ExceptionHandler(Exception.class)
@@ -41,6 +46,11 @@ public class CommonRestControllerAdvice {
             if (errorMessages != null) {
 
                 message = errorMessages;
+
+            } else {
+                // 코드 형태일때에는 message 조회해서 message만 뺴내서 반환
+                // message 형태일 경우 message 반환
+                message = commonException.isErrorCode() ? utils.getMessage((String)message) : message;
             }
         }
 
