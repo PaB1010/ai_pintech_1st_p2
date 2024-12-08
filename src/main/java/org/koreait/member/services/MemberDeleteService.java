@@ -1,6 +1,7 @@
 package org.koreait.member.services;
 
 import lombok.RequiredArgsConstructor;
+import org.koreait.member.MemberInfo;
 import org.koreait.member.entities.Member;
 import org.koreait.member.repositories.MemberRepository;
 import org.springframework.context.annotation.Lazy;
@@ -19,15 +20,25 @@ public class MemberDeleteService {
 
     private final MemberInfoService infoService;
 
-    public Member delete(String email) {
+    public Member delete(Long seq) {
 
-        // Member member = memberRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
+        MemberInfo data = (MemberInfo) infoService.loadUserBySeq(seq);
 
-//        Member member = infoService.loadUserByUsername(email).getUsername();
-//
-//        memberRepository.delete(member);
-//        memberRepository.flush();
-//
-//        return member;
+        Member member = data.getMember();
+
+        /*
+        UserDetails = interface
+        UserInfo = UserDetails 구현한 구현체
+         */
+
+        memberRepository.delete(member);
+
+        memberRepository.flush();
+
+        // memberRepository.deleteById(seq);
+
+        // db에 없는 seq입력하면??
+
+        return member;
     }
 }

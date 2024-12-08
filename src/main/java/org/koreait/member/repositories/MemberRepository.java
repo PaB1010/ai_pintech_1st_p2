@@ -20,11 +20,21 @@ public interface MemberRepository extends JpaRepository<Member, Long>, QuerydslP
     @EntityGraph(attributePaths = "authorities")
     Optional<Member> findByEmail(String email);
 
+    @EntityGraph(attributePaths = "authorities")
+    Optional<Member> findBySeq(Long seq);
+
     // Default 메서드 - Email 중복 체크
     default boolean exists(String email) {
 
         QMember member = QMember.member;
 
         return exists(member.email.eq(email));
+    }
+
+    default boolean exists(Long seq) {
+
+        QMember member = QMember.member;
+
+        return exists(member.seq.eq(seq));
     }
 }

@@ -20,7 +20,7 @@ public class MemberControllerTest {
     void test1() {
 
         // 멤버 단일 삭제
-        Member member = deleteService.delete("user01@test.org");
+        Member member = deleteService.delete(1L);
 
         System.out.println(member);
     }

@@ -195,13 +195,14 @@ public class MemberController {
 
     /**
      * Member 삭제
-     * @param email
+     * @param seq
      * @return
      */
-    @DeleteMapping("/delete/{seq}")
-    public JSONData delete (@PathVariable("email") String email) {
+    @ResponseBody
+    @DeleteMapping ("/delete/{seq}")
+    public JSONData delete (@PathVariable("seq") Long seq) {
 
-        Member member = deleteService.delete(email);
+        Member member = deleteService.delete(seq);
 
         return new JSONData(member);
     }

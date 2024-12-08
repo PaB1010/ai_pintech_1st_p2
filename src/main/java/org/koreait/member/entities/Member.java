@@ -59,10 +59,9 @@ public class Member extends BaseEntity {
     private String optionalTerms; // 선택 약관
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "member") // 관계의 주인은 Many 쪽인 Authorities_member
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE) // 관계의 주인은 Many 쪽인 Authorities_member
     private List<Authorities> authorities; // 회원쪽에서도 권한 조회 가능하도록
 
     // 비밀번호 변경 일시
     private LocalDateTime credentialChangedAt;
-
 }
