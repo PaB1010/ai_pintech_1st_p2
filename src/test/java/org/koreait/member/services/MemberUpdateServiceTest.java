@@ -11,16 +11,17 @@ import org.koreait.member.entities.Member;
 import org.koreait.member.entities.QAuthorities;
 import org.koreait.member.repositories.AuthoritiesRepository;
 import org.koreait.member.repositories.MemberRepository;
+import org.koreait.mypage.controllers.RequestProfile;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
 
 @SpringBootTest
-@ActiveProfiles({"default", "test"})
+// @ActiveProfiles({"default", "test"})
 public class MemberUpdateServiceTest {
 
     @Autowired
@@ -32,7 +33,14 @@ public class MemberUpdateServiceTest {
     @Autowired
     private MemberRepository memberRepository;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     private RequestJoin form;
+
+    private RequestJoin _form;
+
+    private RequestProfile profileForm;
 
     @BeforeEach
     void init() {
@@ -58,6 +66,10 @@ public class MemberUpdateServiceTest {
         form.setBirthDt(LocalDate.now().minusYears(20L));
 
         System.out.println(form);
+
+//        RequestJoin _form = modelMapper.map(form, RequestJoin.class);
+//
+//        System.out.println(_form);
     }
 
     @Test
@@ -85,5 +97,29 @@ public class MemberUpdateServiceTest {
         QAuthorities qAuthorities = QAuthorities.authorities;
 
         List<Authorities> items = (List<Authorities>) authoritiesRepository.findAll(qAuthorities.member.eq(member));
+    }
+
+    @Test
+    void profileTest() {
+
+        profileForm = new RequestProfile();
+
+        profileForm.setName("변경" + form.getName());
+        profileForm.setNickName("변경" + form.getNickName());
+        profileForm.setPassword("AA" + form.getPassword());
+        profileForm.setConfirmPassword(profileForm.getPassword());
+
+        System.out.println(profileForm);
+
+//        _form.setName(profileForm.getName());
+//        _form.setNickName(profileForm.getNickName());
+//        _form.setPassword(profileForm.getPassword());
+//        _form.setConfirmPassword(profileForm.getConfirmPassword());
+//
+//        updateService.process(_form);
+
+        updateService.process(profileForm);
+
+        // Member member = memberRepository.findByEmail(form.getEmail()).orElse(null);
     }
 }

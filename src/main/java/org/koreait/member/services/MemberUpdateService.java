@@ -8,6 +8,7 @@ import org.koreait.member.entities.Member;
 import org.koreait.member.entities.QAuthorities;
 import org.koreait.member.repositories.AuthoritiesRepository;
 import org.koreait.member.repositories.MemberRepository;
+import org.koreait.mypage.controllers.RequestProfile;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,9 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -86,6 +85,19 @@ public class MemberUpdateService {
 
 
         save(member, List.of(auth)); // 회원 저장 처리
+    }
+
+    /**
+     * 회원 정보 수정
+     *
+     */
+    public void process(RequestProfile form) {
+
+        Member member = modelMapper.map(form, Member.class);
+
+        System.out.println(member);
+
+        save(member, member.getAuthorities());
     }
 
     /**
