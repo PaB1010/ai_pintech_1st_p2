@@ -1,10 +1,7 @@
 package org.koreait.member.services;
 
-import com.github.javafaker.Faker;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.koreait.member.constants.Gender;
 import org.koreait.member.controllers.RequestJoin;
 import org.koreait.member.entities.Authorities;
 import org.koreait.member.entities.Member;
@@ -16,9 +13,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Locale;
+import java.util.Objects;
 
 @SpringBootTest
 // @ActiveProfiles({"default", "test"})
@@ -42,6 +38,7 @@ public class MemberUpdateServiceTest {
 
     private RequestProfile profileForm;
 
+    /*
     @BeforeEach
     void init() {
 
@@ -71,6 +68,7 @@ public class MemberUpdateServiceTest {
 //
 //        System.out.println(_form);
     }
+     */
 
     @Test
     @DisplayName("회원 가입 기능 테스트")
@@ -121,5 +119,26 @@ public class MemberUpdateServiceTest {
         updateService.process(profileForm);
 
         // Member member = memberRepository.findByEmail(form.getEmail()).orElse(null);
+    }
+
+    @Test
+    void profileTest2() {
+
+        profileForm = new RequestProfile();
+
+        Member member = memberRepository.findByEmail("user01@test.org").orElse(null);
+
+        // System.out.println(member);
+
+        profileForm.setName("변경된 " + Objects.requireNonNull(member).getName());
+        profileForm.setNickName("변경된 " + member.getNickName());
+        profileForm.setPassword("AA" + member.getPassword());
+        profileForm.setConfirmPassword(profileForm.getPassword());
+
+        modelMapper.map(profileForm, Member.class);
+
+        // System.out.println(profileForm);
+
+        updateService.process(profileForm);
     }
 }

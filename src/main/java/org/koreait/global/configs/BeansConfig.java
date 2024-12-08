@@ -1,7 +1,6 @@
 package org.koreait.global.configs;
 
 import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -30,9 +29,10 @@ public class BeansConfig {
         ModelMapper mapper = new ModelMapper();
 
         // 매칭 안되는 타입(자료형이 일치하지 않을 경우)은 PASS 하는 설정
-        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        // mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
-        // mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STANDARD).setSkipNullEnabled(true);
+        /// mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STANDARD).setSkipNullEnabled(true);
+        mapper.getConfiguration().setSkipNullEnabled(true);
 
         return mapper;
     }

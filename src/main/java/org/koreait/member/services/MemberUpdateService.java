@@ -95,7 +95,13 @@ public class MemberUpdateService {
 
         Member member = modelMapper.map(form, Member.class);
 
-        System.out.println(member);
+        System.out.println(member + "mapper직후");
+
+//        member.setName(form.getName());
+//        member.setNickName(form.getNickName());
+//        member.setPassword(form.getPassword());
+//
+//        System.out.println(member);
 
         save(member, member.getAuthorities());
     }
