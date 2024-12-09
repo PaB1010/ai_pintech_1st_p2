@@ -1,6 +1,7 @@
 package org.koreait.file.services;
 
 import lombok.RequiredArgsConstructor;
+import net.coobird.thumbnailator.Thumbnails;
 import org.koreait.file.controllers.RequestThumb;
 import org.koreait.file.entities.FileInfo;
 import org.koreait.global.configs.FileProperties;
@@ -11,6 +12,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Objects;
 
 /**
@@ -33,7 +37,54 @@ public class ThumbnailService {
     // 썸네일 생성
     public String create(RequestThumb form) {
 
-        return null;
+        Long seq = form.getSeq();
+        String url = form.getUrl();
+
+        // width & height , 50중에 더 큰 쪽으로(기본값)
+        int width = Math.max(form.getWidth(), 50);
+        int height = Math.max(form.getHeight(), 50);
+
+        String thumbPath = getThumbPath(seq, url, width, height);
+
+        File file = new File(thumbPath);
+
+        // 이미 Thumbnail IMG 를 만든 경우
+        if (file.exists()) {
+
+            return thumbPath;
+        }
+
+        try {
+            // Server 에 올라간 File
+            if (seq != null && seq > 0L) {
+
+                FileInfo item = infoService.get(seq);
+
+                Thumbnails.of(item.getFilePath())
+                        .size(width, height)
+                        .toFile(file);
+
+            } else if (StringUtils.hasText(url)) {
+                // 원격 URL IMG
+
+                String original = String.format("%s_original", thumbPath);
+
+                byte[] bytes = restTemplate.getForObject(URI.create(url), byte[].class);
+
+                Files.write(Paths.get(original), bytes);
+
+                Thumbnails.of(original)
+                        .size(width, height)
+                        .toFile(file);
+
+            } else {
+
+                thumbPath = null;
+            }
+
+        } catch (Exception e) {}
+
+        return thumbPath;
     }
 
     /**
@@ -43,12 +94,12 @@ public class ThumbnailService {
      * 
      * seq & url 둘중 한개는 필수
      */
-    public String getThumbPath(long seq, String url, int width, int height) {
+    public String getThumbPath(Long seq, String url, int width, int height) {
 
         String thumbPath = properties.getPath() + "thumbs/";
         
         // 직접 Server에 올려서 seq 값이 있는 File
-        if (seq > 0L) {
+        if (seq !=null && seq > 0L) {
 
             FileInfo item = infoService.get(seq);
 
@@ -73,7 +124,7 @@ public class ThumbnailService {
         File file = new File(thumbPath);
 
         // file 의 부모쪽이 존재하지 않으면
-        if (file.getParentFile().exists()) {
+        if (!file.getParentFile().exists()) {
 
             // 폴더 생성
             file.getParentFile().mkdirs();

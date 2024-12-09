@@ -55,6 +55,11 @@ public class FileInfo extends BaseMemberEntity {
     @Transient
     // File이 Server에 있는 경로 - 2차 가공
     private String filePath;
+    
+    // 썸네일 기본 URL
+    // File 형식이 IMG 일때만 사용 예정
+    @Transient
+    private String thumbUrl;
 
     // File과 연관된 작업이 완료되었는지 여부
     // EX) 완료되지 않아도 일단 User에게 보여야 하므로 Server에 선 Upload
