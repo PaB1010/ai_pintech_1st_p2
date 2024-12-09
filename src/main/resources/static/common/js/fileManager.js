@@ -7,7 +7,7 @@ commonLib.fileManager = {
     * File Upload 처리
     *
     */
-    upload(files, gid, location, single, imageOnly) {
+    upload(files, gid, location, single, imageOnly, done) {
 
         try {
 
@@ -46,6 +46,7 @@ commonLib.fileManager = {
             formData.append("gid", gid);
             formData.append("single",single);
             formData.append("imageOnly", imageOnly);
+            formData.append("done", done);
 
             // 선택 사항 location 존재시
             if (location) {
@@ -73,6 +74,10 @@ commonLib.fileManager = {
                 }
             }, 'POST', formData);
 
+            // 전송 성공/실패 여부 상관 없이 Data 비워주기
+            window.fileEl = null;
+
+
             /* 양식 전송 처리 E */
 
         } catch (err) {
@@ -96,7 +101,7 @@ window.addEventListener("DOMContentLoaded", function() {
         el.addEventListener("click", function() {
 
             // 비구조 할당
-            const {gid, location, single, imageOnly} = this.dataset;
+            const {gid, location, single, imageOnly, done } = this.dataset;
 
             // null인 fileEl에 동적 추가
             if (!fileEl)  {
@@ -113,6 +118,9 @@ window.addEventListener("DOMContentLoaded", function() {
             // true = 여러 파일 선택 가능
             fileEl.multiple = !fileEl.single;
 
+            // Upload 완료 하자마자 완료 처리
+            fileEl.done = done === 'true';
+
             fileEl.click();
 
             // File 선택시 - change Event 발생
@@ -125,13 +133,48 @@ window.addEventListener("DOMContentLoaded", function() {
 
                     const files = e.currentTarget.files;
 
-                    const {gid, location, single, imageOnly} = fileEl;
+                    const {gid, location, single, imageOnly, done } = fileEl;
 
                     // 비구조 할당
                     const { fileManager } = commonLib;
 
-                    fileManager.upload(files, gid, location, single, imageOnly);
+                    fileManager.upload(files, gid, location, single, imageOnly, done);
                 }
+        });
+    }
+
+    // Drag & Drop File Upload 처리
+    const dragUploads = document.getElementsByClassName("drag-upload");
+
+    for (const el of dragUploads) {
+
+        el.addEventListener("dragover", function(e) {
+            // 기본 동작 차단 (File 내용 새 탭으로 Open)
+            e.preventDefault();
+        });
+
+        el.addEventListener("drop", function(e) {
+            // 기본 동작 차단
+            e.preventDefault();
+
+            const files = e.dataTransfer.files;
+
+            let {gid, location, single, imageOnly, done} = this.dataset;
+
+            single = single === "true";
+            imageOnly = imageOnly === "true";
+            done = done === "true";
+
+            // 단일 File Upload 이지만 여러개를 선택한 경우
+            if (single && files.length > 1 ) {
+
+                alret("하나의 파일만 업로드하세요.");
+                return;
+            }
+
+            const { fileManager } = commonLib;
+
+            fileManager.upload(files, gid, location, single, imageOnly, done);
         });
     }
 });

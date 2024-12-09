@@ -160,8 +160,7 @@ public class FileInfoService {
         return getFileUrl(item);
     }
 
-    // 내부 사용용
-    private long getFolder(long seq) {
+    public long getFolder(long seq) {
 
         return seq % 10L;
     }

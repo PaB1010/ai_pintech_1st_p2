@@ -9,10 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.koreait.file.constants.FileStatus;
 import org.koreait.file.entities.FileInfo;
-import org.koreait.file.services.FileDeleteService;
-import org.koreait.file.services.FileDownloadService;
-import org.koreait.file.services.FileInfoService;
-import org.koreait.file.services.FileUploadService;
+import org.koreait.file.services.*;
 import org.koreait.global.exceptions.BadRequestException;
 import org.koreait.global.libs.Utils;
 import org.koreait.global.rests.JSONData;
@@ -44,6 +41,8 @@ public class ApiFileController {
     private final FileInfoService infoService;
 
     private final FileDeleteService deleteService;
+
+    private final FileDoneService doneService;
 
     /**
      * File Upload
@@ -80,6 +79,12 @@ public class ApiFileController {
 
         // 성공시 업로드한 파일 목록(List) 반환 값으로
         List<FileInfo> uploadedFiles = uploadService.upload(form);
+
+        // Upload 완료 하자마자 완료 처리 하는 경우
+        if (form.isDone()) {
+
+            doneService.process(form.getGid(), form.getLocation());
+        }
 
         // JSONData 처리
         JSONData data = new JSONData(uploadedFiles);
@@ -157,5 +162,15 @@ public class ApiFileController {
         List<FileInfo> items = deleteService.deletes(gid, location);
 
         return new JSONData(items);
+    }
+
+    /**
+     * 썸네일 이미지
+     * 커맨드 객체 정의 후
+     */
+    @GetMapping("/thumb")
+    public void thumb(RequestThumb form) {
+
+
     }
 }
