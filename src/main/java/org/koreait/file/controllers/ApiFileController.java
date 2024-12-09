@@ -69,6 +69,15 @@ public class ApiFileController {
 
         form.setFiles(files);
 
+        /**
+         * 단일 File Upload
+         * -> 기존 Upload File 삭제 후 새로 추가 (싱글톤)
+         */
+        if (form.isSingle()) {
+
+            deleteService.deletes(form.getGid(), form.getLocation());
+        }
+
         // 성공시 업로드한 파일 목록(List) 반환 값으로
         List<FileInfo> uploadedFiles = uploadService.upload(form);
 

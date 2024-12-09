@@ -16,6 +16,12 @@ public class RequestUpload {
 
     private String location;
 
+    // 단일 파일 여부
+    private boolean single;
+
+    // IMG 형식의 파일만 허용
+    private boolean imageOnly;
+
     // 임시, 추후 set되도록 변경
     public MultipartFile[] files;
 }
