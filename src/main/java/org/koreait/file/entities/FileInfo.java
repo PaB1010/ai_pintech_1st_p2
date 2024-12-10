@@ -3,6 +3,7 @@ package org.koreait.file.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.koreait.global.entities.BaseMemberEntity;
+import org.springframework.util.StringUtils;
 
 /**
  * File 정보 -> DB 저장용
@@ -66,4 +67,10 @@ public class FileInfo extends BaseMemberEntity {
     // 추후에 이 값이 false File들은 Schedule 설정해 주기적으로 삭제
     // done은 boolean 값으로 선택도가 2가지(1, 0)뿐이므로 index 부여하지 않는 것이 조회에 유리
     private boolean done;
+
+    // 이미지 형식 여부
+    public boolean isImage() {
+
+        return StringUtils.hasText(contentType) && contentType.contains("image/");
+    }
 }

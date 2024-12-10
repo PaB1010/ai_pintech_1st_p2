@@ -1,6 +1,8 @@
 package org.koreait.member.services;
 
 import lombok.RequiredArgsConstructor;
+import org.koreait.file.entities.FileInfo;
+import org.koreait.file.services.FileInfoService;
 import org.koreait.member.MemberInfo;
 import org.koreait.member.constants.Authority;
 import org.koreait.member.entities.Authorities;
@@ -25,6 +27,8 @@ public class MemberInfoService implements UserDetailsService {
     // 회원 조회 위해 DB
     private final MemberRepository memberRepository;
 
+    private final FileInfoService fileInfoService;
+
     // 회원 조회해서 UserDetails로 구현체로 완성해 반환값 내보냄
     // 회원 정보가 필요할때마다 호출됨
     @Override
@@ -47,6 +51,9 @@ public class MemberInfoService implements UserDetailsService {
         // private Collection<? extends GrantedAuthority> authorities;이므로 stream 이용해 문자열로 변환
         // 무조건 문자열이어야함
         List<SimpleGrantedAuthority> authorities = items.stream().map(a -> new SimpleGrantedAuthority(a.getAuthority().name())).toList();
+
+        // 추가 정보 처리 (2차 가공)
+        addInfo(member);
 
         return MemberInfo.builder()
                 .email(member.getEmail())
@@ -77,11 +84,29 @@ public class MemberInfoService implements UserDetailsService {
         // 무조건 문자열이어야함
         List<SimpleGrantedAuthority> authorities = items.stream().map(a -> new SimpleGrantedAuthority(a.getAuthority().name())).toList();
 
+        // 추가 정보 처리 (2차 가공)
+        addInfo(member);
+
         return MemberInfo.builder()
                 .email(member.getEmail())
                 .password(member.getPassword())
                 .member(member)
                 .authorities(authorities)
                 .build();
+    }
+
+    /**
+     * 추가 정보 처리 (2차 가공)
+     * Class 내부 사용 용도 (private)
+     * @param member
+     */
+    private void addInfo(Member member) {
+
+        List<FileInfo> files = fileInfoService.getList(member.getEmail(), "profile");
+
+        if (files != null && !files.isEmpty()) {
+
+            member.setProfileImage(files.get(0));
+        }
     }
 }

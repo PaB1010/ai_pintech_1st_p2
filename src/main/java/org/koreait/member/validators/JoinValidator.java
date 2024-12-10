@@ -120,13 +120,7 @@ public class JoinValidator implements Validator, PasswordValidator {
         // 2. 비밀번호 복잡성 S
 
         if (!alphaCheck(password, false) || !numberCheck(password) || !specialCharscehk(password)) {
-            System.out.println("------ 확인 ------");
-            System.out.println(password);
-            System.out.println(alphaCheck(password, false));
-            System.out.println(numberCheck(password));
-            System.out.println(specialCharscehk(password));
             errors.rejectValue("password", "Complexity");
-            System.out.println("------ 확인 ------");
         }
 
         // 2. 비밀번호 복잡성 E

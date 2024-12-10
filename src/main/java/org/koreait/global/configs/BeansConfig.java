@@ -1,5 +1,7 @@
 package org.koreait.global.configs;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
@@ -36,5 +38,17 @@ public class BeansConfig {
         // mapper.getConfiguration().setSkipNullEnabled(true);
 
         return mapper;
+    }
+
+    @Lazy
+    @Bean
+    public ObjectMapper objectMapper() {
+
+        ObjectMapper om = new ObjectMapper();
+
+        // java.time.package = java8 data & time api
+        om.registerModule(new JavaTimeModule());
+
+        return om;
     }
 }

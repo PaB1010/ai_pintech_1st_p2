@@ -6,6 +6,7 @@ import org.koreait.member.controllers.RequestJoin;
 import org.koreait.member.entities.Authorities;
 import org.koreait.member.entities.Member;
 import org.koreait.member.entities.QAuthorities;
+import org.koreait.member.libs.MemberUtil;
 import org.koreait.member.repositories.AuthoritiesRepository;
 import org.koreait.member.repositories.MemberRepository;
 import org.koreait.mypage.controllers.RequestProfile;
@@ -14,10 +15,10 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 회원 가입 & 정보 수정 기능
@@ -39,6 +40,8 @@ public class MemberUpdateService {
     // ModelMapper
     // 같은 getter setter 처리시 일괄 처리해주는 Reflection API 편의 기능
     private final ModelMapper modelMapper;
+
+    private final MemberUtil memberUtil;
     
     /**
      * 메서드 오버로드 - 커맨드 객체의 타입에 따라서
@@ -66,9 +69,7 @@ public class MemberUpdateService {
         // 선택 약관 값이 있을때에만 -> 약관 항목1||약관 항목2||... 형태로 가공 처리
         if (optionalTerms != null) {
 
-            String _optionalTerms = optionalTerms.stream().collect(Collectors.joining("||"));
-
-            member.setOptionalTerms(_optionalTerms);
+            member.setOptionalTerms(String.join("||", optionalTerms));
         }
 
         // 비밀번호 해시화 - BCrypt (단방성, 유동 해시)
@@ -91,11 +92,12 @@ public class MemberUpdateService {
      * 회원 정보 수정
      *
      */
+    /*
+    // 집에서 작업한 코드
+
     public void process(RequestProfile form) {
 
         Member member = modelMapper.map(form, Member.class);
-
-        System.out.println(member + "mapper직후");
 
 //        member.setName(form.getName());
 //        member.setNickName(form.getNickName());
@@ -103,7 +105,86 @@ public class MemberUpdateService {
 //
 //        System.out.println(member);
 
-        save(member, member.getAuthorities());
+        save(member, null);
+    }
+     */
+
+
+    /**
+     * 회원 정보 수정
+     * @param form
+     */
+    public void process(RequestProfile form) {
+
+        process(form, null);
+    }
+
+    /**
+     * 회원 정보 수정 (+권한수정)
+     * @param form
+     * @param authorities
+     */
+    public void process(RequestProfile form, List<Authority> authorities) {
+
+        // 로그인한 사용자의 정보
+        // Member member = memberUtil.getMember();
+        Member member = memberUtil.getMember();
+
+        // Member member2 = modelMapper.map(form, Member.class);
+
+        member.setName(form.getName());
+        member.setNickName(form.getNickName());
+        member.setBirthDt(form.getBirthDt());
+        member.setGender(form.getGender());
+        member.setZipCode(form.getZipCode());
+        member.setAddress(form.getAddress());
+        member.setAddressSub(form.getAddressSub());
+
+        List<String> optionalTerms = form.getOptionalTerms();
+
+        if (optionalTerms != null) {
+
+            member.setOptionalTerms(String.join("||", optionalTerms));
+        }
+
+        // 회원정보 수정일때는 비밀번호가 입력 된 경우에만 값 저장
+        String password = form.getPassword();
+
+        if (StringUtils.hasText(password)) {
+
+            String hash = passwordEncoder.encode(password);
+            member.setPassword(hash);
+            member.setCredentialChangedAt(LocalDateTime.now());
+        }
+
+
+
+        /**
+         * 회원 권한은 관리자만 수정 가능 하도록
+         */
+
+        List<Authorities> _authorities = null;
+
+        if (authorities != null && memberUtil.isAdmin()) {
+
+            _authorities = authorities.stream().map(a -> {
+
+                Authorities auth = new Authorities();
+
+                // 타입 관련 오류
+                auth.setAuthority(a);
+
+                auth.setMember(member);
+
+                return auth;
+
+            }).toList();
+        }
+
+        System.out.println(member);
+        //System.out.println(member2);
+
+        save(member, _authorities);
     }
 
     /**

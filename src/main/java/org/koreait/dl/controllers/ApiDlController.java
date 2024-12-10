@@ -1,9 +1,12 @@
 package org.koreait.dl.controllers;
 
+import lombok.RequiredArgsConstructor;
 import org.koreait.dl.entities.TrainItem;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.koreait.dl.services.PredictService;
+import org.koreait.dl.services.TrainService;
+import org.koreait.global.rests.JSONData;
+import org.springframework.context.annotation.Profile;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Random;
@@ -17,9 +20,15 @@ import java.util.stream.IntStream;
  *     사용자 연령층에 따라서 많이 선택하는 상품 추천 등
  *
  */
+@Profile("dl")
 @RestController
 @RequestMapping("/api/dl")
+@RequiredArgsConstructor
 public class ApiDlController {
+
+    private final TrainService trainService;
+
+    private final PredictService predictService;
 
     // 임시 랜덤 숫자 1000개 학습
     // 규칙성이 없어서 정답률 20% 정도 예상
@@ -44,5 +53,14 @@ public class ApiDlController {
                         .build()
                 ).toList();
         return items;
+    }
+
+    // 예측
+    @PostMapping("/predict")
+    public JSONData predict(@RequestParam("items") List<int[]> items) {
+
+        int[] predictions = predictService.predict(items);
+
+        return new JSONData(predictions);
     }
 }

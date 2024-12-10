@@ -15,5 +15,6 @@ public class ApiTest2 {
     void updateTest1() {
 
         service.update(1,"x");
+        service.update(2,"x");
     }
 }
