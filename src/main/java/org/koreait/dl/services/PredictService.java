@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -25,6 +26,9 @@ public class PredictService {
     @Value("${python.script.path}")
     private String scriptPath;
 
+    @Value("${python.data.url}")
+    private String dataUrl;
+
     @Autowired
     private ObjectMapper om;
 
@@ -35,7 +39,7 @@ public class PredictService {
             
             String data = om.writeValueAsString(items);
 
-            ProcessBuilder builder = new ProcessBuilder(runPath, scriptPath + "predict.py", data);
+            ProcessBuilder builder = new ProcessBuilder(runPath, scriptPath + "predict.py", dataUrl + "?mode=ALL", data);
 
             Process process = builder.start();
 
@@ -43,6 +47,8 @@ public class PredictService {
 
             // 실행결과를 InputStream 으로 받음
             // 문자열을 int 배열로 변경하기
+
+            System.out.println(Arrays.toString(in.readAllBytes()));
 
             return om.readValue(in.readAllBytes(), int[].class);
 

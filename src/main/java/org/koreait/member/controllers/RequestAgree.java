@@ -1,13 +1,12 @@
 package org.koreait.member.controllers;
 
-import jakarta.validation.constraints.AssertTrue;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Data
-public class RequestAgree {
+public class RequestAgree implements Serializable {
 
     // @AssertTrue
     // 필수 약관 동의 여부

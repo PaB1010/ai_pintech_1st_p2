@@ -1,10 +1,22 @@
 package org.koreait.dl.services;
 
+import lombok.RequiredArgsConstructor;
+import org.koreait.dl.entities.QTrainItem;
+import org.koreait.dl.entities.TrainItem;
+import org.koreait.dl.repositories.TrainItemRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.List;
+
+import static org.springframework.data.domain.Sort.Order.asc;
 
 /**
  * 훈련 기능
@@ -13,7 +25,10 @@ import org.springframework.stereotype.Service;
 @Lazy
 @Service
 @Profile("dl") // Profile - 머신러닝 관련 Bean 생성 통제
+@RequiredArgsConstructor
 public class TrainService {
+
+    private final TrainItemRepository repository;
 
     @Value("${python.run.path}")
     private String runPath;
@@ -28,7 +43,9 @@ public class TrainService {
     public void process() {
 
         try {
-            ProcessBuilder builder = new ProcessBuilder(runPath, scriptPath + "train.py", dataUrl);
+            ProcessBuilder builder = new ProcessBuilder(runPath, scriptPath + "train.py", dataUrl + "?mode=ALL", dataUrl);
+            // 전체 data, 하루치 학습Data
+            // dataUrl + ?mode = all, dataUrl
 
             Process process = builder.start();
 
@@ -37,5 +54,26 @@ public class TrainService {
             System.out.println(exitCode);
 
         } catch (Exception e) {}
+    }
+
+    public void log(TrainItem item) {
+
+        repository.saveAndFlush(item);
+    }
+
+    // false = 단일 조회, true = 전체 조회
+    public List<TrainItem> getList(boolean isAll) {
+
+        if (isAll) {
+
+            // 오름차순
+            return repository.findAll(Sort.by(asc("createdAt")));
+        } else {
+
+            QTrainItem trainItem = QTrainItem.trainItem;
+
+            // 전날(minusDay) 자정부터 그 이후(after)까지 그날 하루치
+            return (List<TrainItem>) repository.findAll(trainItem.createdAt.after(LocalDateTime.of(LocalDate.now().minusDays(1L), LocalTime.of(0, 0, 0))), Sort.by(asc("createdAt")));
+        }
     }
 }

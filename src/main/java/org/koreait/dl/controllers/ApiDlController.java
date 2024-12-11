@@ -9,8 +9,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Random;
-import java.util.stream.IntStream;
 
 /**
  * 머신 러닝 RestController
@@ -30,11 +28,14 @@ public class ApiDlController {
 
     private final PredictService predictService;
 
-    // 임시 랜덤 숫자 1000개 학습
-    // 규칙성이 없어서 정답률 20% 정도 예상
+    // 학습 Data
     @GetMapping("/data")
-    public List<TrainItem> sendData() {
+    public List<TrainItem> sendData(@RequestParam(name="mode", required = false) String mode) {
 
+        // True = 전체, False = 하루치
+        List<TrainItem> items = trainService.getList(mode != null && mode.equals("ALL"));
+
+        /*
         Random random = new Random();
 
         List<TrainItem> items = IntStream.range(0, 1000)
@@ -49,9 +50,11 @@ public class ApiDlController {
                         .item8(random.nextInt())
                         .item9(random.nextInt())
                         .item10(random.nextInt())
-                        .result(random.nextInt(4)) // 0 ~ 4 반복
+                        .result(random.nextInt(4))
                         .build()
                 ).toList();
+         */
+
         return items;
     }
 

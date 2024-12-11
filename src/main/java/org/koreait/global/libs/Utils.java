@@ -33,7 +33,7 @@ public class Utils {
         // 해당 Pattern이 포함되면 Mobile로 판명
         String pattern = ".*(iPhone|iPod|iPad|BlackBerry|Android|Windows CE|LG|MOT|SAMSUNG|SonyEricsson).*";
 
-        return ua.matches(pattern);
+        return StringUtils.hasText(ua) && ua.matches(pattern);
     }
     
     /*

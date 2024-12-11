@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.koreait.member.constants.Authority;
 
+import java.io.Serializable;
+
 /**
  * 회원 (Member) 다중 권한
  * @ManyToOne
@@ -16,7 +18,7 @@ import org.koreait.member.constants.Authority;
 @Data
 @Entity
 @IdClass(AuthoritiesId.class) // AuthritiesId = 복합키
-public class Authorities {
+public class Authorities implements Serializable {
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY) // 거의 항상 Join 할 것 같긴 하지만 우선 학습한 대로 LAZY

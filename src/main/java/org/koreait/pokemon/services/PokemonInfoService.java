@@ -1,8 +1,11 @@
 package org.koreait.pokemon.services;
 
 import com.querydsl.core.BooleanBuilder;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.koreait.global.libs.Utils;
 import org.koreait.global.paging.ListData;
+import org.koreait.global.paging.Pagination;
 import org.koreait.pokemon.controllers.PokemonSearch;
 import org.koreait.pokemon.entities.Pokemon;
 import org.koreait.pokemon.entities.QPokemon;
@@ -16,6 +19,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
+
 import static org.springframework.data.domain.Sort.Order.desc;
 
 /**
@@ -28,6 +33,10 @@ import static org.springframework.data.domain.Sort.Order.desc;
 public class PokemonInfoService {
 
     private final PokemonRepository pokemonRepository;
+
+    private final HttpServletRequest request;
+
+    private final Utils utils;
 
     /**
      * Pokemon 목록 조회
@@ -72,7 +81,20 @@ public class PokemonInfoService {
 
         Page<Pokemon> data = pokemonRepository.findAll(andBuilder, pageable);
 
-        return null;
+        // 조회된 목록 (limit 개수 만큼)
+        List<Pokemon> items = data.getContent();
+
+        // 추가 정보 처리 (2차 가공)
+        items.forEach(this::addInfo);
+
+
+        // public Pagination(int page, int total, int ranges, int limit, HttpServletRequest request)
+
+        int ranges = utils.isMobile() ? 5 : 10;
+
+        Pagination pagination = new Pagination(page, (int)data.getTotalElements(), ranges, limit, request);
+
+        return new ListData<>(items, pagination);
     }
 
     /**

@@ -5,6 +5,8 @@ import lombok.Data;
 import org.koreait.global.entities.BaseMemberEntity;
 import org.springframework.util.StringUtils;
 
+import java.io.Serializable;
+
 /**
  * File 정보 -> DB 저장용
  *
@@ -18,7 +20,7 @@ import org.springframework.util.StringUtils;
         @Index(name = "idx_gid", columnList = "gid, createdAt"),
         @Index(name = "idx_gid_location", columnList = "gid, location, createdAt")
 })
-public class FileInfo extends BaseMemberEntity {
+public class FileInfo extends BaseMemberEntity implements Serializable {
 
     // File 등록 번호, 증감 번호
     @Id  @GeneratedValue

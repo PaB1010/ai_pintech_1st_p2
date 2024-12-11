@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * 목록 Data
  *
@@ -16,7 +18,7 @@ import lombok.NoArgsConstructor;
 public class ListData<T> {
 
     // 목록 Data
-    private T items;
+    private List<T> items;
 
     // 페이징 기초 Data
     private Pagination pagination;

@@ -1,7 +1,16 @@
 server:
   port: 3000
+  # Session ID 변경
+  servlet:
+    session:
+      cookie.name: bfb4c74f0
 
 spring:
+  # redis 설정 - Session 공간 분리
+  data:
+    redis:
+      host: ${redis.host}
+      port: ${redis.port}
   # 타임리프 설정 - 작업 편의상 캐시 해제
   thymeleaf:
     cache: false

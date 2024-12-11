@@ -14,7 +14,7 @@ public class ApiTest2 {
     @Test
     void updateTest1() {
 
-        service.update(1,"x");
-        service.update(2,"x");
+        service.update(3,"x");
+        service.update(4,"x");
     }
 }
