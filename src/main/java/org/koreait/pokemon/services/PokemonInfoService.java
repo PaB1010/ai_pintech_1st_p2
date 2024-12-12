@@ -1,6 +1,7 @@
 package org.koreait.pokemon.services;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.koreait.global.libs.Utils;
@@ -20,9 +21,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import static org.springframework.data.domain.Sort.Order.desc;
+import static org.springframework.data.domain.Sort.Order.asc;
 
 /**
  * Pokemon 조회 Service
@@ -39,6 +42,8 @@ public class PokemonInfoService {
 
     private final Utils utils;
 
+    private final JPAQueryFactory queryFactory;
+
     /**
      * Pokemon 목록 조회
      *
@@ -54,8 +59,8 @@ public class PokemonInfoService {
         // 한 페이지당 출력 개수
         int limit = search.getLimit();
 
-        // 1보다 작을 경우 20으로 default 값 설정
-        limit = limit < 1 ? 20 : limit;
+        // 1보다 작을 경우 18으로 default 값 설정
+        limit = limit < 1 ? 18 : limit;
 
         QPokemon pokemon = QPokemon.pokemon;
 
@@ -78,7 +83,7 @@ public class PokemonInfoService {
 
         /* 검색 처리 E */
 
-        Pageable pageable = PageRequest.of(page - 1, limit, Sort.by(desc("seq")));
+        Pageable pageable = PageRequest.of(page - 1, limit, Sort.by(asc("seq")));
 
         Page<Pokemon> data = pokemonRepository.findAll(andBuilder, pageable);
 
@@ -109,7 +114,7 @@ public class PokemonInfoService {
         Pokemon item = pokemonRepository.findById(seq).orElseThrow(PokemonNotFoundException::new);
 
         // 추가 정보 처리 (2차 가공)
-        addInfo(item);
+        addInfo(item, true);
 
         return item;
     }
@@ -136,5 +141,74 @@ public class PokemonInfoService {
 
             item.set_types(Arrays.stream(types.split("\\|\\|")).toList());
         }
+    }
+
+    /**
+     * 상세페이지 조회(get(), view.html)일 경우
+     * 이전/다음 번호 포켓몬 추가 가공 여부
+     *
+     * @param item
+     * @param isView
+     */
+    private void addInfo(Pokemon item, boolean isView) {
+
+        addInfo(item);
+
+        if (!isView) return;
+
+        long seq = item.getSeq();
+
+        long lastSeq = getLastSeq();
+
+        // 이전 포켓몬 정보 - prevItem
+        long prevSeq = seq - 1L;
+
+        // 이전 포켓몬 번호가 음수일 경우 마지막 번호(SEQ)로 대체
+        prevSeq = prevSeq < 1L ? lastSeq : prevSeq;
+
+        // 다음 포켓몬 정보 - nextItem
+        long nextSeq = seq + 1L;
+
+        nextSeq = nextSeq > lastSeq ? 1L : nextSeq;
+
+        QPokemon pokemon = QPokemon.pokemon;
+
+        // 처리
+        List<Pokemon> items = (List<Pokemon>)pokemonRepository.findAll(pokemon.seq.in(prevSeq, nextSeq));
+
+        Map<String, Object> prevItem = new HashMap<>();
+        Map<String, Object> nextItem = new HashMap<>();
+
+        for (int i = 0; i < items.size(); i++) {
+
+            Pokemon _item = items.get(i);
+
+            Map<String, Object> data = _item.getSeq().longValue() == prevSeq ? prevItem : nextItem;
+
+            data.put("seq", _item.getSeq());
+            data.put("name", _item.getName());
+            data.put("nameEn", _item.getNameEn());
+        }
+
+        item.setPrevItem(prevItem);
+        item.setNextItem(nextItem);
+    }
+
+    /**
+     * 1번 포켓몬에서 prevItem 할 경우
+     * 마지막 번호(seq) 포켓몬 조회
+     *
+     * @return
+     */
+    private Long getLastSeq() {
+
+        QPokemon pokemon = QPokemon.pokemon;
+
+        // 항목별 나열 가능, seq 최대값
+        // Tuple 자료형 - Python의 Tuple 아님
+        // 영속성 상태로는 아니고 Data 값만 get 해옴
+        return queryFactory.select(pokemon.seq.max())
+                .from(pokemon)
+                .fetchFirst();
     }
 }

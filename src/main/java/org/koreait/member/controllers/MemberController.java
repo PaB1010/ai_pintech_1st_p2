@@ -6,10 +6,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.koreait.global.annotations.ApplyErrorPage;
 import org.koreait.global.libs.Utils;
 import org.koreait.global.rests.JSONData;
+import org.koreait.member.MemberInfo;
 import org.koreait.member.entities.Member;
+import org.koreait.member.libs.MemberUtil;
 import org.koreait.member.services.MemberDeleteService;
+import org.koreait.member.services.MemberInfoService;
 import org.koreait.member.services.MemberUpdateService;
 import org.koreait.member.validators.JoinValidator;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -17,6 +21,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +35,8 @@ public class MemberController {
 
     // 공통 기능 의존 주입
     private final Utils utils;
+
+    private final MemberUtil memberUtil;
     
     // 회원 가입 검증 의존 주입
     private final JoinValidator joinValidator;
@@ -38,6 +45,8 @@ public class MemberController {
     private final MemberUpdateService updateService;
 
     private final MemberDeleteService deleteService;
+
+    private final MemberInfoService infoService;
 
     @ModelAttribute("requestAgree")
     public RequestAgree requestAgree() {
@@ -205,6 +214,20 @@ public class MemberController {
         Member member = deleteService.delete(seq);
 
         return new JSONData(member);
+    }
+
+    /**
+     * 회원 정보 갱신
+     *
+     */
+    @ResponseBody
+    @GetMapping("/refresh")
+    @PreAuthorize("isAuthenticated()")
+    public void refresh(Principal principal) {
+
+        MemberInfo memberInfo = (MemberInfo) infoService.loadUserByUsername(principal.getName());
+
+        memberUtil.setMember(memberInfo.getMember());
     }
 
 

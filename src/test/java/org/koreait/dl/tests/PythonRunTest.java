@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.io.BufferedReader;
+import java.util.Arrays;
 import java.util.List;
 
 @ActiveProfiles({"default", "test", "dl"})
@@ -65,7 +66,10 @@ public class PythonRunTest {
 
         // python predict.py http://localhost:3000/api/dl/data [ 123151481,  88790998,  16140196,   94127238,  16784415,   138504672, -157161094, -65513703,  99961796 , -80484811 ]
 
-        trainService.process();
+        // python train.py http://localhost:3000/api/dl/data?mode=ALL http://localhost:3000/api/dl/data
+
+       // trainService.process();
+
 
         int[] item = { 123151481,  88790998,  16140196,   94127238,  16784415,   138504672, -157161094, -65513703,  99961796 , -80484811 };
 
@@ -73,6 +77,6 @@ public class PythonRunTest {
 
         int[] predictions = predictService.predict(items);
 
-        // System.out.println(Arrays.toString(predictions));
+        System.out.println(Arrays.toString(predictions));
     }
 }

@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -48,7 +47,7 @@ public class PredictService {
             // 실행결과를 InputStream 으로 받음
             // 문자열을 int 배열로 변경하기
 
-            System.out.println(Arrays.toString(in.readAllBytes()));
+            //System.out.println(Arrays.toString(in.readAllBytes()));
 
             return om.readValue(in.readAllBytes(), int[].class);
 

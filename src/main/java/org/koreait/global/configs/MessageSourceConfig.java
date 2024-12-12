@@ -15,7 +15,7 @@ public class MessageSourceConfig {
 
         ResourceBundleMessageSource ms = new ResourceBundleMessageSource();
 
-        ms.addBasenames("messages.commons","messages.validations","messages.errors");
+        ms.addBasenames("messages.commons","messages.validations","messages.errors","messages.pokemon");
 
         ms.setDefaultEncoding("UTF-8");
 

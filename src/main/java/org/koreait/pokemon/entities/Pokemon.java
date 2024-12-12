@@ -5,6 +5,7 @@ import lombok.Data;
 import org.koreait.global.entities.BaseEntity;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * DB..?
@@ -49,6 +50,10 @@ public class Pokemon extends BaseEntity {
 
     // 특성1 || 특성2 || 특성3
     private String abilities;
+    
+    // 분류 - EX)씨앗포켓몬
+    @Column(length = 100)
+    private String genus;
 
     // 가공한 Type
     @Transient
@@ -57,4 +62,10 @@ public class Pokemon extends BaseEntity {
     // 가공한 특성
     @Transient
     private List<String> _abilities;
+
+    @Transient
+    private Map<String, Object > prevItem;
+
+    @Transient
+    private Map<String, Object> nextItem;
 }

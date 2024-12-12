@@ -8,6 +8,7 @@ import org.koreait.member.constants.Authority;
 import org.koreait.member.entities.Authorities;
 import org.koreait.member.entities.Member;
 import org.koreait.member.repositories.MemberRepository;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,6 +21,7 @@ import java.util.List;
  * 회원 조회 기능
  *
  */
+@Lazy // 순환 참조 방지용
 @Service
 @RequiredArgsConstructor
 public class MemberInfoService implements UserDetailsService {
@@ -97,10 +99,10 @@ public class MemberInfoService implements UserDetailsService {
 
     /**
      * 추가 정보 처리 (2차 가공)
-     * Class 내부 사용 용도 (private)
+     *
      * @param member
      */
-    private void addInfo(Member member) {
+    public void addInfo(Member member) {
 
         List<FileInfo> files = fileInfoService.getList(member.getEmail(), "profile");
 

@@ -95,13 +95,19 @@ public class ApiUpdateService {
             String nameKr = data2.getNames().stream().filter(d -> d.getLanguage().getName().equals("ko")).map(d -> d.getName()).collect(Collectors.joining());
 
             // collect.joining
-            String verse2asfda2 = data2.getFlavorTextEntries().stream().filter(d -> d.getVersion().getName().equals("x")).map(d -> d.getFlavorText()).collect(Collectors.joining());
+            String flavorTextOrigin = data2.getFlavorTextEntries().stream().filter(d -> d.getVersion().getName().equals("x")).map(d -> d.getFlavorText()).collect(Collectors.joining());
 
             // 버전에 맞는 포켓몬 한글 설명
             String flavorText = data2.getFlavorTextEntries().stream().filter(d -> d.getLanguage().getName().equals("ko")).filter(d -> d.getVersion().getName().equals(version)).map((FlavorText::getFlavorText)).collect(Collectors.joining());
 
             pokemon.setFlavorText(flavorText);
+
             pokemon.setName(nameKr);
+
+            // 포켓몬 분류
+            String genus = data2.getGenera().stream().filter(d -> d.getLanguage().getName().equals("ko")).map(d -> d.getGenus()).collect(Collectors.joining());
+
+            pokemon.setGenus(genus);
 
             pokemons.add(pokemon);
         }
