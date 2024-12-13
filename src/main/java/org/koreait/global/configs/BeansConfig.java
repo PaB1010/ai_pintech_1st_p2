@@ -17,7 +17,7 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class BeansConfig {
 
-    // @Lazy = 싱글톤
+    // @Lazy = 지연 로딩, 싱글톤
     @Lazy
     @Bean
     public RestTemplate restTemplate() {
@@ -25,6 +25,15 @@ public class BeansConfig {
         return new RestTemplate();
     }
 
+    /**
+     * 커맨드 객체 값 옮겨주는 (GET & SET)
+     *
+     * Reflection API 기능
+     *
+     * 매개변수 - Class 클래스 객체
+     *
+     * @return
+     */
     @Lazy
     @Bean
     public ModelMapper modelMapper() {
@@ -34,12 +43,21 @@ public class BeansConfig {
         // 매칭 안되는 타입(자료형이 일치하지 않을 경우)은 PASS 하는 설정
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
-        /// mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STANDARD).setSkipNullEnabled(true);
+        // mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STANDARD).setSkipNullEnabled(true);
         // mapper.getConfiguration().setSkipNullEnabled(true);
 
         return mapper;
     }
 
+    /**
+     * Rest Control 의 주 역할은 JSON 형태 응답 Return
+     *
+     * JSON </-> JAVA code
+     *
+     * 매개변수 - Class 클래스 객체
+     *
+     * @return
+     */
     @Lazy
     @Bean
     public ObjectMapper objectMapper() {

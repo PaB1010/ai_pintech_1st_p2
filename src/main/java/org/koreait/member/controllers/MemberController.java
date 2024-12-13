@@ -30,6 +30,7 @@ import java.util.List;
 @ApplyErrorPage
 @RequestMapping("/member")
 @RequiredArgsConstructor
+// ★ 주문서 처럼 여러 Page 에 걸쳐 같은 값을 가지고 작업할때에 SessionAttributes ★
 @SessionAttributes({"requestAgree", "requestLogin"})
 public class MemberController {
 
@@ -62,6 +63,7 @@ public class MemberController {
 
     @ModelAttribute("requestLogin")
     public RequestLogin requestLogin() {
+
         return new RequestLogin();
     }
 

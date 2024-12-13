@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * AOP Programing
+ *
  * @RestControllerAdvice
  *
  * RestController 공통 처리 부분

@@ -21,7 +21,8 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableMethodSecurity // Controller 내의 요청 메서드 단위로 권한 통제 가능
 public class SecurityConfig {
     
-    /*
+    /**
+     *
     내부적으로 생성된 Filter(로그인 계정 정보)의
     앞이나 뒤로 사용자 정의 Filter를 Chain가능
     
@@ -48,7 +49,7 @@ public class SecurityConfig {
                     .usernameParameter("email") // 유저 ID로 사용할 값
                     .passwordParameter("password") // 유저 비밀번호로 사용할 값
                     /*
-                    이 두가지는 거의 사용하지 않고 Handler를 사용해 상세 처리를 함
+                    이 두가지는 거의 사용하지 않고 Handler 사용해 상세 처리를 함
 
                     .failureUrl("/member/login?error=1") // 로그인 실패시
                     .defaultSuccessUrl("/"); // 로그인 성공시
@@ -79,23 +80,23 @@ public class SecurityConfig {
          * hasAnyRole(...)
          */
         http.authorizeHttpRequests(c -> {
-            c.requestMatchers("/mypage/**").authenticated() // 인증한 회원
-                    .requestMatchers("/member/login", "/member/join", "/member/agree").anonymous() // 미인증 회원
-                    .requestMatchers("/admin/**").hasAnyAuthority("MANAGER", "ADMIN") // 관리자 페이지는 MANAGER, ADMIN 권한
+            c.requestMatchers("/mypage/**").authenticated() // 인증한 회원만 접근 가능
+                    .requestMatchers("/member/login", "/member/join", "/member/agree").anonymous() // 미인증 회원만 접근 가능
+                    .requestMatchers("/admin/**").hasAnyAuthority("MANAGER", "ADMIN") // 관리자 페이지는 MANAGER, ADMIN 권한만 접근 가능
                     .anyRequest().permitAll(); // 나머지 페이지는 모두 접근 가능
         });
 
         http.exceptionHandling(c -> {
             c.authenticationEntryPoint(new MemberAuthenticationExceptionHandler())  // 미로그인시 인가 실패
                     .accessDeniedHandler(new MemberAccessDeniedHandler()); // 로그인 이후 인가 실패
-
         });
 
         /* 인가 설정 E */
 
         /* Spring Security가 모르는 부분들 설정 E */
 
-        // 설정 무력화
+        // 설정 무력화 X
+        // 설정 객체를 빌드로 만들어서 내보내는 역할
         return http.build();
     }
 

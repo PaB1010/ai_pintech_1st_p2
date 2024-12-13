@@ -15,12 +15,14 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 public class RedisConfig {
 
+    // @Value(설정 파일(yml) 항목명으로 가져옴)
     @Value("${spring.data.redis.host}")
     private String host;
 
     @Value("${spring.data.redis.port}")
     private int port;
 
+    // ★ Redis 핵심 Interface ★
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
         

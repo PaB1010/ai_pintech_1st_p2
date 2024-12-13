@@ -20,6 +20,7 @@ public class Utils {
 
     private final HttpServletRequest request;
 
+    // ★ 메세지 소스 주입 ★
     private final MessageSource messageSource;
 
     private final FileInfoService fileInfoService;

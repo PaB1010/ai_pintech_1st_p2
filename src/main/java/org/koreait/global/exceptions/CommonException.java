@@ -3,8 +3,6 @@ package org.koreait.global.exceptions;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.List;
 import java.util.Map;
@@ -34,13 +32,14 @@ public class CommonException extends RuntimeException{
     }
 
     /**
-     * @RestController 쪽에서 커맨드 객체 검증 실패시 가공한
-     * Error Message 정보
-     * 
+     * @RestController 에서 커맨드 객체 검증 실패시
+     *
+     * Error Message 정보 가공해서 set 하기 위한 생성자 메서드
+     *
      * @param errorMessages
      * @param status
      */
-    // 같은 Field에 메세지가 여러개인 경우도 있고 하나인 경우도 있어서 <Object>
+    // 같은 Field 에 메세지가 여러개인 경우도 있고 하나인 경우도 있어서 <Object>
     public CommonException(Map<String, List<String>> errorMessages, HttpStatus status) {
 
         this.errorMessages = errorMessages;

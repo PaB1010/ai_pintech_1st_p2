@@ -6,6 +6,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 /**
  * File Data Class
  *
+ * 설정(yml)-정적 경로 범주화
+ *
  */
 @Data
 @ConfigurationProperties(prefix = "file.upload")

@@ -17,7 +17,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 모든 @Controller 에 적용되는 공통 기능
+ * AOP Programing
+ *
+ * 정의한 범위에 있는 모든 @Controller 처리전에 적용되는 공통 기능
+ * 현재는 Error Page 처리를 위해 Error 발생하는 모든 Controller 에
+ * @ApplyErrorPage Annotation 사용해 범위 설정
  *
  */
 @ControllerAdvice(annotations = ApplyErrorPage.class)
@@ -52,6 +56,7 @@ public class CommonControllerAdvice {
 
         if (e instanceof CommonException commonException) {
 
+            // ★ 응답 코드별로 다르게 처리하기 위해 ★
             status = commonException.getStatus();
 
             // ErrorCode로 message를 출력하는 것이라면 true

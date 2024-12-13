@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * UserDetails Interface - DTO
@@ -50,14 +49,14 @@ public class MemberInfo implements UserDetails {
         return email;
     }
 
-    // Account가 만료 여부
+    // Account 만료 여부
      @Override
     public boolean isAccountNonExpired() {
 
         return true;
     }
 
-    // Account가 잠김 여부
+    // Account 잠김 여부
     @Override
     public boolean isAccountNonLocked() {
 
@@ -70,13 +69,16 @@ public class MemberInfo implements UserDetails {
     public boolean isCredentialsNonExpired() {
 
         LocalDateTime credentialChangedAt = member.getCredentialChangedAt();
+        // ★ 비밀번호 변경 일시가 Null 이 아니고 30일이 지나지 않았을 경우 이용 가능
+        // 아닐 경우 LoginFailureHandler 에서 비밀번호 변경 주소로 이동 처리 ★
         return credentialChangedAt != null &&
                 credentialChangedAt.isAfter(LocalDateTime.now().minusMonths(1L));
     }
     
-    // False시 탈퇴한 회원
+    // False 시 탈퇴한 회원
     @Override
     public boolean isEnabled() {
+
         return member.getDeletedAt() == null;
     }
 }

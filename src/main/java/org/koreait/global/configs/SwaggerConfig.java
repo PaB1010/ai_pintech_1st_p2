@@ -22,7 +22,7 @@ public class SwaggerConfig {
 
         return GroupedOpenApi.builder()
                 .group("포켓몬 도감 API") // Group 이름 -> group("설명")
-                .pathsToMatch("/api/**") // 경로 패턴 지정 (api 에 속하는 모든 경로)
+                .pathsToMatch("/api/**") // 경로 패턴 지정 (api 문서에 속하는 모든 경로)
                 .build();
     }
 }

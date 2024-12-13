@@ -9,7 +9,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Data
-@MappedSuperclass
+@MappedSuperclass // ★ 상속을 통한 공통 설정 상위 클래스 ★
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseMemberEntity extends BaseEntity {
 

@@ -4,7 +4,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import org.koreait.member.controllers.RequestJoin;
 import org.koreait.member.controllers.RequestLogin;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.CredentialsExpiredException;
@@ -27,12 +26,13 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
 
-        // requestLogin이 MemberController에서 @SessionAttributes({"requestAgree", "requestLogin"})라서 Session 가져옴
+        // requestLogin 이 MemberController 에서 @SessionAttributes({"requestAgree", "requestLogin"})라서 Session 가져옴
         HttpSession session = request.getSession();
 
         // 값이 없을 경우도 대비해 Objects.requireNonNullElse
         RequestLogin form = Objects.requireNonNullElse((RequestLogin)session.getAttribute("RequestLogin"), new RequestLogin());
 
+        // ★ Session 범위라 Data 가 남아있기때문에 한번 비워 초기화 후 사용 ★
         form.setErrorCodes(null);
 
         String email = request.getParameter("email");
@@ -62,13 +62,14 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
                 errorCodes.add("NotBlank_password");
             }
 
-            // 둘다 아닐 경우 무조건 ID 혹은 PW 불일치
+            // 둘다 NotBlank 아닐 경우 무조건 ID 혹은 PW 불일치
             if (errorCodes.isEmpty()) {
                 errorCodes.add("Failure.validate.login");
             }
 
-            // 원래 있던 객체라면 set 안해도 되지만 NonNullElse로 새로운 ArrayList 객체가 생성될 수도 있으므로 set
+            // 원래 있던 객체라면 set 안해도 되지만 NonNullElse 로 새로운 ArrayList 객체가 생성될 수도 있으므로 set
             form.setErrorCodes(errorCodes);
+
         } else if (exception instanceof CredentialsExpiredException) { //  비밀번호가 만료된 경우
 
             redirectUrl = request.getContextPath() + "/member/password/change";
@@ -77,8 +78,6 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
 
             form.setErrorCodes(List.of("Failure.disabled.login"));
         }
-
-        System.out.println(exception);
 
         session.setAttribute("requestLogin", form);
 

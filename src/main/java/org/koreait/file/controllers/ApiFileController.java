@@ -52,7 +52,8 @@ public class ApiFileController {
 
     /**
      * File Upload
-     * @return
+     *
+     * @return data
      */
     @Operation(summary = "File Upload 처리")
     @ApiResponse(responseCode = "201", description = "File Upload 처리, 업로드 성공 시에는 업로드 완료된 File 목록 반환, 요청시 반드시 요청 헤더에 multipart/form-data 형식으로 전송")
