@@ -66,6 +66,7 @@ public class ApiFileController {
     @PostMapping("/upload")
     public JSONData upload(@RequestPart("file") MultipartFile[] files, @Valid RequestUpload form, Errors errors) {
 
+
         // gid 검증 실패시
         if (errors.hasErrors()) {
 
@@ -85,6 +86,7 @@ public class ApiFileController {
         }
 
         // 성공시 업로드한 파일 목록(List) 반환 값으로
+        // ★ 요청한 쪽에서도 후속처리 필요할 경우 할 수 있게 ★
         List<FileInfo> uploadedFiles = uploadService.upload(form);
 
         // Upload 완료 하자마자 완료 처리 하는 경우
@@ -103,11 +105,12 @@ public class ApiFileController {
 
     /**
      * File Download
+     *
      * @param seq
      */
     @GetMapping("/download/{seq}")
     // Body에 직접 써야하기때문에 void
-    // @PathVariable("경로변수") URL 경로에서 변경 가능한 부분, Handler Adapter가 처리
+    // @PathVariable("경로변수") URL 경로에서 변경 가능한 부분, Handler Adapter 가 처리
     public void download(@PathVariable("seq") Long seq) {
 
         downloadService.process(seq);
@@ -115,6 +118,7 @@ public class ApiFileController {
 
     /**
      * File 단일 조회
+     *
      * @param seq
      * @return
      */
@@ -128,12 +132,13 @@ public class ApiFileController {
 
     /**
      * File 목록(List) 조회
+     *
      * @param gid
      * @param location
      * @return
      */
     @GetMapping({"/list/{gid}", "list/{gid}/{location}"})
-    public JSONData list( // gid는 필수, location, status는 옵션이라 required = false
+    public JSONData list( // gid 는 필수, location, status 는 옵션이라 required = false
                           @PathVariable("gid") String gid,
                           @PathVariable(name = "location", required = false) String location, @RequestParam(name = "status", defaultValue = "DONE") FileStatus status) {
 
@@ -162,7 +167,7 @@ public class ApiFileController {
      * @return
      */
     @DeleteMapping({"/deletes/{gid}", "/deletes/{gid}/{location}"})
-    public JSONData deletes( // gid는 필수, location은 옵션이라 required = false
+    public JSONData deletes( // gid 는 필수, location 은 옵션이라 required = false
                             @PathVariable("gid") String gid,
                             @PathVariable(name = "location", required = false) String location) {
 

@@ -11,7 +11,7 @@ import org.koreait.member.constants.Authority;
  */
 @EqualsAndHashCode
 @AllArgsConstructor
-@NoArgsConstructor // ID Class에는 기본 생성자 필수
+@NoArgsConstructor // ID Class 에는 기본 생성자 필수
 public class AuthoritiesId {
 
     private Member member;

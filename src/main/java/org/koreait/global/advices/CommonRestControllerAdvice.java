@@ -43,6 +43,12 @@ public class CommonRestControllerAdvice {
 
             status = commonException.getStatus();
 
+            /**
+             * ApiFileController Class 의
+             * if (errors.hasErrors()) {
+             *     throw new BadRequestException(utils.getErrorMessages(errors));
+             * }
+             */
             Map<String, List<String>> errorMessages = commonException.getErrorMessages();
 
             if (errorMessages != null) {
@@ -50,7 +56,7 @@ public class CommonRestControllerAdvice {
                 message = errorMessages;
 
             } else {
-                // 코드 형태일때에는 message 조회해서 message만 뺴내서 반환
+                // ErrorCode 형태 판별 후 message 조회해서 message 만 뺴내서 반환
                 // message 형태일 경우 message 반환
                 message = commonException.isErrorCode() ? utils.getMessage((String)message) : message;
             }
@@ -64,6 +70,7 @@ public class CommonRestControllerAdvice {
 
         e.printStackTrace();
 
+        // ★ 응답 Code & Body 상세 설정 ★
         return ResponseEntity.status(status).body(data);
     }
 }

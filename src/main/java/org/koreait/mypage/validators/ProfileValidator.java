@@ -10,6 +10,8 @@ import org.springframework.validation.Validator;
 
 /**
  * 회원 정보 수정 검증
+ * 
+ * 비밀번호는 수정 목적으로 값을 입력 받았을 때에만 검증
  *
  */
 @Lazy

@@ -43,7 +43,7 @@ public class FileInfoService {
         // file 단일조회 값 없을시 FileNotFond Exception
         FileInfo item = infoRepository.findById(seq).orElseThrow(FileNotFoundException :: new);
 
-        // 추가 정보 2차가공 처리
+        // 추가 정보 2차 가공 처리
         addInfo(item);
 
         return item;
@@ -71,7 +71,7 @@ public class FileInfoService {
         // File 작업 완료 상태 여부(DONE || UNDONE)로 조회
         if (status != FileStatus.ALL) {
 
-            // DONE일 경우 true, UNDONE일 경우 false
+            // DONE 일 경우 true, UNDONE 일 경우 false
             andBuilder.and(fileInfo.done.eq(status == FileStatus.DONE));
         }
 

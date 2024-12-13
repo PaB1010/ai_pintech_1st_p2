@@ -35,7 +35,7 @@ public class Pokemon extends BaseEntity {
 
     /*
     기본 자료형일땐 not null 붙음
-    Wrapper Class는 Null 허용되므로 Integer, Long 등 사용시 not null 안붙음
+    Wrapper Class 는 Null 허용되므로 Integer, Long 등 사용시 not null 안붙음
     즉 필수가 아닌 경우 기본 자료형이 아닌 Wrapper Class 로 정의
      */
 

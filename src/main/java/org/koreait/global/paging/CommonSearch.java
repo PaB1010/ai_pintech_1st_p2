@@ -3,7 +3,7 @@ package org.koreait.global.paging;
 import lombok.Data;
 
 /**
- * 공통 검색 항목
+ * 공통 검색 항목 속성
  *
  */
 @Data

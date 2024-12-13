@@ -75,6 +75,13 @@ public class FileDeleteService {
         return items;
     }
 
+    /**
+     * 게시글 하나에 여러개의 File 이 gid-location 으로 있을 경우
+     * gid 로만 삭제해서 일괄 삭제하는 등
+     * 
+     * @param gid
+     * @return
+     */
     public List<FileInfo> deletes(String gid) {
 
         return deletes(gid,null);

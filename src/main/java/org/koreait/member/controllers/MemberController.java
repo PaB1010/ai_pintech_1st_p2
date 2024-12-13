@@ -76,12 +76,12 @@ public class MemberController {
         // 로그인 검증 실패해서 에러코드가 있을 경우
         if (form.getErrorCodes() != null) {
 
-            // NotBlank_email, NotBlank_password로 만든 Errorcodes를 Field & ErrorCode로 쪼개서
-            // validations.properties와 같도록
+            // NotBlank_email, NotBlank_password 로 만든 Errorcodes 를 Field & ErrorCode 로 쪼개서
+            // validations.properties 와 같도록
             form.getErrorCodes().stream().map(s -> s.split("_"))
                     .forEach(s -> {
                         // s[1]이 있을 경우 NotBlank.email, NotBlank.password
-                        if (StringUtils.hasText(s[1])) {
+                        if (s.length > 1) {
                             errors.rejectValue(s[1], s[0]);
                             // s[1]이 없을 경우 글로벌 오류
                             // Failure.validate.login
@@ -180,6 +180,7 @@ public class MemberController {
 
         // 약관 동의 여부 체크
         joinValidator.validate(agree, errors);
+
         // 회원 가입 양식 검증
         joinValidator.validate(form, errors);
 
@@ -197,7 +198,8 @@ public class MemberController {
         // 회원 가입 검증 완료시 처리
         updateService.process(form);
 
-        // Model을 통해 수정(추가 & 변경)되는 것 방지
+        // Model 을 통해 수정(추가 & 변경)되는 것 방지
+        // Session Set & Add 못하도록 완료 처리
         status.setComplete();
 
         // 회원가입 처리 완료 후 -> Login page 이동
@@ -245,13 +247,13 @@ public class MemberController {
 
         mode = StringUtils.hasText(mode) ? mode : "login";
 
-        // 페이지 제목
+        // Page 제목
         String pageTitle = null;;
 
         // 공통 JavaScript
         List<String> addCommonScript = new ArrayList<>();
 
-        // Front쪽에 추가할 JavaScript
+        // Front 쪽에 추가할 JavaScript
         List<String> addScript = new ArrayList<>();
 
         // 로그인 공통 처리
@@ -259,9 +261,9 @@ public class MemberController {
 
             pageTitle = utils.getMessage("로그인");
 
-            // 회원 가입 공통 처리
-        } else if (mode.equals("join")) {
 
+        } else if (mode.equals("join")) {
+            // 회원 가입 공통 처리
             pageTitle = utils.getMessage("회원가입");
 
             // common_address.js
@@ -274,7 +276,7 @@ public class MemberController {
 
             pageTitle = utils.getMessage("약관동의");
 
-            //약관 동의(agree) page에 최초 접근시 약관 선택 초기화 (Session 비움)
+            //약관 동의(agree) page 에 최초 접근시 약관 선택 초기화 (Session 비움)
             model.addAttribute("requestAgree", requestAgree());
         }
 
@@ -284,7 +286,7 @@ public class MemberController {
         // 공통 Script
         model.addAttribute("addCommonScript", addCommonScript);
 
-        // Front쪽에 추가할 Script
+        // Front 쪽에 추가할 Script
         model.addAttribute("addScript", addScript);
     }
 }

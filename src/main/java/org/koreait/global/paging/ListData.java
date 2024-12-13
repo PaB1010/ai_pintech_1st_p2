@@ -20,6 +20,6 @@ public class ListData<T> {
     // 목록 Data
     private List<T> items;
 
-    // 페이징 기초 Data
+    // Paging 기초 Data
     private Pagination pagination;
 }

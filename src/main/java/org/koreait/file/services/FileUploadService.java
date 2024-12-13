@@ -35,7 +35,11 @@ public class FileUploadService {
 
     private final FileInfoService infoService;
 
-    // Upload 완료된 파일의 목록(List) 반환
+    /**
+     * Upload 완료된 파일의 목록(List) 반환
+     * @param form
+     * @return
+     */
     public List<FileInfo> upload(RequestUpload form) {
 
         String gid = form.getGid();
@@ -70,7 +74,7 @@ public class FileUploadService {
             // 파일명.확장자 이용해서 확장자 빼내기
             // EX) model.weights.h5면 h5
             String fileName = file.getOriginalFilename();
-            // 마지막 .을 찾아서 확장자 대입
+            // 마지막 .을 찾아서 ".뒤~끝" 확장자 대입
             String extension = fileName.substring(fileName.lastIndexOf("."));
 
             FileInfo item = new FileInfo();

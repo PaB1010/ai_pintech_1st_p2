@@ -29,16 +29,21 @@ public class Utils {
     public boolean isMobile() {
 
         // 요청 header -> User-Agent (Browser 정보)
+        // ★ iPhone / Android 판별도 가능,
+        // 어느 층의 User 가 더 많은지 판단해 App 개발에 활용 ★
         String ua = request.getHeader("User-Agent");
         
-        // 해당 Pattern이 포함되면 Mobile로 판명
+        // 해당 Pattern 이 포함되면 Mobile 판단
         String pattern = ".*(iPhone|iPod|iPad|BlackBerry|Android|Windows CE|LG|MOT|SAMSUNG|SonyEricsson).*";
 
         return StringUtils.hasText(ua) && ua.matches(pattern);
     }
-    
-    /*
-        mobile / front template 분리 함수
+
+    /**
+     * mobile / front template 분리 함수
+     *
+     * @param path
+     * @return
      */
     public String tpl(String path) {
         
@@ -55,14 +60,15 @@ public class Utils {
      */
     public String getMessage(String code) {
 
-        // 사용자 요청 header(Accept-Language)
+        // 요청 header 에 있는 언어 정보(Accept-Language)로 만들어지는 Locale 객체
         Locale lo = request.getLocale();
 
         return messageSource.getMessage(code, null, lo);
     }
 
     /**
-     * 메세지 코드를 배열로 받았을때 List로 변환해 반환해주는 기능
+     * 메세지 코드를 배열로 받았을때
+     * List 로 변환해 반환해주는 기능
      * 
      * @param codes
      * @return
@@ -75,6 +81,7 @@ public class Utils {
                     return getMessage(c);
 
                 } catch (Exception e) {
+                    // ★ 예외 발생시 빈 문자열로 교체하는 방식으로 제거 ★
                     return "";
                 }
                 // 비어있지 않은 문자열, 즉 코드만 걸러서 가져옴
@@ -82,7 +89,9 @@ public class Utils {
     }
 
     /**
-     * REST 커맨드 객체 검증 실패시에 Error Code를 가지고 Message를 추출하는 기능
+     * REST 커맨드 객체 검증 실패시에
+     * Error Code 에서 Message 추출하는 기능
+     *
      * @param errors
      * @return
      */
@@ -91,7 +100,7 @@ public class Utils {
         // 형변환해도 싱글톤 객체
         ResourceBundleMessageSource ms = (ResourceBundleMessageSource) messageSource;
 
-        // 임시로 Message가 없으면 Key값(Message Code) 그대로 출력하는 기능을 false
+        // 임시로 Message 없으면 Key 값(Message Code) 그대로 출력하는 기능을 false
         ms.setUseCodeAsDefaultMessage(false);
 
         try {
@@ -122,9 +131,9 @@ public class Utils {
 
         } finally {
 
-            // 임시로 Message가 없으면 Key값(Message Code) 그대로 출력하는 기능을 false
+            // 임시로 Message 없으면 Key 값(Message Code) 그대로 출력하는 기능을 false
             // 했던 것을 다시 원래대로 true 복구
-            // 싱글톤이라 복구 안하면 그대로 false로 남아서 사용하는 모든 곳에 영향
+            // 싱글톤이라 복구 안하면 그대로 false 로 남아서 사용하는 모든 곳에 영향
             ms.setUseCodeAsDefaultMessage(true);
         }
     }

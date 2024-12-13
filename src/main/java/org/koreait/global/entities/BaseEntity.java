@@ -13,7 +13,8 @@ import java.time.LocalDateTime;
 
 
 /**
- * Table 마다 공통인 부분
+ * 모든 Entity 의 공통 속성화
+ *
  * 추상 Class
  */
 // 다른 Entity의 상위 Class임을 알려주는 Annotation, Table 순서는 변경 불가
@@ -25,14 +26,14 @@ public abstract class BaseEntity {
 
     @CreatedDate
     @Column(updatable = false)
-    private LocalDateTime createdAt;
     // 등록일시
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
     @Column(insertable = false)
-    private LocalDateTime ModifiedAt;
     // 수정일시
+    private LocalDateTime ModifiedAt;
 
-    private LocalDateTime deletedAt;
     // 삭제일시, 삭제 표기만 해두고 추후 관리자가 복구하거나 영구 삭제처리 하도록 할 예정
+    private LocalDateTime deletedAt;
 }

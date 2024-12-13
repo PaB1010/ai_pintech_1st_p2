@@ -46,11 +46,12 @@ public class JoinValidator implements Validator, PasswordValidator {
 
             return;
         }
-
         if (target instanceof RequestJoin requestJoin) {
 
             validateJoin(requestJoin, errors);
+
         } else {
+
             validateAgree((RequestAgree) target, errors);
         }
     }

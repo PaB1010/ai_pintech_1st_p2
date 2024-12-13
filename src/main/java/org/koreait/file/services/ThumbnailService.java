@@ -73,6 +73,7 @@ public class ThumbnailService {
 
                 Files.write(Paths.get(original), bytes);
 
+                // ★ 썸네일 생성 ★
                 Thumbnails.of(original)
                         .size(width, height)
                         .toFile(file);
@@ -98,7 +99,7 @@ public class ThumbnailService {
 
         String thumbPath = properties.getPath() + "thumbs/";
         
-        // 직접 Server에 올려서 seq 값이 있는 File
+        // 직접 Server 에 올려서 seq 값이 있는 File
         if (seq !=null && seq > 0L) {
 
             FileInfo item = infoService.get(seq);

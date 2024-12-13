@@ -92,6 +92,5 @@ public class PokemonController {
         // view Title 추후 가공 예정
         model.addAttribute("pageTitle", pageTitle);
         model.addAttribute("addCss", addCss);
-
     }
 }

@@ -1,7 +1,10 @@
 package org.koreait.member.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.koreait.member.constants.Authority;
 
 import java.io.Serializable;
@@ -17,6 +20,9 @@ import java.io.Serializable;
  */
 @Data
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @IdClass(AuthoritiesId.class) // AuthritiesId = 복합키
 public class Authorities implements Serializable {
 

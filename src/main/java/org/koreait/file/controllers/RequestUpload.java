@@ -25,6 +25,6 @@ public class RequestUpload {
     // Upload 하자마자 완료처리하는 경우 여부
     private boolean done;
 
-    // 임시, 추후 set되도록 변경
+    // 임시, 추후 set 되도록 변경
     public MultipartFile[] files;
 }

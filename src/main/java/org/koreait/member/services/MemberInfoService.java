@@ -8,7 +8,6 @@ import org.koreait.member.constants.Authority;
 import org.koreait.member.entities.Authorities;
 import org.koreait.member.entities.Member;
 import org.koreait.member.repositories.MemberRepository;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,8 +19,12 @@ import java.util.List;
 /**
  * 회원 조회 기능
  *
+ * UserDetailsService & UserDetailService
+ *
+ * UserDetailsService
+ *
  */
-@Lazy // 순환 참조 방지용
+//@Lazy // 순환 참조 방지용
 @Service
 @RequiredArgsConstructor
 public class MemberInfoService implements UserDetailsService {

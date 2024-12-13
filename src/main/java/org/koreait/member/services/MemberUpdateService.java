@@ -47,8 +47,9 @@ public class MemberUpdateService {
     
     /**
      * 메서드 오버로드 - 커맨드 객체의 타입에 따라서
-     * RequestJoin이면 회원 가입 처리
-     * RequestProfile이면 회원 정보 수정 처리
+     *
+     * RequestJoin 이면 회원 가입 처리
+     * RequestProfile 이면 회원 정보 수정 처리
      *
      * @param form
      */
@@ -78,6 +79,7 @@ public class MemberUpdateService {
         String hash = passwordEncoder.encode(form.getPassword());
         member.setPassword(hash);
 
+        // ★ 비밀번호 변경 일자 Null 이 아닌 오늘로 설정 ★
         member.setCredentialChangedAt(LocalDateTime.now());
 
         // 회원 권한 부여
@@ -85,7 +87,6 @@ public class MemberUpdateService {
         auth.setMember(member);
         // 처음 가입시 일반 회원(USER)
         auth.setAuthority(Authority.USER);
-
 
         save(member, List.of(auth)); // 회원 저장 처리
     }
@@ -163,24 +164,13 @@ public class MemberUpdateService {
 
         /**
          * 회원 권한은 관리자만 수정 가능 하도록
+         *
          */
-
         List<Authorities> _authorities = null;
 
         if (authorities != null && memberUtil.isAdmin()) {
 
-            _authorities = authorities.stream().map(a -> {
-
-                Authorities auth = new Authorities();
-
-                // 타입 관련 오류
-                auth.setAuthority(a);
-
-                auth.setMember(member);
-
-                return auth;
-
-            }).toList();
+            _authorities = authorities.stream().map(a -> Authorities.builder().authority(a).member(member).build()).toList();
         }
 
         System.out.println(member);
@@ -198,7 +188,7 @@ public class MemberUpdateService {
         memberRepository.saveAndFlush(member);
 
         /* 회원 권한 업데이트 처리 S */
-        // 추후 Builder로 변경
+        // 추후 Builder 로 변경
 
         if (authorities != null) {
             /*
@@ -222,7 +212,6 @@ public class MemberUpdateService {
         /* 회원 권한 업데이트 처리 E */
 
         // 로그인 회원 정보 업데이트
-
         infoService.addInfo(member);
 
         memberUtil.setMember(member);

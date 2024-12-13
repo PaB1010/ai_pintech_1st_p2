@@ -76,6 +76,7 @@ public class MypageController {
 
         String optionalTerms = member.getOptionalTerms();
 
+        // ★ 커맨드 객체 형태로 변환 ★
         if (StringUtils.hasText(optionalTerms)) {
 
             form.setOptionalTerms(Arrays.stream(optionalTerms.split("\\|\\|")).toList());
@@ -91,6 +92,7 @@ public class MypageController {
 
         commonProcess("profile", model);
 
+        // ★ 추가 검증 ★
         profileValidator.validate(form, errors);
 
         if (errors.hasErrors()) {
@@ -121,6 +123,7 @@ public class MypageController {
 
         memberUtil.setMember(memberInfo.getMember());
 
+        // 프로필 속성 변경
         model.addAttribute("profile", memberInfo.getMember());
     }
 

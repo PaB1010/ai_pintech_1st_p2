@@ -95,7 +95,6 @@ public class SecurityConfig {
 
         /* Spring Security가 모르는 부분들 설정 E */
 
-        // 설정 무력화 X
         // 설정 객체를 빌드로 만들어서 내보내는 역할
         return http.build();
     }

@@ -48,7 +48,7 @@ public class PokemonInfoService {
      * Pokemon 목록 조회
      *
      * @param search
-     * @return
+     * @return new ListData<>(items, pagination)
      */
     public ListData<Pokemon> getList(PokemonSearch search) {
 
@@ -83,6 +83,7 @@ public class PokemonInfoService {
 
         /* 검색 처리 E */
 
+        // ★ Pageable 이면 무조건 반환 값은 Page ★
         Pageable pageable = PageRequest.of(page - 1, limit, Sort.by(asc("seq")));
 
         Page<Pokemon> data = pokemonRepository.findAll(andBuilder, pageable);
@@ -98,6 +99,7 @@ public class PokemonInfoService {
 
         int ranges = utils.isMobile() ? 5 : 10;
 
+        // ★ Page 완성 ★
         Pagination pagination = new Pagination(page, (int)data.getTotalElements(), ranges, limit, request);
 
         return new ListData<>(items, pagination);

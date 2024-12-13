@@ -23,6 +23,10 @@ import java.util.Map;
  * 현재는 Error Page 처리를 위해 Error 발생하는 모든 Controller 에
  * @ApplyErrorPage Annotation 사용해 범위 설정
  *
+ * @ControllerAdvice 범위가 Controller.class 가 아닌 Annotation 인 이유
+ * @RestController 는 Controller 를 상속 받기 때문에 설정을 Controller.class 로 사용시
+ * RestController 도 영향을 받게되어 일반 Controller 는 Annotation 으로 범위 설정
+ *
  */
 @ControllerAdvice(annotations = ApplyErrorPage.class)
 @RequiredArgsConstructor
@@ -106,10 +110,11 @@ public class CommonControllerAdvice {
 
         ModelAndView mv = new ModelAndView();
 
+        // 응답코드
         mv.setStatus(status);
         mv.addAllObjects(data);
         mv.setViewName(tpl);
-
+        e.printStackTrace();
         return mv;
     }
 }

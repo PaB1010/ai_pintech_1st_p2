@@ -57,7 +57,7 @@ public class Pagination {
         /**
          * 전체 Page 처리
          *
-         * 올림처리 위해 한쪽 실수로 변경
+         * 소수점 올림처리 위해 실수로 변경
          *
          * EX) 마지막 Page는 글(레코드) 개수가 Limit 보다 작아도
          *     1 Page 를 할당하기때문에
@@ -85,7 +85,7 @@ public class Pagination {
         // 값이 0이 아닐 경우 버튼 노출
         int prevRangeLastPage = 0, nextRangeFirstPage = 0;
 
-        // 2번째 구간 이상 마지막 구간 미만일 경우에만 이전구간버튼 노출
+        // 1번째 구간 초과일 경우에만 이전구간버튼 노출
         if (rangeCnt > 0) {
 
             prevRangeLastPage = firstRangePage - 1;
@@ -108,7 +108,7 @@ public class Pagination {
 
         if (StringUtils.hasText(qs)) {
 
-            // "?page=" 제거(필터)하고 다시 모아서 가공
+            // "?page=" 제거(filter)하고 다시 모아서(collect) 가공
             baseUrl += Arrays.stream(qs.split("&"))
                     .filter(s -> !s.contains("?page=")).collect(Collectors.joining("&")) + "&";
         }
@@ -135,12 +135,12 @@ public class Pagination {
 
     /**
      * String 배열
-     * 0번째 - Page 번호 숫자
-     * 1번째 - Page URL
+     * [0] - Page 번호 숫자
+     * [1] - Page URL
      *
      * 현재 구간의 Page 가져와 구간별 Page 이동 버튼
      *
-     * @return
+     * @return pages
      */
     public List<String[]> getPages() {
 

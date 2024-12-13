@@ -113,8 +113,6 @@ public class ApiUpdateService {
         }
         /* 상세 정보 처리 E */
 
-        // pokemons.forEach(System.out::println);
-
         // DB 영구 저장 처리
         repository.saveAllAndFlush(pokemons);
     }
