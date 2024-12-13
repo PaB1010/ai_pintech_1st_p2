@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.koreait.member.entities.Member;
 import org.koreait.wishlist.constants.WishType;
-import org.springframework.data.annotation.Id;
+// import org.springframework.data.annotation.Id;
 
 /**
  * 즐겨찾기 Entity
