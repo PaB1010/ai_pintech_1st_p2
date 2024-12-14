@@ -34,7 +34,7 @@ public class MemberInfoService implements UserDetailsService {
 
     private final FileInfoService fileInfoService;
 
-    // 회원 조회해서 UserDetails로 구현체로 완성해 반환값 내보냄
+    // 회원 조회해서 UserDetails 구현체로 완성해 반환값 내보냄
     // 회원 정보가 필요할때마다 호출됨
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
