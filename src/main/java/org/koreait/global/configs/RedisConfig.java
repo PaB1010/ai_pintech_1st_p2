@@ -11,6 +11,8 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 /**
  * Redis 설정
  *
+ * Redis - NoSQL, Key & Value 로 저장하는 DB
+ *
  */
 @Configuration
 public class RedisConfig {
