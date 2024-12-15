@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{front/layouts/main}">
+<main layout:fragment="content">
+    <form name="frmAbout" method="GET" th:action="@{/mypage/about}" th:object="${requestProfile}" autocomplete="off">
+<!--        <div class="error global" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>-->
+        <dl>
+            <dt th:text="#{프로필_이미지}"></dt>
+<!--            <dd>-->
+<!--                <div class="profile-image">-->
+<!--                    <th:block th:if="${profile.profileImage != null}"-->
+<!--                              th:utext="${@utils.showImage(profile.profileImage.seq, 250, 350, 'image')}"></th:block>-->
+<!--                </div>-->
+<!--            </dd>-->
+        </dl>
+        <dl>
+            <dt th:text="#{회원명}"></dt>
+            <dd>
+                <input type="text" name="name" th:field="*{name}">
+                <div class="error" th:each="err : ${#fields.errors('name')}" th:text="${err}"></div>
+            </dd>
+        </dl>
+
+        <dl>
+            <dt th:text="#{닉네임}"></dt>
+            <dd>
+                <input type="text" name="nickName" th:field="*{nickName}">
+                <div class="error" th:each="err : ${#fields.errors('nickName')}" th:text="${err}"></div>
+            </dd>
+        </dl>
+        <dl>
+            <dt th:text="#{성별}"></dt>
+            <dd>
+                <input type="radio" name="gender" value="MALE" th:field="*{gender}" id="gender-male">
+                <label for="gender-male" th:text="#{남성}"></label>
+
+                <input type="radio" name="gender" value="FEMALE" th:field="*{gender}" id="gender-female">
+                <label for="gender-female" th:text="#{여성}"></label>
+
+                <div class="error" th:each="err : ${#fields.errors('gender')}" th:text="${err}"></div>
+            </dd>
+        </dl>
+        <dl>
+            <dt th:text="#{생년월일}"></dt>
+            <dd>
+                <input type="date" name="birthDt" th:field="*{birthDt}">
+                <div class="error" th:each="err : ${#fields.errors('birthDt')}" th:text="${err}"></div>
+            </dd>
+        </dl>
+    </form>
+</main>
+</html>

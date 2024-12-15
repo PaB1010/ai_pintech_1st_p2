@@ -205,16 +205,9 @@ public class MemberController {
         // 회원가입 처리 완료 후 -> Login page 이동
         // return "redirect:/member/login";
 
-        // 회원 가입 처리 완료 후 registerend 이동
+        // 회원 가입 처리 완료 후 member/registerend 이동
         return utils.tpl("member/registerend");
     }
-
-
-//    @GetMapping("/registerend")
-//    public String registerend() {
-//
-//        return utils.tpl("member/registerend");
-//    }
 
     /**
      * Member 삭제

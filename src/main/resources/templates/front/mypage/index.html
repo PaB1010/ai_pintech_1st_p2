@@ -3,6 +3,17 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{front/layouts/main}">
 <main layout:fragment="content">
-    <h1>마이페이지</h1>
+    <div class="link">
+        <a th:href="@{/mypage/profile}">
+            <th:block th:text="#{회원_정보_수정}"></th:block>
+        </a>
+        <a th:href="@{/mypage/about}">
+            <th:block th:text="#{About_Me}"></th:block>
+        </a>
+        <a th:href="@{/wishlist/pokemon}">
+            <th:block th:text="#{찜_포켓몬}"></th:block>
+        </a>
+
+    </div>
 </main>
 </html>

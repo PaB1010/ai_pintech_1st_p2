@@ -110,6 +110,25 @@ public class MypageController {
     }
 
     /**
+     * 회원 자기 소개 (AboutMe)
+     *
+     */
+    @GetMapping("/about")
+    public String about (Model model) {
+
+        commonProcess("profile", model);
+
+        Member member = memberUtil.getMember();
+
+        RequestProfile form = modelMapper.map(member, RequestProfile.class);
+
+        model.addAttribute("profile", memberUtil.getMember());
+
+        return utils.tpl("mypage/about");
+    }
+
+
+    /**
      * 회원 정보 갱신
      *
      */
