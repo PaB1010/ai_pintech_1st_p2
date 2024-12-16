@@ -3,7 +3,6 @@ package org.koreait.email.services;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.koreait.email.controllers.RequestEmail;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -15,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-@Lazy
+// @Lazy
 @Service
 @RequiredArgsConstructor
 public class EmailService {
@@ -26,6 +25,9 @@ public class EmailService {
 
     /**
      *
+     * 핵심 로직
+     * Template 를 가져와 번역
+     * 
      * @param form
      * @param tpl : Template Code = email/{tpl}.html
      * @param tplData : Template에 전달하는 Data (EL 속성으로 추가)
@@ -69,11 +71,12 @@ public class EmailService {
                 helper.setCc(cc.toArray(String[]::new));
             }
 
-            if (bcc != null & !bcc.isEmpty()) {
+            if (bcc != null && !bcc.isEmpty()) {
 
                 helper.setBcc(bcc.toArray(String[]::new));
             }
 
+            // 번역된 Content set
             helper.setSubject(subject);
             helper.setText(html, true);
 
