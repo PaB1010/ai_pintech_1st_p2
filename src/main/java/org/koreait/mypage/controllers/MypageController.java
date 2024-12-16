@@ -42,6 +42,7 @@ public class MypageController {
     private final MemberInfoService infoService;
 
     // profile 이라는 속성명을 가지고 template 에서 회원 조회를 바로
+    // ★ About 에서 이거 가져다 쓰기 ★
     @ModelAttribute("profile")
     public Member getMember() {
 

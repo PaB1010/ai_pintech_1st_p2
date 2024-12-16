@@ -1,9 +1,7 @@
 package org.koreait.global.configs;
 
-import org.koreait.member.services.LoginFailureHandler;
-import org.koreait.member.services.LoginSuccessHandler;
-import org.koreait.member.services.MemberAccessDeniedHandler;
-import org.koreait.member.services.MemberAuthenticationExceptionHandler;
+import org.koreait.member.services.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -20,6 +18,10 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @Configuration
 @EnableMethodSecurity // Controller 내의 요청 메서드 단위로 권한 통제 가능
 public class SecurityConfig {
+
+    // RememberMe 주입용
+    @Autowired
+    private MemberInfoService memberInfoService;
     
     /**
      *
@@ -92,6 +94,25 @@ public class SecurityConfig {
         });
 
         /* 인가 설정 E */
+
+        /* 자동 로그인 설정 S */
+
+        http.rememberMe(c -> {
+
+            // 사용할 Parameter 명칭 알려줌
+            // default 값 -> "remember-me"
+            c.rememberMeParameter("autoLogin")
+                    // 자동 로그인 유지 시간 설정
+                    // default 값 -> 14일, 30일 임의 설정
+                    .tokenValiditySeconds(60 * 60 * 24 * 30)
+                    // 조회할 것이 무엇인지
+                    .userDetailsService(memberInfoService)
+                    // 로그인성공시 콜백
+                    .authenticationSuccessHandler(new LoginSuccessHandler());
+
+        });
+
+        /* 자동 로그인 설정 E */
 
         /* Spring Security가 모르는 부분들 설정 E */
 
