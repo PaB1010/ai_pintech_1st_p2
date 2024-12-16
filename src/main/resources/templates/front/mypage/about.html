@@ -3,44 +3,15 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{front/layouts/main}">
 <main layout:fragment="content">
-        <dl>
-            <dt th:text="#{프로필_이미지}"></dt>
-<!--            <dd>-->
-<!--                <div class="profile-image">-->
-<!--                    <th:block th:if="${profile.profileImage != null}"-->
-<!--                              th:utext="${@utils.showImage(profile.profileImage.seq, 250, 350, 'image')}"></th:block>-->
-<!--                </div>-->
-<!--            </dd>-->
-        </dl>
-        <dl>
-            <dt th:text="#{회원명}"></dt>
-            <dd>
-                <input type="text" name="name" th:field="*{name}">
-            </dd>
-        </dl>
 
-        <dl>
-            <dt th:text="#{닉네임}"></dt>
-            <dd>
-                <input type="text" name="nickName" th:field="*{nickName}">
-            </dd>
-        </dl>
-        <dl>
-            <dt th:text="#{성별}"></dt>
-<!--            <dd>-->
-<!--                <input type="radio" name="gender" value="MALE" th:field="*{gender}" id="gender-male">-->
-<!--                <label for="gender-male" th:text="#{남성}"></label>-->
+    <th:block th:replace="~{front/mypage/_member::member}"></th:block>
 
-<!--                <input type="radio" name="gender" value="FEMALE" th:field="*{gender}" id="gender-female">-->
-<!--                <label for="gender-female" th:text="#{여성}"></label>-->
-<!--            </dd>-->
-        </dl>
-        <dl>
-            <dt th:text="#{생년월일}"></dt>
-            <dd>
-                <input type="date" name="birthDt" th:field="*{birthDt}">
-            </dd>
-        </dl>
-    </form>
+    <th:block th:replace="~{front/mypage/_bio::bio}"></th:block>
+
+    <th:block th:replace="~{front/mypage/_myPokemons::myPokemons}"></th:block>
+
+<!--나를 나타내는 성향 키워드 (친구 구해요, 활발한 등등)-->
+<!--... 기타 등등 추가 예정-->
+
 </main>
 </html>

@@ -81,6 +81,12 @@
                 </a>
             </li>
             <li>
+                <a th:if="${@memberUtil.isLogin() && !@memberUtil.isAdmin()}" th:href="@{/member/logout}">
+                    <i class="icon logout"></i>
+                    <th:block th:text="#{로그아웃}"></th:block>
+                </a>
+            </li>
+            <li>
                 <a href="#">
                         <i class="icon search"></i>
                         <th:block th:text="#{통합검색}"></th:block>

@@ -111,21 +111,27 @@ public class MypageController {
     }
 
     /**
-     * 회원 자기 소개 (AboutMe)
+     * 회원 소개 (AboutMe)
      *
      */
     @GetMapping("/about")
     public String about (Model model) {
 
-        commonProcess("profile", model);
-
-        Member member = memberUtil.getMember();
-
-        RequestProfile form = modelMapper.map(member, RequestProfile.class);
-
-        model.addAttribute("profile", memberUtil.getMember());
+        commonProcess("about", model);
 
         return utils.tpl("mypage/about");
+    }
+
+    /**
+     * 찜 목록 관리
+     *
+     */
+    @GetMapping("/wishlist")
+    public String wishlist (Model model) {
+
+        commonProcess("wishlist", model);
+
+        return utils.tpl("mypage/wishlist/main");
     }
 
 
@@ -173,6 +179,14 @@ public class MypageController {
             addCommonScript.add("address");
             addScript.add("mypage/profile");
             pageTitle = utils.getMessage("회원정보_수정");
+
+        } else if (mode.equals("about")) {
+
+            pageTitle = utils.getMessage("About_Me");
+            
+        } else if (mode.equals("wishlist")) {
+            
+            pageTitle = utils.getMessage("찜_목록_관리");
         }
 
         model.addAttribute("addCommonScript", addCommonScript);
