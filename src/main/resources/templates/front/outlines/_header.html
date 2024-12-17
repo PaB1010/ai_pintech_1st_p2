@@ -78,10 +78,11 @@
                 <a th:if="${@memberUtil.isAdmin()}" th:href="@{/admin}" target="_blank">
                     <i class="icon login"></i>
                     <th:block th:text="#{사이트관리}"></th:block>
+
                 </a>
             </li>
-            <li>
-                <a th:if="${@memberUtil.isLogin() && !@memberUtil.isAdmin()}" th:href="@{/member/logout}">
+            <li th:if="${@memberUtil.isLogin() && !@memberUtil.isAdmin()}" >
+                <a th:href="@{/member/logout}">
                     <i class="icon logout"></i>
                     <th:block th:text="#{로그아웃}"></th:block>
                 </a>

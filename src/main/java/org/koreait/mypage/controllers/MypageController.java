@@ -11,6 +11,7 @@ import org.koreait.member.services.MemberInfoService;
 import org.koreait.member.services.MemberUpdateService;
 import org.koreait.mypage.validators.ProfileValidator;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -50,11 +51,6 @@ public class MypageController {
     }
 
     // 공통 Css
-    @ModelAttribute("addCss")
-    public List<String> addCss() {
-
-        return List.of("mypage/style");
-    }
 
     @GetMapping
     public String index(Model model) {
@@ -111,11 +107,24 @@ public class MypageController {
     }
 
     /**
-     * 회원 소개 (AboutMe)
+     * 회원 소개 (초기 테스트용)
      *
      */
     @GetMapping("/about")
     public String about (Model model) {
+
+        commonProcess("about", model);
+
+        return utils.tpl("mypage/about");
+    }
+
+    /**
+     * 회원 소개 (공개용, DB 조회)
+     *
+     * 작업중
+     */
+    @GetMapping("/about/{nickName}")
+    public String about (@Value("nickName") String nickName, Model model) {
 
         commonProcess("about", model);
 
@@ -172,6 +181,9 @@ public class MypageController {
         // Front script
         List<String> addScript = new ArrayList<>();
 
+        List<String> addCss = new ArrayList<>();
+        addCss.add("mypage/style");
+
         // 회원 정보 수정
         if (mode.equals("profile")) {
 
@@ -183,7 +195,8 @@ public class MypageController {
         } else if (mode.equals("about")) {
 
             pageTitle = utils.getMessage("About_Me");
-            
+            addCss.add("mypage/about");
+            addCss.add("pokemon/item");
         } else if (mode.equals("wishlist")) {
             
             pageTitle = utils.getMessage("찜_목록_관리");
@@ -192,5 +205,6 @@ public class MypageController {
         model.addAttribute("addCommonScript", addCommonScript);
         model.addAttribute("addScript", addScript);
         model.addAttribute("pageTitle", pageTitle);
+        model.addAttribute("addCss", addCss);
     }
 }
