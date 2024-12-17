@@ -53,7 +53,7 @@ public class EmailAuthService {
         String subject = utils.getMessage("Email.authCode.subject");
 
         // 5자리 내의 랜덤 정수 인증 코드
-        int authCode = random.nextInt(99999);
+        Integer authCode = random.nextInt(99999);
 
         // 현재 시간 기준 3분 뒤로 만료 시간 기록
         LocalDateTime expired = LocalDateTime.now().plusMinutes(3L);
@@ -92,12 +92,19 @@ public class EmailAuthService {
 
         // 검증할 Session 값 get
         LocalDateTime expired = (LocalDateTime)session.getAttribute("expiredTime");
-        int authCode = (int)session.getAttribute("authCode");
+
+        // Integer -> intValue() -> int
+        Integer authCode = (Integer) session.getAttribute("authCode");
 
         // 만료된 인증 코드일 경우
-        if (expired.isBefore(LocalDateTime.now())) {
+        if (expired != null && expired.isBefore(LocalDateTime.now())) {
 
             throw new AuthCodeExpiredException();
+        }
+
+        if (authCode == null) {
+
+            throw new BadRequestException();
         }
 
         // 인증 코드 불일치일 경우

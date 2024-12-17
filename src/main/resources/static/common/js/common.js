@@ -75,7 +75,8 @@ commonLib.ajaxLoad = function(url, callback, method = 'GET', data, headers) {
 
             // global_rests_JSONData.java
             // 응답(처리) 성공시
-            if (json.success) {
+            // ?. = 없으면 undefined
+            if (json?.success) {
 
                 // callback 함수가 정의된 경우 열린 기능으로 각각 다르게 처리
                 if (typeof callback === 'function') {

@@ -59,7 +59,7 @@ commonLib.emailAuth = {
     * 인증 코드 전송
     *
     */
-    sendCode(email, callback) {
+    sendCode(email, timerCallback, successCallback) {
 
         const { ajaxLoad } = commonLib;
 
@@ -71,8 +71,13 @@ commonLib.emailAuth = {
                 // 해당 email 로 인증 코드 발급
                 await ajaxLoad(`/api/email/auth/${email}`);
 
-                timer.reset(callback);
-                timer.start(callback);
+                timer.reset(timerCallback);
+                timer.start(timerCallback);
+
+                if (typeof successCallback === 'function') {
+
+                    successCallback();
+                }
 
             } catch (err) {
                 // 인증 코드 발급 실패
