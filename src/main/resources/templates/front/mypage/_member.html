@@ -10,13 +10,17 @@
                       th:utext="${@utils.showImage(profile.profileImage.seq, 100, 130, 'image')}"></th:block>
         </dl>
         <dl>
-            <div class="aboutList" th:text="#{닉네임 : } + ${profile.nickName}"></div>
+            <dt th:text="#{닉네임}"></dt>
+            <dd class="aboutList" th:text="${profile.nickName}"></dd>
         </dl>
         <dl>
-            <div class="aboutList" th:text="#{성별 : } + ${profile.gender}"></div>
+            <dt th:text="#{성별}"></dt>
+            <dd class="aboutList" th:text="${#messages.msg(profile.gender.name)}"></dd>
         </dl>
         <dl>
-            <div class="aboutList" th:text="#{생년월일 : } + ${profile.birthDt}"></div>
+            <dt th:text="#{생년월일}"></dt>
+            <dd class="aboutList" th:text="${profile.birthDt}"></dd>
+
         </dl>
 
 </th:block>

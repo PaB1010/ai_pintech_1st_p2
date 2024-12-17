@@ -3,6 +3,7 @@ package org.koreait.email.services;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.koreait.email.controllers.RequestEmail;
+import org.springframework.context.annotation.Profile;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -14,8 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-// @Lazy
 @Service
+@Profile("email")
 @RequiredArgsConstructor
 public class EmailService {
 
@@ -24,7 +25,6 @@ public class EmailService {
     private final SpringTemplateEngine templateEngine;
 
     /**
-     *
      * 핵심 로직
      * Template 를 가져와 번역
      * 
@@ -91,5 +91,36 @@ public class EmailService {
         }
 
         return false;
+    }
+
+    /**
+     * tplData 없는 형태 오버로드
+     *
+     * @param form
+     * @param tpl
+     * @return
+     */
+    public boolean sendEmail(RequestEmail form, String tpl) {
+
+        return sendEmail(form, tpl, null);
+    }
+
+    /**
+     * 단순 일반 메일 형태 오버로드
+     *
+     * @param to
+     * @param subject
+     * @param content
+     * @return
+     */
+    public boolean sendEmail(String to, String subject, String content) {
+
+        RequestEmail form = new RequestEmail();
+
+        form.setTo(List.of(to));
+        form.setSubject(subject);
+        form.setContent(content);
+
+        return sendEmail(form, "general");
     }
 }
