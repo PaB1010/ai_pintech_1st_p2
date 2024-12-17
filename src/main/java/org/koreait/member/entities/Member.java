@@ -70,4 +70,8 @@ public class Member extends BaseEntity implements Serializable {
 
     @Transient
     private FileInfo profileImage;
+
+    // 자기소개
+    @Lob
+    private String bio;
 }

@@ -45,4 +45,6 @@ public class RequestProfile {
 
     // 추가 선택 약관
     private List<String> optionalTerms;
+
+    private String bio;
 }

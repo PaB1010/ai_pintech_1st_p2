@@ -67,6 +67,14 @@ public class MemberController {
         return new RequestLogin();
     }
 
+//    @ModelAttribute("profile")
+//    public Member getMember(String nickName) {
+//
+//        Member member = (Member) infoService.loadUserByNickName(nickName);
+//
+//        return member;
+//    }
+
     @GetMapping("/login")
     public String login(@ModelAttribute RequestLogin form, Errors errors, Model model) {
 
@@ -237,7 +245,24 @@ public class MemberController {
         memberUtil.setMember(memberInfo.getMember());
     }
 
+    /**
+     * 회원 소개 (공개용, DB 조회)
+     *
+     * 작업중
+     */
+    @GetMapping("/about/{nickName}")
+    public String about (@PathVariable("nickName") String nickName, Model model) {
 
+        commonProcess("about", model);
+
+        MemberInfo data = (MemberInfo) infoService.loadUserByNickName(nickName);
+
+        Member member = data.getMember();
+
+        model.addAttribute("profile", member);
+
+        return utils.tpl("mypage/about");
+    }
 
     /**
      *
@@ -258,6 +283,8 @@ public class MemberController {
 
         // Front 쪽에 추가할 JavaScript
         List<String> addScript = new ArrayList<>();
+
+        List<String> addCss = new ArrayList<>();
 
         // 로그인 공통 처리
         if (mode.equals("login")) {
@@ -284,6 +311,14 @@ public class MemberController {
 
             //약관 동의(agree) page 에 최초 접근시 약관 선택 초기화 (Session 비움)
             model.addAttribute("requestAgree", requestAgree());
+
+        } else if (mode.equals("about")) {
+
+            pageTitle = utils.getMessage("About_Me");
+
+             addCss.add("mypage/about");
+
+             addCss.add("pokemon/item");
         }
 
         // Page 제목

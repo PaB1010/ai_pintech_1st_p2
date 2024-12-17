@@ -11,7 +11,6 @@ import org.koreait.member.services.MemberInfoService;
 import org.koreait.member.services.MemberUpdateService;
 import org.koreait.mypage.validators.ProfileValidator;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -49,8 +48,6 @@ public class MypageController {
 
         return memberUtil.getMember();
     }
-
-    // 공통 Css
 
     @GetMapping
     public String index(Model model) {
@@ -123,13 +120,13 @@ public class MypageController {
      *
      * 작업중
      */
-    @GetMapping("/about/{nickName}")
-    public String about (@Value("nickName") String nickName, Model model) {
-
-        commonProcess("about", model);
-
-        return utils.tpl("mypage/about");
-    }
+//    @GetMapping("/about/{nickName}")
+//    public String about (@PathVariable("nickName") String nickName, Model model) {
+//
+//        commonProcess("about", model);
+//
+//        return utils.tpl("mypage/about");
+//    }
 
     /**
      * 찜 목록 관리
@@ -151,8 +148,6 @@ public class MypageController {
     @ResponseBody
     @GetMapping("/refresh")
     public void refresh(Principal principal, Model model) {
-
-        // commonProcess("profile", model);
 
         MemberInfo memberInfo = (MemberInfo) infoService.loadUserByUsername(principal.getName());
 
@@ -182,6 +177,7 @@ public class MypageController {
         List<String> addScript = new ArrayList<>();
 
         List<String> addCss = new ArrayList<>();
+
         addCss.add("mypage/style");
 
         // 회원 정보 수정

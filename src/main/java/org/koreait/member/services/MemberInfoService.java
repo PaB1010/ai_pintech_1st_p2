@@ -100,6 +100,38 @@ public class MemberInfoService implements UserDetailsService {
                 .build();
     }
 
+    public UserDetails loadUserByNickName(String nickName)
+
+    {
+        Member member = memberRepository.findByNickName(nickName).orElse(null);
+
+        List<Authorities> items = member.getAuthorities();
+
+        if (items == null) {
+            // 권한이 null 일땐 기본 권한인 USER 값
+            Authorities auth = new Authorities();
+
+            auth.setMember(member);
+            auth.setAuthority(Authority.USER);
+
+            items = List.of(auth);
+        }
+
+        // private Collection<? extends GrantedAuthority> authorities;이므로 stream 이용해 문자열로 변환
+        // 무조건 문자열이어야함
+        List<SimpleGrantedAuthority> authorities = items.stream().map(a -> new SimpleGrantedAuthority(a.getAuthority().name())).toList();
+
+        // 추가 정보 처리 (2차 가공)
+        addInfo(member);
+
+        return MemberInfo.builder()
+                .email(member.getEmail())
+                .password(member.getPassword())
+                .member(member)
+                .authorities(authorities)
+                .build();
+    }
+
     /**
      * 추가 정보 처리 (2차 가공)
      *

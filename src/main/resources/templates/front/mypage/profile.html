@@ -69,6 +69,14 @@
         </dl>
 
         <dl>
+            <dt th:text="#{자기_소개}"></dt>
+            <dd>
+                <input type="text" name="bio" th:field="*{bio}">
+                <div class="error" th:each="err : ${#fields.errors('bio')}" th:text="${err}"></div>
+            </dd>
+        </dl>
+
+        <dl>
             <dt th:text="#{성별}"></dt>
             <dd>
                 <input type="radio" name="gender" value="MALE" th:field="*{gender}" id="gender-male">

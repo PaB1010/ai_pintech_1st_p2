@@ -142,6 +142,7 @@ public class MemberUpdateService {
         member.setZipCode(form.getZipCode());
         member.setAddress(form.getAddress());
         member.setAddressSub(form.getAddressSub());
+        member.setBio(form.getBio());
 
         List<String> optionalTerms = form.getOptionalTerms();
 
