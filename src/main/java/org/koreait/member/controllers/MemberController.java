@@ -272,6 +272,9 @@ public class MemberController {
             // common_address.js
             addCommonScript.add("address");
 
+            // emailAuth.js 의 callback 처리는 join.js 에서 하게 됨
+            addCommonScript.add("emailAuth");
+
             // front_member_join.js
             addScript.add("member/join");
 

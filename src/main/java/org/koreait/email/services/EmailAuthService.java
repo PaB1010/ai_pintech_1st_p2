@@ -10,7 +10,7 @@ import org.koreait.global.libs.Utils;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,11 +56,13 @@ public class EmailAuthService {
         int authCode = random.nextInt(99999);
 
         // 현재 시간 기준 3분 뒤로 만료 시간 기록
-        long expired = Instant.EPOCH.getEpochSecond() + 60 * 3;
+        LocalDateTime expired = LocalDateTime.now().plusMinutes(3L);
 
         // Session 에 인증 코드 & 만료 시간 기록
         session.setAttribute("authCode", authCode);
         session.setAttribute("expiredTime", expired);
+        // Session 에 인증 실패 상태(인증 완료전이니 실패 상태) 기록
+        session.setAttribute("authCodeVerified", false);
 
         Map<String, Object> tplData = new HashMap<>();
 
@@ -89,13 +91,11 @@ public class EmailAuthService {
         }
 
         // 검증할 Session 값 get
-        long expired = (long)session.getAttribute("expiredTime");
+        LocalDateTime expired = (LocalDateTime)session.getAttribute("expiredTime");
         int authCode = (int)session.getAttribute("authCode");
 
-        long now = Instant.EPOCH.getEpochSecond();
-
         // 만료된 인증 코드일 경우
-        if (expired < now) {
+        if (expired.isBefore(LocalDateTime.now())) {
 
             throw new AuthCodeExpiredException();
         }
@@ -105,5 +105,8 @@ public class EmailAuthService {
 
             throw new AuthCodeMismatchException();
         }
+
+        // Session 에 인증 성공 상태 기록
+        session.setAttribute("authCodeVerified", true);
     }
 }

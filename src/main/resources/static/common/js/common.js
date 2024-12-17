@@ -25,7 +25,7 @@ commonLib.getMeta = function(mode) {
 * @params url : (필수)요청 주소 / http[s] : 외부 URL - Context path 추가 X
 * @params method : 요청 방식 - GET / POST / DELETE / PATCH ...
 * @params callback : 응답 완료 후 후속 처리 콜백 함수
-* @params data : 요청 Data(Body가 있을때만 가능, POST / PUT / PATCH)
+* @params data : 요청 Data(Body 있을때만 가능, POST / PUT / PATCH)
 * @params headers : 추가 요청 Header
 */
 commonLib.ajaxLoad = function(url, callback, method = 'GET', data, headers) {
@@ -49,15 +49,28 @@ commonLib.ajaxLoad = function(url, callback, method = 'GET', data, headers) {
         headers,
     }
 
-    // GET, DELETE는 Body가 없으므로 요청 method 보고 판단해 경우에 맞게 처리
+    // GET, DELETE 는 Body 없으므로 요청 method 보고 판단해 경우에 맞게 처리
     if (data && ['POST', 'PUT', 'PATCH'].includes(method)) { // body 쪽 Data 추가 가능
 
         // formDate 일 경우 그대로 넘기고, 아닐경우 JSON 문자열로 가공 / JSON.stringify(변수명)
         options.body = data instanceof FormData ? data : JSON.stringify(data);
     }
 
+    return new Promise((resolve, reject) => {
+
+    /* Promise S */
+
     fetch(url, options)
-        .then(res => res.json())
+        .then(res => {
+        // 204가 아닐때에만 JSON 형태로 변환
+        if (res.status !== 204)
+
+            return res.json();
+
+        else {
+                resolve();
+            }
+        })
         .then(json => {
 
             // global_rests_JSONData.java
@@ -69,12 +82,22 @@ commonLib.ajaxLoad = function(url, callback, method = 'GET', data, headers) {
 
                     callback(json.data);
                 }
+
+                resolve(json);
+
                 return;
             }
-            // 응답(처리) 실패시 메세지 출력
-            alert(json.message);
+            // 처리 실패
+            reject(json);
         })
-        .catch (err => console.error(err))
+        .catch (err => {
+
+            console.error(err);
+
+           // 응답 실패
+           reject(err);
+        });
+    }); /* Promise E */
 };
 
 window.addEventListener("DOMContentLoaded", function() {
