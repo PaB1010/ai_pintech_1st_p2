@@ -248,7 +248,6 @@ public class MemberController {
     /**
      * 회원 소개 (공개용, DB 조회)
      *
-     * 작업중
      */
     @GetMapping("/about/{nickName}")
     public String about (@PathVariable("nickName") String nickName, Model model) {

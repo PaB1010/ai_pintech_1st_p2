@@ -116,19 +116,6 @@ public class MypageController {
     }
 
     /**
-     * 회원 소개 (공개용, DB 조회)
-     *
-     * 작업중
-     */
-//    @GetMapping("/about/{nickName}")
-//    public String about (@PathVariable("nickName") String nickName, Model model) {
-//
-//        commonProcess("about", model);
-//
-//        return utils.tpl("mypage/about");
-//    }
-
-    /**
      * 찜 목록 관리
      *
      */
