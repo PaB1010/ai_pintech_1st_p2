@@ -21,6 +21,9 @@ window.addEventListener("DOMContentLoaded", function() {
             sendButton.disabled = true;
         }
     });
+
+
+
     // 인증 코드 전송 버튼 처리
     sendButton.addEventListener("click", function() {
 
@@ -53,6 +56,14 @@ window.addEventListener("DOMContentLoaded", function() {
 
             // 1-3. 인증하기 버튼 노출
             verifyButton.classList.remove("dn");
+
+            authCodeEl.addEventListener("change", function() {
+                let code = this.value.trim();
+
+                code = code.replace(/\D/g, '');
+                this.value = code;
+
+            });
         });
     });
 
