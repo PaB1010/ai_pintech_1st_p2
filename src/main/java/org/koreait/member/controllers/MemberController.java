@@ -31,7 +31,7 @@ import java.util.List;
 @RequestMapping("/member")
 @RequiredArgsConstructor
 // ★ 주문서 처럼 여러 Page 에 걸쳐 같은 값을 가지고 작업할때에 SessionAttributes ★
-@SessionAttributes({"requestAgree", "requestLogin"})
+@SessionAttributes({"requestAgree", "requestLogin", "authCodeVerified"})
 public class MemberController {
 
     // 공통 기능 의존 주입
@@ -67,13 +67,12 @@ public class MemberController {
         return new RequestLogin();
     }
 
-//    @ModelAttribute("profile")
-//    public Member getMember(String nickName) {
-//
-//        Member member = (Member) infoService.loadUserByNickName(nickName);
-//
-//        return member;
-//    }
+    // 이메일 인증 여부
+    @ModelAttribute("authCodeVerified")
+    public boolean authCodeVerified() {
+
+        return false;
+    }
 
     @GetMapping("/login")
     public String login(@ModelAttribute RequestLogin form, Errors errors, Model model) {
@@ -162,10 +161,11 @@ public class MemberController {
         
         // 회원 가입 공통 처리
         commonProcess("join", model);
+        
+        // 회원가입 양식 첫 유입에서는 Session 단위 저장인 이메일 인증 상태 false 로 초기화
+        model.addAttribute("authCodeVerified", false);
 
         joinValidator.validate(agree, errors);
-
-        // log.info(form.toString());
 
         if (errors.hasErrors()) { // 약관 동의를 하지 않았다면 약관 동의 화면 출력
 

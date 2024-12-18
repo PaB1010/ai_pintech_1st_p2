@@ -1,4 +1,5 @@
-// 공통적인 부분
+// 공통 기능
+
 var commonLib = commonLib ?? {};
 
 /**
@@ -18,6 +19,15 @@ commonLib.getMeta = function(mode) {
     // Optional Chaining 문법(최신)
     return el?.content;
 };
+
+/**
+ * JavaScript 에서 만든 주소에 Context 경로 추가한 형태로 가공
+ *
+ */
+commonLib.url = function(url) {
+
+    return `${commonLib.getMeta('rootUrl').replace("/","")}url`;
+}
 
 /**
 *  Ajax 요청 처리 함수

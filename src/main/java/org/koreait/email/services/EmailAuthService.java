@@ -53,7 +53,8 @@ public class EmailAuthService {
         String subject = utils.getMessage("Email.authCode.subject");
 
         // 5자리 내의 랜덤 정수 인증 코드
-        Integer authCode = random.nextInt(99999);
+        // 범위 10000~99998
+        Integer authCode = random.nextInt(10000,99999);
 
         // 현재 시간 기준 3분 뒤로 만료 시간 기록
         LocalDateTime expired = LocalDateTime.now().plusMinutes(3L);

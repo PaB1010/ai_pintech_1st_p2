@@ -64,10 +64,17 @@ public class PokemonController {
 
         String pageTitle = utils.getMessage("포켓몬_도감");
 
+        // 공용 CSS Style
         List<String> addCss = new ArrayList<>();
 
         // 포켓몬 도감 Page Common Style (목록 & 상세)
         addCss.add("pokemon/style");
+
+        // 공용 JavaScript
+        List<String> addCommonScript = new ArrayList<>();
+
+        // 찜하기 JavaScript
+        addCommonScript.add("wish");
 
         if (mode.equals("list")) {
 
@@ -92,5 +99,6 @@ public class PokemonController {
         // view Title 추후 가공 예정
         model.addAttribute("pageTitle", pageTitle);
         model.addAttribute("addCss", addCss);
+        model.addAttribute("addCommonScript", addCommonScript);
     }
 }
