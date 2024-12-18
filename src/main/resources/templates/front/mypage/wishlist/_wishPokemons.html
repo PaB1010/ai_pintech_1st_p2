@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="wishPokemons">
-    <h2>찜포켓몬</h2>
+
+    <th:block th:replace="~{front/pokemon/_items::items}"></th:block>
+
 </th:block>
 </html>

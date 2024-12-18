@@ -134,26 +134,8 @@ public class MypageController {
 
         model.addAttribute("items", data.getItems());
 
-        return utils.tpl("pokemon/list");
-
-        // return utils.tpl("mypage/wishlist/_wishPokemons");
-
-        // return utils.tpl("mypage/wishlist/main");
+        return utils.tpl("mypage/wishlist/main");
     }
-
-    /*
-    @GetMapping("/wishlist/_wishPokemons")
-    public String list(@ModelAttribute PokemonSearch search, Model model) {
-
-        commonProcess("wishlist", model);
-
-        ListData<Pokemon> data = pokemonInfoService.getMyPokemons(search);
-
-        model.addAttribute("items", data.getItems());
-
-        return utils.tpl("pokemon/list");
-    }
-    */
 
 
     /**
