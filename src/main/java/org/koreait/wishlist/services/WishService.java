@@ -127,7 +127,7 @@ public class WishService {
         context.setVariable("myWishes", myWishes);
         // 찜 여부
         context.setVariable("isMine", myWishes.contains(seq));
-        context.setVariable("isLong", memberUtil.isLogin());
+        context.setVariable("isLogin", memberUtil.isLogin());
 
         return templateEngine.process("common/_wish", context);
     }

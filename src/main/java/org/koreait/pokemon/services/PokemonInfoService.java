@@ -12,6 +12,8 @@ import org.koreait.pokemon.entities.Pokemon;
 import org.koreait.pokemon.entities.QPokemon;
 import org.koreait.pokemon.exceptions.PokemonNotFoundException;
 import org.koreait.pokemon.repositories.PokemonRepository;
+import org.koreait.wishlist.constants.WishType;
+import org.koreait.wishlist.services.WishService;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -43,6 +45,8 @@ public class PokemonInfoService {
     private final Utils utils;
 
     private final JPAQueryFactory queryFactory;
+
+    private final WishService wishService;
 
     /**
      * Pokemon 목록 조회
@@ -81,6 +85,14 @@ public class PokemonInfoService {
                     .concat(pokemon.flavorText).contains(skey));
         }
 
+        List<Long> seq = search.getSeq();
+
+        if (seq != null && !seq.isEmpty()) {
+            
+            // 찜한 포켓몬 목록만 조회
+            andBuilder.and(pokemon.seq.in(seq));
+        }
+
         /* 검색 처리 E */
 
         // ★ Pageable 이면 무조건 반환 값은 Page ★
@@ -103,6 +115,27 @@ public class PokemonInfoService {
         Pagination pagination = new Pagination(page, (int)data.getTotalElements(), ranges, limit, request);
 
         return new ListData<>(items, pagination);
+    }
+
+    /**
+     * 내가 찜한 포켓몬 목록
+     *
+     * @param search
+     * @return
+     */
+    public ListData<Pokemon> getMyPokemons(PokemonSearch search) {
+
+        List<Long> seq = wishService.getMyWish(WishType.POKEMON);
+
+        if (seq == null || seq.isEmpty()) {
+
+            // NPE 방지용으로 빈 ListData 반환
+            return new ListData<>();
+        }
+
+        search.setSeq(seq);
+
+        return getList(search);
     }
 
     /**

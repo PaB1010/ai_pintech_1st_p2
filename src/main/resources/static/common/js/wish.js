@@ -27,6 +27,56 @@ window.addEventListener("DOMContentLoaded", function() {
 
                 return;
             }
+
+            // 로그인 상태
+
+            let apiUrl = commonLib.url("/api/wish/");
+
+            const classList = this.classList;
+
+            // class on이 있으면 remove, 없으면 add
+            if (classList.contains("on")) { // 찜하기 제거 (remove)
+
+                apiUrl += "remove";
+
+            } else { // 찜하기 (add)
+
+                apiUrl += "add";
+            }
+
+            // 비구조 할당으로 dataset 할당하고 seq, type 가져오기
+            const { seq, type } = this.dataset;
+
+            // 요청 주소 완성 (토글 형태)
+            apiUrl += `?seq=${seq}&type=${type}`;
+
+            const { ajaxLoad } = commonLib;
+
+            const icon = this.querySelector("i");
+
+            (async() => {
+
+                try {
+                    // 응답 코드 204
+                    await ajaxLoad(apiUrl);
+
+                    if (classList.contains("on")) { // on 제거 처리
+
+                        icon.className = "xi-heart-o"
+
+                    } else { // on 추가 처리
+
+                        icon.className = "xi-heart";
+
+                    }
+
+                    classList.toggle("on");
+
+                } catch (err) {
+
+                    alert(err.message);
+                }
+            })();
         });
     }
 });
