@@ -71,7 +71,8 @@
         <dl>
             <dt th:text="#{자기_소개}"></dt>
             <dd>
-                <input type="text" name="bio" th:field="*{bio}">
+<!--                <input type="text" name="bio" th:field="*{bio}">-->
+                <textarea name="bio" th:field="*{bio}"></textarea>
                 <div class="error" th:each="err : ${#fields.errors('bio')}" th:text="${err}"></div>
             </dd>
         </dl>

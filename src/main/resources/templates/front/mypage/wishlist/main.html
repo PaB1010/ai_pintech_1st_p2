@@ -3,9 +3,12 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{front/layouts/main}">
 <main layout:fragment="content">
-    <h1>찜 목록</h1>
-<!--    찜 목록 관리 항목-->
-<!--    포켓몬-->
-<!--    게시판-게시글 등-->
+    <h1>찜 목록 조회</h1>
+
+    <th:block th:replace="~{front/mypage/wishlist/_wishPokemons::wishPokemons}"></th:block>
+
+<!--    여기서 출력중이거든-->
+
+    <!--    게시판-게시글 등-->
 </main>
 </html>

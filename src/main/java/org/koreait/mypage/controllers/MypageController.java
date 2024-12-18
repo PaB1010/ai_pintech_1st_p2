@@ -4,12 +4,16 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.koreait.global.annotations.ApplyErrorPage;
 import org.koreait.global.libs.Utils;
+import org.koreait.global.paging.ListData;
 import org.koreait.member.MemberInfo;
 import org.koreait.member.entities.Member;
 import org.koreait.member.libs.MemberUtil;
 import org.koreait.member.services.MemberInfoService;
 import org.koreait.member.services.MemberUpdateService;
 import org.koreait.mypage.validators.ProfileValidator;
+import org.koreait.pokemon.controllers.PokemonSearch;
+import org.koreait.pokemon.entities.Pokemon;
+import org.koreait.pokemon.services.PokemonInfoService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,7 +43,9 @@ public class MypageController {
 
     private final ProfileValidator profileValidator;
 
-    private final MemberInfoService infoService;
+    private final MemberInfoService memberInfoService;
+
+    private final PokemonInfoService pokemonInfoService;
 
     // profile 이라는 속성명을 가지고 template 에서 회원 조회를 바로
     // ★ About 에서 이거 가져다 쓰기 ★
@@ -116,16 +122,38 @@ public class MypageController {
     }
 
     /**
-     * 찜 목록 관리
+     * 찜 목록
      *
      */
     @GetMapping("/wishlist")
-    public String wishlist (Model model) {
+    public String wishlist (@ModelAttribute PokemonSearch search, Model model) {
 
         commonProcess("wishlist", model);
 
-        return utils.tpl("mypage/wishlist/main");
+        ListData<Pokemon> data = pokemonInfoService.getMyPokemons(search);
+
+        model.addAttribute("items", data.getItems());
+
+        return utils.tpl("pokemon/list");
+
+        // return utils.tpl("mypage/wishlist/_wishPokemons");
+
+        // return utils.tpl("mypage/wishlist/main");
     }
+
+    /*
+    @GetMapping("/wishlist/_wishPokemons")
+    public String list(@ModelAttribute PokemonSearch search, Model model) {
+
+        commonProcess("wishlist", model);
+
+        ListData<Pokemon> data = pokemonInfoService.getMyPokemons(search);
+
+        model.addAttribute("items", data.getItems());
+
+        return utils.tpl("pokemon/list");
+    }
+    */
 
 
     /**
@@ -136,7 +164,7 @@ public class MypageController {
     @GetMapping("/refresh")
     public void refresh(Principal principal, Model model) {
 
-        MemberInfo memberInfo = (MemberInfo) infoService.loadUserByUsername(principal.getName());
+        MemberInfo memberInfo = (MemberInfo) memberInfoService.loadUserByUsername(principal.getName());
 
         memberUtil.setMember(memberInfo.getMember());
 
