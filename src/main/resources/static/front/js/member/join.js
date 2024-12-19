@@ -24,7 +24,6 @@ window.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-
     /* 인증 코드 전송 처리 S */
 
     sendButton.addEventListener("click", function() {
@@ -120,6 +119,13 @@ window.addEventListener("DOMContentLoaded", function() {
 
      /* 인증 코드 확인 처리 S */
 
+     // 입력 받은 인증 코드가 5글자를 넘어가지 못하도록 제안
+         authCodeEl.addEventListener("keyup", function() {
+                 let value = '' + this.value;
+                 value = value.length > 5 ? value.substring(0, 5) : value;
+                 this.value = value;
+             });
+
      verifyButton.addEventListener("click", function() {
 
         // 인증 코드 검증
@@ -128,7 +134,9 @@ window.addEventListener("DOMContentLoaded", function() {
         // ('' + authCode) -> 간단하게 authCode 문자화
         if (!authCode || ('' + authCode).length < 5) {
 
-            alert("인증코드를 입력하세요.");
+            const message = authCode > 0 && ('' + authCode).length < 5 ? "인증코드는 5자리로 입력하세요." : "인증코드를 입력하세요";
+
+            alert(message);
 
             authCodeEl.focus();
 

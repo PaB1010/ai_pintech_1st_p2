@@ -136,7 +136,7 @@ window.addEventListener("DOMContentLoaded", function() {
 
             // File 선택시 - change Event 발생
             // 선택된 객체 e.currentTarget & e.target 의 차이 짚고가기!
-            // Event 선 제거 후, 다시 추가 -> Event가 한번만 실행되게 하기 위해서
+            // Event 선 제거 후, 다시 추가 -> Event 가 한번만 실행되게 하기 위해서
             fileEl.removeEventListener("change", fileEventHandler);
             fileEl.addEventListener("change", fileEventHandler);
 
