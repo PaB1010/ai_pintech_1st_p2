@@ -125,14 +125,20 @@ public class MypageController {
      * 찜 목록
      *
      */
-    @GetMapping("/wishlist")
-    public String wishlist (@ModelAttribute PokemonSearch search, Model model) {
+    @GetMapping({"/wishlist", "/wishlist/{mode}"})
+    public String wishlist (@PathVariable(name="mode", required = false) String mode, @ModelAttribute PokemonSearch search, Model model) {
 
         commonProcess("wishlist", model);
+        mode = StringUtils.hasText(mode) ? mode : "pokemon";
+        if (mode.equals("pokemon")) {
+            ListData<Pokemon> data = pokemonInfoService.getMyPokemons(search);
+            model.addAttribute("items", data.getItems());
+            model.addAttribute("pagination", data.getPagination());
+        } else if (mode.equals("board")) {
 
-        ListData<Pokemon> data = pokemonInfoService.getMyPokemons(search);
+        }
 
-        model.addAttribute("items", data.getItems());
+        model.addAttribute("mode", mode);
 
         return utils.tpl("mypage/wishlist/main");
     }
