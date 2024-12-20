@@ -41,9 +41,13 @@
     </head>
     <body>
         <header th:replace="~{admin/outlines/_header::common}"></header>
-            <main layout:fragment="content">
-
+            <main>
+                <aside th:replace="~{admin/outlines/_menu::main}"></aside>
+                <section>
+                    <nav th:replace="~{admin/outlines/_submenu::sub}"></nav>
+                    <div layout:fragment="content" class="main-content"></div>
+                </section>
             </main>
-        <footer th:replace="~{admin/outlines/_footer::common}"></footer>
+<!--        <footer th:replace="~{admin/outlines/_footer::common}"></footer>-->
     </body>
 </html>

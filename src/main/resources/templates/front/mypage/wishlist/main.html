@@ -3,18 +3,24 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{front/layouts/main}">
 <main layout:fragment="content">
-    <h1>찜 목록 조회</h1>
+    <h1 th:text="#{My Wish}"></h1>
+<!--    <nav>-->
+<!--        <a th:href="@{/mypage/wishlist/pokemon}" th:text="#{포켓몬}" class="tab" th:classappend="${mode == 'pokemon'} ? 'on'"></a>-->
+<!--        <a th:href="@{/mypage/wishlist/board}" th:text="#{게시글}" class="tab" th:classappend="${mode == 'board'} ? 'on'"></a>-->
+<!--    </nav>-->
+<!--    <th:block th:if="${mode == 'pokemon'}">-->
+<!--    <th:block th:replace="~{front/mypage/wishlist/_wishPokemons::wishPokemons}"></th:block>-->
+<!--    </th:block>-->
     <nav>
-        <a th:href="@{/mypage/wishlist/pokemon}" th:text="#{포켓몬}" class="tab" th:classappend="${mode == 'pokemon'} ? 'on'"></a>
-        <a th:href="@{/mypage/wishlist/board}" th:text="#{게시글}" class="tab" th:classappend="${mode == 'board'} ? 'on'"></a>
+        <a th:href="@{/mypage/wishlist/POKEMON}" th:text="#{포켓몬}" class="tab" th:classappend="${mode == null || mode.name == 'POKEMON'} ? 'on'"></a>
+        <a th:href="@{/mypage/wishlist/BOARD}" th:text="#{게시글}" class="tab" th:classappend="${mode != null && mode.name == 'BOARD'} ? 'on'"></a>
     </nav>
-    <th:block th:if="${mode == 'pokemon'}">
+    <th:block th:if="${mode != null && mode.name == 'BOARD'}">
+        <th:block th:replace="~{front/mypage/wishlist/_wishBoard::wishBoard}"></th:block>
+    </th:block>
+    <th:block th:unless="${mode != null && mode.name == 'BOARD'}">
         <th:block th:replace="~{front/mypage/wishlist/_wishPokemons::wishPokemons}"></th:block>
     </th:block>
-
-    <!--    게시판-게시글 등-->
-    <th:block th:if="${mode == 'board'}">
-
-    </th:block>
+    <th:block th:replace="~{common/_pagination::pagination}"></th:block>
 </main>
 </html>

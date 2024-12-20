@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.koreait.global.annotations.ApplyErrorPage;
 import org.koreait.global.libs.Utils;
+import org.koreait.global.paging.CommonSearch;
 import org.koreait.global.paging.ListData;
 import org.koreait.member.MemberInfo;
 import org.koreait.member.entities.Member;
@@ -14,6 +15,7 @@ import org.koreait.mypage.validators.ProfileValidator;
 import org.koreait.pokemon.controllers.PokemonSearch;
 import org.koreait.pokemon.entities.Pokemon;
 import org.koreait.pokemon.services.PokemonInfoService;
+import org.koreait.wishlist.constants.WishType;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +27,7 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 @RequestMapping("/mypage")
@@ -121,15 +124,46 @@ public class MypageController {
         return utils.tpl("mypage/about");
     }
 
+
+
     /**
-     * 찜 목록
+     * 찜하기 목록
      *
+     * @param mode : POKEMON (포켓몬 찜하기 목록), BOARD (게시글 찜하기 목록)
+     * @param search
+     * @param model
+     * @return
      */
+    @GetMapping({"/wishlist", "/wishlist/{mode}"})
+    public String wishlist (@PathVariable(name="mode", required = false) WishType mode, CommonSearch search, Model model) {
+
+        commonProcess("wishlist", model);
+
+        mode = Objects.requireNonNullElse(mode, WishType.POKEMON);
+
+        if (mode == WishType.BOARD) {
+            // 게시글 찜하기 목록
+
+        } else if (mode == WishType.POKEMON) {
+            // 포켓몬 찜하기 목록
+
+            PokemonSearch pSearch = modelMapper.map(search, PokemonSearch.class);
+
+            ListData<Pokemon> data = pokemonInfoService.getMyPokemons(pSearch);
+            model.addAttribute("items", data.getItems());
+            model.addAttribute("pagination", data.getPagination());
+        }
+
+        return utils.tpl("mypage/wishlist/main");
+    }
+
+    /*
     @GetMapping({"/wishlist", "/wishlist/{mode}"})
     public String wishlist (@PathVariable(name="mode", required = false) String mode, @ModelAttribute PokemonSearch search, Model model) {
 
         commonProcess("wishlist", model);
         mode = StringUtils.hasText(mode) ? mode : "pokemon";
+
         if (mode.equals("pokemon")) {
             ListData<Pokemon> data = pokemonInfoService.getMyPokemons(search);
             model.addAttribute("items", data.getItems());
@@ -142,7 +176,7 @@ public class MypageController {
 
         return utils.tpl("mypage/wishlist/main");
     }
-
+     */
 
     /**
      * 회원 정보 갱신
@@ -196,9 +230,12 @@ public class MypageController {
             pageTitle = utils.getMessage("About_Me");
             addCss.add("mypage/about");
             addCss.add("pokemon/item");
+
         } else if (mode.equals("wishlist")) {
-            
-            pageTitle = utils.getMessage("찜_목록_관리");
+
+            addCommonScript.add("wish");
+            pageTitle = utils.getMessage("My_Wish");
+            // 추후 포켓몬 list 와 Css 공유할 경우 add
         }
 
         model.addAttribute("addCommonScript", addCommonScript);
