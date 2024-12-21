@@ -24,6 +24,13 @@ window.addEventListener("DOMContentLoaded", function() {
         }
     });
 
+    // Enter key 입력해도 가입버튼 처리 안되도록 초기화
+    frmJoin.addEventListener("keydown", function(e) {
+            if (e.key == "Enter") {
+              e.preventDefault();
+            }
+          });
+
     /* 인증 코드 전송 처리 S */
 
     sendButton.addEventListener("click", function() {
@@ -48,6 +55,7 @@ window.addEventListener("DOMContentLoaded", function() {
             const { text } = sendButton.dataset;
 
             sendButton.innerText = text;
+
 
             // 1-1. 한번 전송시 수신 이메일을 변경하지 못하도록 처리
             frmJoin.email.setAttribute("readonly", true)

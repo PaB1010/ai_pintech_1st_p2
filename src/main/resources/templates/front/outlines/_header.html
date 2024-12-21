@@ -77,8 +77,8 @@
                     <th:block th:text="#{MYPAGE}"></th:block>
                 </a>
             </li>
-            <li>
-                <a th:if="${@memberUtil.isAdmin()}" th:href="@{/admin}" target="_blank">
+            <li th:if="${@memberUtil.isAdmin()}" >
+                <a th:href="@{/admin}" target="_blank">
                     <i class="icon login"></i>
                     <th:block th:text="#{사이트관리}"></th:block>
                 </a>

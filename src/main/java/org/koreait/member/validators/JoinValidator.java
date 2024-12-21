@@ -103,14 +103,15 @@ public class JoinValidator implements Validator, PasswordValidator {
          * 1-1. 이메일 인증
          * 2. 비밀번호 복잡성 - 8 ~ 40글자 & 영어 대소문자 각각 1개 이상 & 숫자 1개 이상 & 특수 문자 포함 필수 (global_validators : interface - 비회원 이용등 다른 곳에서도 사용하기 때문에)
          * 3. 비밀번호 - 비밀번호 확인 일치 여부
-         * 4. 생년월일을 입력 받으면 만 14세 이상만 가입 가능하게 통제
-         * 2~4번 Validator에서 구현
-         * 5. 이메일 인증 완료 여부 체크
+         * 4. 닉네임 공백 여부 검증
+         * 5. 생년월일을 입력 받으면 만 14세 이상만 가입 가능하게 통제
+         * 6. 이메일 인증 완료 여부 체크
          */
 
         String email = form.getEmail();
         String password = form.getPassword();
         String confirmPassword = form.getConfirmPassword();
+        String nickName = form.getNickName();
         LocalDate birthDt = form.getBirthDt();
 
         // 1. 이메일 중복 여부 체크 S
@@ -139,7 +140,16 @@ public class JoinValidator implements Validator, PasswordValidator {
 
         // 3. 비밀번호, 비밀번호 확인 일치 여부 E
 
-        // 4. 생년월일을 입력 받으면 만 14세 이상만 가입 가능하게 통제 S
+        // 4. 닉네임 공백 여부 검증 S
+
+        if (nickName.contains(" ")) {
+
+            errors.rejectValue("nickName", "Whitespace");
+        }
+
+        // 4. 닉네임 공백 여부 검증 E
+
+        // 5. 생년월일을 입력 받으면 만 14세 이상만 가입 가능하게 통제 S
 
         Period period = Period.between(birthDt, LocalDate.now());
 
@@ -151,9 +161,9 @@ public class JoinValidator implements Validator, PasswordValidator {
             errors.rejectValue("birthDt", "UnderAge");
         }
 
-        // 4. 생년월일을 입력 받으면 만 14세 이상만 가입 가능하게 통제 E
+        // 5. 생년월일을 입력 받으면 만 14세 이상만 가입 가능하게 통제 E
 
-        // 5. 이메일 인증 완료 여부 체크 S
+        // 6. 이메일 인증 완료 여부 체크 S
 
         Boolean authCodeVerified = (Boolean) session.getAttribute("authCodeVerified");
 
@@ -162,6 +172,6 @@ public class JoinValidator implements Validator, PasswordValidator {
             errors.reject("NotVerified.authCode");
         }
 
-        // 5. 이메일 인증 완료 여부 체크 E
+        // 6. 이메일 인증 완료 여부 체크 E
     }
 }

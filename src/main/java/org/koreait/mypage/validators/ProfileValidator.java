@@ -31,6 +31,12 @@ public class ProfileValidator implements Validator, PasswordValidator {
 
         String password = form.getPassword();
         String confirmPassword = form.getConfirmPassword();
+        String nickName = form.getNickName();
+
+        if (nickName.contains(" ")) {
+
+            errors.rejectValue("nickName", "Whitespace");
+        }
 
         if (!StringUtils.hasText(password)) {
 
