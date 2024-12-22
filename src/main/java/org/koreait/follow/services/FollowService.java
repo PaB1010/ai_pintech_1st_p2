@@ -53,6 +53,8 @@ public class FollowService {
         try {
             Member following = utils.getMember();
 
+            System.out.println("팔로잉" + following);
+
             // 자기 자신은 팔로우 하지 못하도록 체크
             if (follower.getEmail().equals(following.getEmail())) return;
 
@@ -215,6 +217,8 @@ public class FollowService {
 
         // 추가 정보 처리 (2차 가공)
         data.getItems().forEach(memberInfoService::addInfo);
+
+        return data;
     }
 
     /**
