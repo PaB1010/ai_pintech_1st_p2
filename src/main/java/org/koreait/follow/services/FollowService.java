@@ -55,8 +55,10 @@ public class FollowService {
 
             System.out.println("팔로잉" + following);
 
+            System.out.println("로그인상태" + utils.isLogin());
+
             // 자기 자신은 팔로우 하지 못하도록 체크
-            if (follower.getEmail().equals(following.getEmail())) return;
+            if (follower.getSeq().equals(following.getSeq())) return;
 
             Follow follow = Follow.builder()
                     .following(following)
