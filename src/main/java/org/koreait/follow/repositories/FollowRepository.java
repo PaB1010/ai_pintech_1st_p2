@@ -1,12 +1,12 @@
-package org.koreait.member.repositories;
+package org.koreait.follow.repositories;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.koreait.follow.entities.Follow;
+import org.koreait.follow.entities.QFollow;
 import org.koreait.global.paging.CommonSearch;
 import org.koreait.global.paging.ListData;
 import org.koreait.global.paging.Pagination;
-import org.koreait.member.entities.Follow;
 import org.koreait.member.entities.Member;
-import org.koreait.member.entities.QFollow;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +24,7 @@ import static org.springframework.data.domain.Sort.Order.desc;
  */
 public interface FollowRepository extends JpaRepository<Follow, Long>, QuerydslPredicateExecutor<Follow> {
 
-    Follow findByFollower(Member following, Member follower);
+    Follow findByFollowerAndFollower(Member following, Member follower);
 
     // 해당 회원이 follow 하는 회원의 총합
     default long getTotalFollowings(Member member) {
@@ -42,7 +42,7 @@ public interface FollowRepository extends JpaRepository<Follow, Long>, QuerydslP
         return count(follow.follower.eq(member));
     }
 
-    // 해당 회원이 follow 하는 회원 목록
+    // 해당 회원이 follow 하는 회원 목록 페이지
     default ListData<Member> getFollowings(Member member, CommonSearch paging, HttpServletRequest request) {
 
         int page = Math.max(paging.getPage(), 1);
@@ -56,6 +56,7 @@ public interface FollowRepository extends JpaRepository<Follow, Long>, QuerydslP
 
         List<Follow> follows = data.getContent();
         List<Member> items = null;
+
         if (follows != null) {
             items = follows.stream().map(Follow::getFollower).toList();
         }
@@ -66,7 +67,7 @@ public interface FollowRepository extends JpaRepository<Follow, Long>, QuerydslP
     }
 
 
-    // 해당 회원을 follow 하는 회원 목록
+    // 해당 회원을 follow 하는 회원 목록 페이지
     default ListData<Member> getFollowers(Member member, CommonSearch paging, HttpServletRequest request) {
 
         int page = Math.max(paging.getPage(), 1);

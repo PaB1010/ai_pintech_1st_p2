@@ -55,6 +55,11 @@ public class ProfileValidator implements Validator, PasswordValidator {
             return;
         }
 
+        if (nickName.contains(" ")) {
+
+            errors.rejectValue("nickName", "Whitespace");
+        }
+
         // 비밀번호 복잡성 S
 
         if (!alphaCheck(password, false) || !numberCheck(password) || !specialCharscehk(password)) {
