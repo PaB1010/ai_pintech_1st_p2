@@ -53,6 +53,7 @@ public class FollowService {
 //        try {
             Member following = utils.getMember();
 
+
             // 자기 자신은 팔로우 하지 못하도록 체크
            // if (follower.getSeq().equals(following.getSeq())) return;
 

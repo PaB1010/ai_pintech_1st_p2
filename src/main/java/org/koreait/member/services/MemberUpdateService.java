@@ -178,6 +178,16 @@ public class MemberUpdateService {
         //System.out.println(member2);
 
         save(member, _authorities);
+
+        Member _member = memberRepository.findByEmail(member.getEmail()).orElse(null);
+
+        if (_member != null) {
+
+            // 로그인 회원 정보 업데이트
+            infoService.addInfo(member);
+
+            memberUtil.setMember(member);
+        }
     }
 
     /**
@@ -207,14 +217,10 @@ public class MemberUpdateService {
                 authoritiesRepository.flush();
             }
 
-
             authoritiesRepository.saveAllAndFlush(authorities);
         }
         /* 회원 권한 업데이트 처리 E */
 
-        // 로그인 회원 정보 업데이트
-        infoService.addInfo(member);
 
-        memberUtil.setMember(member);
     }
 }
