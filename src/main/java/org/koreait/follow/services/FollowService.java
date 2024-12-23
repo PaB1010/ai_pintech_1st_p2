@@ -46,7 +46,7 @@ public class FollowService {
     public void follow(Member follower) {
 
         // 회원 전용 기능이므로 비로그인시 처리 X
-        if (utils.isLogin()) {
+        if (!utils.isLogin()) {
             return;
         }
 
@@ -58,7 +58,7 @@ public class FollowService {
             System.out.println("로그인상태" + utils.isLogin());
 
             // 자기 자신은 팔로우 하지 못하도록 체크
-            if (follower.getSeq().equals(following.getSeq())) return;
+           // if (follower.getSeq().equals(following.getSeq())) return;
 
             Follow follow = Follow.builder()
                     .following(following)

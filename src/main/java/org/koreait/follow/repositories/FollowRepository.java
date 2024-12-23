@@ -46,7 +46,8 @@ public interface FollowRepository extends JpaRepository<Follow, Long>, QuerydslP
     default ListData<Member> getFollowings(Member member, CommonSearch paging, HttpServletRequest request) {
 
         int page = Math.max(paging.getPage(), 1);
-        int limit = Math.max(paging.getPage(), 20);
+        int limit = paging.getPage();
+        limit = limit < 1 ? 20 : limit;
 
         QFollow follow = QFollow.follow;
 
@@ -71,7 +72,8 @@ public interface FollowRepository extends JpaRepository<Follow, Long>, QuerydslP
     default ListData<Member> getFollowers(Member member, CommonSearch paging, HttpServletRequest request) {
 
         int page = Math.max(paging.getPage(), 1);
-        int limit = Math.max(paging.getPage(), 20);
+        int limit = paging.getLimit();
+        limit = limit < 1 ? 20 : limit;
 
         QFollow follow = QFollow.follow;
 

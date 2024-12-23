@@ -10,6 +10,7 @@ import org.koreait.global.paging.CommonSearch;
 import org.koreait.global.paging.ListData;
 import org.koreait.member.entities.Member;
 import org.koreait.member.repositories.MemberRepository;
+import org.koreait.member.services.test.annotations.MockMember;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -19,8 +20,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
-// @Transactional
-// @ActiveProfiles({"default", "test"})
+//@Transactional
+//@ActiveProfiles({"default"})
 public class FollowTest {
 
     @Autowired
@@ -63,9 +64,9 @@ public class FollowTest {
 
 //        memberRepository.saveAllAndFlush(members);
 
-        member1 = memberRepository.findById(5952L).orElse(null);
-        member1 = memberRepository.findById(6952L).orElse(null);
-        member1 = memberRepository.findById(7952L).orElse(null);
+        member1 = memberRepository.findById(952L).orElse(null);
+        member1 = memberRepository.findById(952L).orElse(null);
+        member1 = memberRepository.findById(952L).orElse(null);
 
 
 
@@ -81,6 +82,7 @@ public class FollowTest {
      *
      */
     @Test
+    @MockMember
     void test1() {
 
         List<Member> members = followRepository.getFollowings(member1);
