@@ -50,12 +50,8 @@ public class FollowService {
             return;
         }
 
-        try {
+//        try {
             Member following = utils.getMember();
-
-            System.out.println("팔로잉" + following);
-
-            System.out.println("로그인상태" + utils.isLogin());
 
             // 자기 자신은 팔로우 하지 못하도록 체크
            // if (follower.getSeq().equals(following.getSeq())) return;
@@ -68,10 +64,10 @@ public class FollowService {
             followRepository.saveAndFlush(follow);
 
             // follow Data 중복시 유니크 제약 조건 예외 발생
-        } catch (Exception e) {
-
-            e.printStackTrace();
-        }
+//        } catch (Exception e) {
+//
+//            e.printStackTrace();
+//        }
     }
 
     // Seq 로 Follow
