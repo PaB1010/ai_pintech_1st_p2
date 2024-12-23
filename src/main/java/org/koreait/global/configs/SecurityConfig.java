@@ -1,5 +1,6 @@
 package org.koreait.global.configs;
 
+import org.koreait.member.libs.MemberUtil;
 import org.koreait.member.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +23,9 @@ public class SecurityConfig {
     // RememberMe 주입용
     @Autowired
     private MemberInfoService memberInfoService;
+
+    @Autowired
+    private MemberUtil memberUtil;
     
     /**
      *
@@ -32,7 +36,7 @@ public class SecurityConfig {
      */
     // Spring 관리 @Bean 필수
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, MemberUtil memberUtil) throws Exception {
 
         /**
          * Spring Security가 모르는 부분들 설정 S
@@ -64,7 +68,10 @@ public class SecurityConfig {
         http.logout(c-> {
 
             c.logoutRequestMatcher(new AntPathRequestMatcher("/member/logout"))
-                    .logoutSuccessUrl("/member/login");
+                    .logoutSuccessHandler((req, res, auth) -> {
+                        memberUtil.setMember(null);
+                    res.sendRedirect(req.getContextPath() + "/member/login");
+                    });
         });
 
         /* 인증 설정 E - 로그인 & 로그아웃 */

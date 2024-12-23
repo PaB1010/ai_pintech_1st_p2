@@ -12,7 +12,6 @@ import org.koreait.member.entities.Member;
 import org.koreait.member.libs.MemberUtil;
 import org.koreait.member.repositories.MemberRepository;
 import org.koreait.member.services.MemberInfoService;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -22,7 +21,7 @@ import java.util.List;
  * Follow Service
  *
  */
-@Lazy
+// @Lazy
 @Service
 @RequiredArgsConstructor
 public class FollowService {
@@ -50,7 +49,7 @@ public class FollowService {
             return;
         }
 
-//        try {
+        try {
             Member following = utils.getMember();
 
 
@@ -65,10 +64,10 @@ public class FollowService {
             followRepository.saveAndFlush(follow);
 
             // follow Data 중복시 유니크 제약 조건 예외 발생
-//        } catch (Exception e) {
-//
-//            e.printStackTrace();
-//        }
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
     }
 
     // Seq 로 Follow

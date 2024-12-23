@@ -64,11 +64,9 @@ public class FollowTest {
 
 //        memberRepository.saveAllAndFlush(members);
 
-        member1 = memberRepository.findById(952L).orElse(null);
-        member1 = memberRepository.findById(952L).orElse(null);
-        member1 = memberRepository.findById(952L).orElse(null);
-
-
+        member1 = memberRepository.findById(1L).orElse(null);
+        member2 = memberRepository.findById(2L).orElse(null);
+        member3 = memberRepository.findById(3L).orElse(null);
 
         session.setAttribute("member", member1);
 
@@ -79,14 +77,18 @@ public class FollowTest {
     }
 
     /**
-     *
+     * member1은 member2, member3을 following 한다
+     * member1에서 getFollowers 에서 member2와 member3이 나와야 하고
+     * getTotalFollowers 에서는 2가 나와야 한다
      */
     @Test
     @MockMember
     void test1() {
 
         List<Member> members = followRepository.getFollowings(member1);
-        System.out.println("멤버" + members);
+
+        System.out.println("멤버들" + members);
+
         assertTrue(members.stream().map(Member::getNickName).anyMatch(u -> u.equals("user2") || u.equals("user3")));
         assertEquals(members.size(), followRepository.getTotalFollowings(member1));
     }
@@ -97,5 +99,4 @@ public class FollowTest {
 
         assertEquals(0, members.getItems().size());
     }
-
 }

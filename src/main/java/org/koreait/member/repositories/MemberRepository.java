@@ -21,9 +21,6 @@ public interface MemberRepository extends JpaRepository<Member, Long>, QuerydslP
     Optional<Member> findByEmail(String email);
 
     @EntityGraph(attributePaths = "authorities")
-    Optional<Member> findBySeq(Long seq);
-
-    @EntityGraph(attributePaths = "authorities")
     Optional<Member> findByNickName(String nickName);
 
     // Default 메서드 - Email 중복 체크

@@ -161,8 +161,6 @@ public class MemberUpdateService {
             member.setCredentialChangedAt(LocalDateTime.now());
         }
 
-
-
         /**
          * 회원 권한은 관리자만 수정 가능 하도록
          *
@@ -184,9 +182,9 @@ public class MemberUpdateService {
         if (_member != null) {
 
             // 로그인 회원 정보 업데이트
-            infoService.addInfo(member);
+            infoService.addInfo(_member);
 
-            memberUtil.setMember(member);
+            memberUtil.setMember(_member);
         }
     }
 

@@ -71,7 +71,7 @@ public class MemberInfoService implements UserDetailsService {
     public UserDetails loadUserBySeq(Long seq)
 
     {
-        Member member = memberRepository.findBySeq(seq).orElse(null);
+        Member member = memberRepository.findById(seq).orElse(null);
 
         List<Authorities> items = member.getAuthorities();
 
