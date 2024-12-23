@@ -1,0 +1,304 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap");
+
+* {
+    font-family: "Noto Sans KR", sans-serif;
+    box-sizing: border-box;
+    outline: none;
+     color: #000;
+}
+
+/* 기본 스타일 초기화 S */
+
+html {
+    font-size: 13px;
+} /* 1rem - 13ppx, rem = 상대size */
+
+body {
+    margin: 0;
+}
+
+a {
+    text-decoration: none;
+}
+
+ul,
+ol {
+    list-style: none;
+}
+
+ul,
+ol,
+dl,
+dt,
+dd {
+    margin: 0;
+    padding: 0;
+}
+
+img {
+    border: 0;
+}
+
+/* 기본 스타일 초기화 E */
+
+/* 공통 입력 항목 S */
+
+input[type='text'],
+input[type='number'],
+input[type='password'],
+input[type='email'],
+input[type='date'],
+select {
+    border: 1px solid #f8f8f8;
+    width: 100%;
+    height: 40px;
+    padding: 0 10px;
+    border-radius: 3px;
+}
+
+select {
+    padding: 0;
+}
+
+textarea {
+    border: 1px solid #f8f8f8;
+    min-height: 150px;
+    padding: 10px;
+    border-radius: 3px;
+    resize: none;
+    width: 100%;
+}
+
+/* 공통 입력 항목 E */
+
+/* Table 공통 S */
+
+.table-cols {
+    border-spacing: 0;
+    width: 100%;
+
+}
+
+.table-cols th {
+    background: #e6e6e6;
+    padding: 10px 20px;
+    border-bottom: 1px solid #ccc;
+    text-align: left;
+}
+
+.table-cols td {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.table-cols tr:first-of-type th,
+.table-cols tr:first-of-type td {
+    border-top: 1px solid #ccc;
+}
+
+/* Table 공통 E */
+
+/* 여백 공통 S */
+
+/* 특정 class 추가시 여백 */
+.mb10 {
+    margin-bottom: 10px; !important;
+}
+
+.mb20 {
+    margin-bottom: 20px; !important;
+}
+
+.mb30 {
+    margin-bottom: 30px; !important;
+}
+
+/* 여백 공통 E */
+
+/* 버튼 공통 S */
+
+.btn {
+    border : 2px solid lightslategray;
+    color : lightslategray;
+    background: #fff;
+    border-radius: 3px;
+    cursor: pointer;
+    width: 100%;
+    height: 50px;
+    font-size: 1.35rem;
+}
+
+.btn.black {
+    background: lightslategray;
+    color : #fff;
+    border : none;
+}
+
+.button-group {
+    display: flex;
+    width: 450px;
+    margin: 0 auto;
+}
+
+.button-group .btn {
+    flex-grow: 1;
+    width: 0;
+}
+
+/* 첫번째 요소 제외 형제 선택 */
+.button-group .btn + .btn {
+    margin-left: 5px;
+}
+
+/* 버튼 공통 E */
+
+/* 라디오 버튼 공통 S */
+
+input[type='radio'] {
+    display: none;
+}
+
+/* radio 바로 옆 형제인 label */
+input[type='radio'] + label{
+    padding: 0 10px 0 33px;
+    /* inline 속성이라 block 있어야 width & height 설정 가능*/
+    display: inline-block;
+    height: 40px;
+    line-height: 40px;
+    background: url("../images/radio.png") no-repeat left center;
+    cursor : pointer;
+}
+
+/* 가상 선택자 - 요소의 상태로 선택 */
+input[type='radio']:checked + label {
+    background: url("../images/radio_on.png") no-repeat left center;
+}
+
+/* 라디오 버튼 공통 E */
+
+/* 체크박스 공통 S */
+
+input[type='checkbox'] {
+    display: none;
+}
+
+input[type='checkbox'] + label{
+    background: url("../images/check.png") no-repeat left center;
+    background-size: 23px 23px;
+    display: inline-block;
+    padding: 0 10px 0 33px;
+    height: 40px;
+    line-height: 40px;
+    cursor: pointer;
+}
+
+input[type='checkbox']:checked + label {
+    background:url("../images/check_on.png") no-repeat left center;
+}
+
+
+
+/* 체크박스 공통 E */
+
+/* header 영역 S */
+
+header {
+    height: 80px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 45px;
+    background: #fff;
+    border-bottom: 1px solid darkslateblue;
+}
+
+header .right {
+    display: flex;
+    gap : 3vw;
+}
+
+.logo > img {
+    max-width: 70px;
+    max-height: 70px;
+}
+
+/* header 영역 E */
+
+/* 내용 구조 영역 S */
+
+main {
+    display: flex;
+    min-height: 900px;
+}
+
+/* 주메뉴 */
+main > aside {
+    width: 210px;
+    background: lightsteelblue;
+}
+
+main > aside .menu {
+    display: block;
+    height: 70px;
+    border-bottom: 1px solid dimgray;
+    /*text-align: center;*/
+    line-height: 69px;
+    padding: 0 30px;
+    font-size: 1.65rem;
+}
+
+main > aside .menu.on {
+    color: #fff;
+    background: lightslategray;
+}
+
+main > aside .menu.on * {
+    color: #fff;
+}
+
+main > section {
+    padding : 45px;
+
+    /* 나머지 여백 채움 */
+    flex-grow: 1;
+}
+
+/* 부 메뉴 */
+main > section > nav {
+    display: flex;
+    height: 55px;
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;;
+    margin-bottom: 35px;
+}
+
+main > section > nav .menu {
+    line-height: 55px;
+    padding: 0 30px;
+    font-size: 1.25rem;
+}
+
+main > section > nav .menu.on {
+    background: dimgray;
+    color: #fff;
+}
+
+/* 내용 구조 영역 E */
+
+/* 제목 S */
+
+/* 주제목 */
+h1 {
+    margin: 0 10px 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid dimgray;
+    font-size: 1.75rem;
+}
+
+/* 부제목 */
+h2 {
+    margin: 0 0 10px;
+    font-size: 1.25rem;
+}
+/* 제목 E */
