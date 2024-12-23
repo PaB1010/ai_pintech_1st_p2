@@ -12,6 +12,7 @@ import org.koreait.member.entities.Member;
 import org.koreait.member.libs.MemberUtil;
 import org.koreait.member.repositories.MemberRepository;
 import org.koreait.member.services.MemberInfoService;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -21,7 +22,7 @@ import java.util.List;
  * Follow Service
  *
  */
-// @Lazy
+@Lazy
 @Service
 @RequiredArgsConstructor
 public class FollowService {
