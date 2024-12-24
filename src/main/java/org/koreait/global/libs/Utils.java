@@ -1,6 +1,7 @@
 package org.koreait.global.libs;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.koreait.file.entities.FileInfo;
 import org.koreait.file.services.FileInfoService;
@@ -217,5 +218,23 @@ public class Utils {
 
     public String showBackground(String url, int width, int height, String className) {
         return showImage(null, url, width, height, "background", className);
+    }
+
+    /**
+     * Message 를 Session 쪽에 저장해서 임시 팝업으로 띄움
+     *
+     * @param message
+     */
+    public void showSessionMessage(String message) {
+
+        HttpSession session = request.getSession();
+
+        session.setAttribute("showMessage", message);
+    }
+
+    public void removeSessionMessage() {
+        HttpSession session = request.getSession();
+
+        session.removeAttribute("showMessage");
     }
 }

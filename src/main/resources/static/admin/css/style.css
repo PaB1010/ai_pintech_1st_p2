@@ -302,3 +302,27 @@ h2 {
     font-size: 1.25rem;
 }
 /* 제목 E */
+
+/* 세션 메세지 S */
+
+.message-dialog {
+    position: fixed;
+    z-index: 10;
+    background: #fff;
+    box-shadow: lightsteelblue 0px 8px 24px;;;
+    color: lightsteelblue;
+    left : 255px;
+    bottom: 100px;
+    width: calc(100% - 300px);
+    padding: 25px;
+    text-align: center;
+    font-size: 1.25rem;
+    transition: all 1s;
+    border-radius: 10px;
+}
+
+.message-dialog.fade {
+    opacity : 0;
+}
+
+/* 세션 메세지 E */

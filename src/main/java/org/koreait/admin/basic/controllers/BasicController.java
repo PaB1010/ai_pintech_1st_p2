@@ -5,6 +5,7 @@ import org.koreait.admin.global.menu.MenuDetail;
 import org.koreait.admin.global.menu.Menus;
 import org.koreait.global.annotations.ApplyErrorPage;
 import org.koreait.global.entities.SiteConfig;
+import org.koreait.global.libs.Utils;
 import org.koreait.global.services.CodeValueService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 기본(Basic) 관리자 설정 Controller
@@ -29,6 +31,8 @@ import java.util.List;
 public class BasicController {
 
     private final CodeValueService codeValueService;
+
+    private final Utils utils;
 
     @ModelAttribute("menuCode")
     public String menuCode() {
@@ -47,7 +51,8 @@ public class BasicController {
 
         commonProcess("siteConfig", model);
 
-        SiteConfig form = codeValueService.get("siteConfig", SiteConfig.class);
+        // 최초에 null 일 경우 새로 생성
+        SiteConfig form = Objects.requireNonNullElseGet(codeValueService.get("siteConfig", SiteConfig.class), SiteConfig::new);
 
         model.addAttribute("siteConfig", form);
 
@@ -61,7 +66,8 @@ public class BasicController {
 
         codeValueService.save("siteConfig", form);
 
-        // 임시
+        utils.showSessionMessage("저장되었습니다.");
+
         return "admin/basic/siteConfig";
     }
 
