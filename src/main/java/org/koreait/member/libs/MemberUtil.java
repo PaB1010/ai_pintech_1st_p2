@@ -1,18 +1,19 @@
 package org.koreait.member.libs;
 
-import lombok.Setter;
+import jakarta.servlet.http.HttpSession;
 import org.koreait.member.MemberInfo;
 import org.koreait.member.constants.Authority;
 import org.koreait.member.entities.Member;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-@Setter
 @Component
 public class MemberUtil {
 
-    private Member member;
+    @Autowired
+    private HttpSession session;
 
     public boolean isLogin() {
         return getMember() != null;
@@ -42,9 +43,13 @@ public class MemberUtil {
 
         if (auth != null && auth.isAuthenticated() && auth.getPrincipal() instanceof MemberInfo memberInfo) {
 
+            Member member = (Member)session.getAttribute("member");
+
             if (member == null) {
 
-                setMember(memberInfo.getMember());
+                member = memberInfo.getMember();
+
+                session.setAttribute("member", member);
 
                 return member;
 

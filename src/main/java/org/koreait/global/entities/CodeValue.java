@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * 설정 항목 기본 값
- * Key & Value 쌍 Map 형태로 저장
+ * JSON 형태 - Key & Value 쌍 Map 형태로 저장
  *
  */
 @Data

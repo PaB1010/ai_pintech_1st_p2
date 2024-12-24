@@ -4,10 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.koreait.admin.global.menu.MenuDetail;
 import org.koreait.admin.global.menu.Menus;
 import org.koreait.global.annotations.ApplyErrorPage;
+import org.koreait.global.entities.SiteConfig;
+import org.koreait.global.services.CodeValueService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
@@ -24,6 +27,8 @@ import java.util.List;
 @RequestMapping("/admin/basic")
 @RequiredArgsConstructor
 public class BasicController {
+
+    private final CodeValueService codeValueService;
 
     @ModelAttribute("menuCode")
     public String menuCode() {
@@ -42,6 +47,21 @@ public class BasicController {
 
         commonProcess("siteConfig", model);
 
+        SiteConfig form = codeValueService.get("siteConfig", SiteConfig.class);
+
+        model.addAttribute("siteConfig", form);
+
+        return "admin/basic/siteConfig";
+    }
+
+    @PatchMapping("/siteConfig")
+    public String sitConfigPs(SiteConfig form, Model model) {
+
+        commonProcess("sitConfig", model);
+
+        codeValueService.save("siteConfig", form);
+
+        // 임시
         return "admin/basic/siteConfig";
     }
 

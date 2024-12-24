@@ -1,5 +1,6 @@
 package org.koreait.member.services;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.koreait.member.constants.Authority;
 import org.koreait.member.controllers.RequestJoin;
@@ -44,6 +45,8 @@ public class MemberUpdateService {
     private final MemberUtil memberUtil;
 
     private final MemberInfoService infoService;
+
+    private final HttpSession session;
     
     /**
      * 메서드 오버로드 - 커맨드 객체의 타입에 따라서
@@ -184,7 +187,7 @@ public class MemberUpdateService {
             // 로그인 회원 정보 업데이트
             infoService.addInfo(_member);
 
-            memberUtil.setMember(_member);
+            session.setAttribute("member", _member);
         }
     }
 

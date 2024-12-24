@@ -65,13 +65,9 @@ public class SecurityConfig {
         });
 
         // 로그아웃시 어디로 갈 것인지 & 자세한 처리
-        http.logout(c-> {
-
+        http.logout(c -> {
             c.logoutRequestMatcher(new AntPathRequestMatcher("/member/logout"))
-                    .logoutSuccessHandler((req, res, auth) -> {
-                        memberUtil.setMember(null);
-                    res.sendRedirect(req.getContextPath() + "/member/login");
-                    });
+                    .logoutSuccessUrl("/member/login");
         });
 
         /* 인증 설정 E - 로그인 & 로그아웃 */

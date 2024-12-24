@@ -1,5 +1,6 @@
 package org.koreait.mypage.controllers;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.koreait.global.annotations.ApplyErrorPage;
@@ -184,11 +185,11 @@ public class MypageController {
      */
     @ResponseBody
     @GetMapping("/refresh")
-    public void refresh(Principal principal, Model model) {
+    public void refresh(Principal principal, Model model, HttpSession session) {
 
         MemberInfo memberInfo = (MemberInfo) memberInfoService.loadUserByUsername(principal.getName());
 
-        memberUtil.setMember(memberInfo.getMember());
+        session.setAttribute("member", memberInfo.getMember());
 
         // 프로필 속성 변경
         model.addAttribute("profile", memberInfo.getMember());
