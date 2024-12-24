@@ -47,8 +47,6 @@ public class CommonInterceptor implements HandlerInterceptor {
 
         SiteConfig config = Objects.requireNonNullElseGet(codeValueService.get("siteConfig", SiteConfig.class), SiteConfig::new);
 
-        System.out.println("사이트" + config);
-
         mv.addObject("siteConfig", config);
     }
 }
