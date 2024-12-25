@@ -20,7 +20,7 @@ public class CodeValueServiceTest {
 
         item.setSiteTitle("제목");
         item.setDescription("설명");
-        item.setKeyword("키워드1, 키워드2");
+        item.setKeywords("키워드1, 키워드2");
 
         service.save("siteConfig", item);
 
