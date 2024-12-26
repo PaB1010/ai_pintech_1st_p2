@@ -12,6 +12,7 @@ import org.koreait.member.entities.Member;
 import org.koreait.member.libs.MemberUtil;
 import org.koreait.member.services.MemberInfoService;
 import org.koreait.member.services.MemberUpdateService;
+import org.koreait.mypage.services.FollowService;
 import org.koreait.mypage.validators.ProfileValidator;
 import org.koreait.pokemon.controllers.PokemonSearch;
 import org.koreait.pokemon.entities.Pokemon;
@@ -50,6 +51,8 @@ public class MypageController {
     private final MemberInfoService memberInfoService;
 
     private final PokemonInfoService pokemonInfoService;
+
+    private final FollowService followService;
 
     // profile 이라는 속성명을 가지고 template 에서 회원 조회를 바로
     // ★ About 에서 이거 가져다 쓰기 ★
@@ -115,10 +118,9 @@ public class MypageController {
 
     /**
      * 회원 소개 (초기 테스트용)
-     *
      */
     @GetMapping("/about")
-    public String about (Model model) {
+    public String about(Model model) {
 
         commonProcess("about", model);
 
@@ -126,17 +128,16 @@ public class MypageController {
     }
 
 
-
     /**
      * 찜하기 목록
      *
-     * @param mode : POKEMON (포켓몬 찜하기 목록), BOARD (게시글 찜하기 목록)
+     * @param mode   : POKEMON (포켓몬 찜하기 목록), BOARD (게시글 찜하기 목록)
      * @param search
      * @param model
      * @return
      */
     @GetMapping({"/wishlist", "/wishlist/{mode}"})
-    public String wishlist (@PathVariable(name="mode", required = false) WishType mode, CommonSearch search, Model model) {
+    public String wishlist(@PathVariable(name = "mode", required = false) WishType mode, CommonSearch search, Model model) {
 
         commonProcess("wishlist", model);
 
@@ -181,7 +182,6 @@ public class MypageController {
 
     /**
      * 회원 정보 갱신
-     *
      */
     @ResponseBody
     @GetMapping("/refresh")
@@ -193,6 +193,19 @@ public class MypageController {
 
         // 프로필 속성 변경
         model.addAttribute("profile", memberInfo.getMember());
+    }
+
+    @GetMapping("/follow")
+    public String followList(@RequestParam(name="mode", defaultValue = "follower") String mode, CommonSearch paging, Model model) {
+
+        commonProcess("follow", model);
+
+        ListData<Member> data = followService.getList(mode, paging);
+
+        model.addAttribute("items", data.getItems());
+        model.addAttribute("pagination", data.getPagination());
+
+        return utils.tpl("mypage/follow");
     }
 
     /**
@@ -237,11 +250,15 @@ public class MypageController {
             addCommonScript.add("wish");
             pageTitle = utils.getMessage("My_Wish");
             // 추후 포켓몬 list 와 Css 공유할 경우 add
-        }
+        } else if (mode.equals("follow")) {
 
-        model.addAttribute("addCommonScript", addCommonScript);
-        model.addAttribute("addScript", addScript);
-        model.addAttribute("pageTitle", pageTitle);
-        model.addAttribute("addCss", addCss);
+            // addCommonScript.add("follow");
+            pageTitle = utils.getMessage("My_Follow");
+
+            model.addAttribute("addCommonScript", addCommonScript);
+            model.addAttribute("addScript", addScript);
+            model.addAttribute("pageTitle", pageTitle);
+            model.addAttribute("addCss", addCss);
+        }
     }
 }

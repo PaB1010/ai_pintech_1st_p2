@@ -1,12 +1,12 @@
 package org.koreait.mypage.repositories;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.koreait.mypage.entities.Follow;
-import org.koreait.follow.entities.QFollow;
 import org.koreait.global.paging.CommonSearch;
 import org.koreait.global.paging.ListData;
 import org.koreait.global.paging.Pagination;
 import org.koreait.member.entities.Member;
+import org.koreait.mypage.entities.Follow;
+import org.koreait.mypage.entities.QFollow;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

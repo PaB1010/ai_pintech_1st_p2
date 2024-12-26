@@ -4,25 +4,26 @@
       layout:decorate="~{admin/layouts/main}">
 <div layout:fragment="content">
     <h1>약관 등록</h1>
+
     <form name="frmTerms" method="POST" th:action="@{/admin/basic/terms}" autocomplete="off" th:object="${terms}" target="ifrmProcess">
         <div class="error global" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
         <table class="table-cols">
             <tr>
-                <th width="150">약관 코드</th>
+                <th width="150">약관코드</th>
                 <td>
                     <input type="text" name="code" th:field="*{code}">
                     <div class="error" th:each="err : ${#fields.errors('code')}" th:text="${err}"></div>
                 </td>
             </tr>
             <tr>
-                <th>약관 제목</th>
+                <th>약관제목</th>
                 <td>
                     <input type="text" name="subject" th:field="*{subject}">
                     <div class="error" th:each="err : ${#fields.errors('subject')}" th:text="${err}"></div>
                 </td>
             </tr>
             <tr>
-                <th>약관 내용</th>
+                <th>약관내용</th>
                 <td>
                     <textarea name="content" th:field="*{content}"></textarea>
                     <div class="error" th:each="err : ${#fields.errors('content')}" th:text="${err}"></div>
@@ -33,18 +34,18 @@
     </form>
 
     <h2>약관 목록</h2>
-    <form name="frmList" method="POST" th:action="@{/admin/basic/terms}" target="iframeProcess" autocomplete="off">
+    <form name="frmList" method="POST" th:action="@{/admin/basic/terms}" target="ifrmProcess" autocomplete="off">
         <input type="hidden" name="_method" value="PATCH">
         <table class="table-rows">
             <thead>
-                <tr>
-                    <th th:width="40">
-                        <input type="checkbox" class="check-all" data-target-class="chk" id="checkall">
-                        <label for="checkall" class="standalone"></label>
-                    </th>
-                    <th width="220">약관 코드</th>
-                    <th>약관제목/내용</th>
-                </tr>
+            <tr>
+                <th width="40">
+                    <input type="checkbox" class="check-all" data-target-class="chk" id="checkall">
+                    <label for="checkall" class="standalone"></label>
+                </th>
+                <th width="220">약관코드</th>
+                <th>약관제목/내용</th>
+            </tr>
             </thead>
             <tbody>
             <tr th:if="${items != null && !#lists.isEmpty(items)}"
