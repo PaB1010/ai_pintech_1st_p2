@@ -2,9 +2,10 @@ package org.koreait.follow;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.koreait.follow.repositories.FollowRepository;
-import org.koreait.follow.services.FollowService;
+import org.koreait.mypage.repositories.FollowRepository;
+import org.koreait.mypage.services.FollowService;
 import org.koreait.global.paging.CommonSearch;
 import org.koreait.global.paging.ListData;
 import org.koreait.member.entities.Member;
@@ -12,7 +13,6 @@ import org.koreait.member.repositories.MemberRepository;
 import org.koreait.member.services.test.annotations.MockMember;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @Transactional
-@ActiveProfiles({"default", "test"})
+// @ActiveProfiles({"default", "test"})
 public class FollowTest {
 
     @Autowired
@@ -46,7 +46,7 @@ public class FollowTest {
 
     private CommonSearch paging;
 
-    // @BeforeEach
+    @BeforeEach
     void init() {
 
 //        List<Member> members = new ArrayList<>();
@@ -87,17 +87,6 @@ public class FollowTest {
     @MockMember
     void test1() {
 
-        member1 = memberRepository.findById(1L).orElse(null);
-        member2 = memberRepository.findById(2L).orElse(null);
-        member3 = memberRepository.findById(3L).orElse(null);
-
-        session.setAttribute("member", member1);
-
-        followService.follow(member2);
-        followService.follow(member3);
-
-        paging = new CommonSearch();
-
         List<Member> members = followRepository.getFollowings(member1);
 
         System.out.println("멤버들" + members);
@@ -107,11 +96,12 @@ public class FollowTest {
     }
 
     /**
-     * member2, member3는 각각 member1이라는 follower를 가지고 있어야 하고
+     * member2, member3는 각각 member1이라는 follower 를 가지고 있어야 하고
      * getTotalFollowers()는 1명이 되어야 함
      *
      */
     @Test
+    @MockMember
     void test2() {
 
         ListData<Member> members1 = followRepository.getFollowers(member2, paging, request);
@@ -123,10 +113,24 @@ public class FollowTest {
         assertEquals(1, followRepository.getTotalFollowers(member3));
     }
 
+    /**
+     * 로그인 회원을 follow 한 회원 목록 - followers
+     */
     @Test
+    @MockMember
     void test3() {
         ListData<Member> members = followService.getFollowers(paging);
 
         assertEquals(0, members.getItems().size());
+    }
+
+    /**
+     * 로그인 회원이 follow 한 회원 목록 - followings
+     */
+    @Test
+    @MockMember
+    void test4() {
+        ListData<Member> members = followService.getFollowings(paging);
+        assertEquals(2, members.getItems().size());
     }
 }

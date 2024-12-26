@@ -1,4 +1,4 @@
-package org.koreait.follow.entities;
+package org.koreait.mypage.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

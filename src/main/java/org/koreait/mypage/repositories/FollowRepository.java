@@ -1,7 +1,7 @@
-package org.koreait.follow.repositories;
+package org.koreait.mypage.repositories;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.koreait.follow.entities.Follow;
+import org.koreait.mypage.entities.Follow;
 import org.koreait.follow.entities.QFollow;
 import org.koreait.global.paging.CommonSearch;
 import org.koreait.global.paging.ListData;

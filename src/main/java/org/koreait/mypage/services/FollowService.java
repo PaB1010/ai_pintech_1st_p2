@@ -1,11 +1,11 @@
-package org.koreait.follow.services;
+package org.koreait.mypage.services;
 
 import com.querydsl.core.BooleanBuilder;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.koreait.follow.entities.Follow;
+import org.koreait.mypage.entities.Follow;
 import org.koreait.follow.entities.QFollow;
-import org.koreait.follow.repositories.FollowRepository;
+import org.koreait.mypage.repositories.FollowRepository;
 import org.koreait.global.paging.CommonSearch;
 import org.koreait.global.paging.ListData;
 import org.koreait.member.entities.Member;
