@@ -135,8 +135,7 @@ public class BasicController {
         // Script 추가시 부모창 새로고침하는 속성 추가
         model.addAttribute("script", "parent.location.reload();");
 
-        // 임시
-        return "common/_excute_script";
+        return "common/_execute_script";
     }
 
     /**
@@ -158,7 +157,7 @@ public class BasicController {
 
         model.addAttribute("script", "parent.location.reload();");
 
-        return "common/_excute_script";
+        return "common/_execute_script";
     }
 
     /**

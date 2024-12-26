@@ -49,7 +49,7 @@ public class TermsUpdateService {
 
         String mode = request.getMethod().equalsIgnoreCase("DELETE") ? "delete" : "modify";
 
-        if (chks != null || chks.isEmpty()) {
+        if (chks == null || chks.isEmpty()) {
 
             throw new AlertException(String.format("%s할 약관을 선택하세요.", mode.equals("delete") ? "삭제" : "수정"));
         }

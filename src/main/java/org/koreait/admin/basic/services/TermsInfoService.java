@@ -51,11 +51,9 @@ public class TermsInfoService {
 
                     return om.readValue(item.getValue(), Terms.class);
 
-                } catch (JsonProcessingException e) {
-
-                    return null;
-                }
+                } catch (JsonProcessingException e) {}
                 // null 아닌 것만
+                return null;
             }).filter(Objects::nonNull).toList();
             //.filter(terms -> terms != null).toList();
         }
