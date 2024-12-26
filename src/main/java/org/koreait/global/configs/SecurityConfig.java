@@ -117,6 +117,10 @@ public class SecurityConfig {
 
         /* 자동 로그인 설정 E */
 
+        // 같은 출처 Server 끼리는 iframe 허용
+        // 요청 header 설정
+        http.headers(c -> c.frameOptions(o -> o.sameOrigin()));
+
         /* Spring Security가 모르는 부분들 설정 E */
 
         // 설정 객체를 빌드로 만들어서 내보내는 역할

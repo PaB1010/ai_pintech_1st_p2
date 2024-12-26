@@ -2,6 +2,7 @@ package org.koreait.admin.basic.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.koreait.admin.basic.services.TermsUpdateService;
 import org.koreait.admin.global.menu.MenuDetail;
 import org.koreait.admin.global.menu.Menus;
 import org.koreait.global.annotations.ApplyErrorPage;
@@ -32,6 +33,8 @@ import java.util.Objects;
 public class BasicController {
 
     private final CodeValueService codeValueService;
+
+    private final TermsUpdateService termsUpdateService;
 
     private final Utils utils;
 
@@ -117,8 +120,13 @@ public class BasicController {
             return "admin/basic/terms";
         }
 
+        termsUpdateService.save(form);
+
+        // Script 추가시 부모창 새로고침하는 속성 추가
+        model.addAttribute("script", "parent.location.reload();");
+
         // 임시
-        return "admin/basic/terms";
+        return "common/_excute_script";
     }
 
     /**
