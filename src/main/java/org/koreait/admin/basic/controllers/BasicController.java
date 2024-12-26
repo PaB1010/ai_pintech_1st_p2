@@ -1,7 +1,9 @@
 package org.koreait.admin.basic.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.koreait.admin.basic.services.TermsInfoService;
 import org.koreait.admin.basic.services.TermsUpdateService;
 import org.koreait.admin.global.menu.MenuDetail;
 import org.koreait.admin.global.menu.Menus;
@@ -35,6 +37,10 @@ public class BasicController {
     private final CodeValueService codeValueService;
 
     private final TermsUpdateService termsUpdateService;
+
+    private final TermsInfoService termsInfoService;
+
+    private final HttpServletRequest request;
 
     private final Utils utils;
 
@@ -100,6 +106,10 @@ public class BasicController {
         
         commonProcess("terms", model);
 
+        List<Terms> items = termsInfoService.getList();
+
+        model.addAttribute("items", items);
+
         return "admin/basic/terms";
     }
 
@@ -126,6 +136,28 @@ public class BasicController {
         model.addAttribute("script", "parent.location.reload();");
 
         // 임시
+        return "common/_excute_script";
+    }
+
+    /**
+     * 새로 고침
+     *
+     * @param chks
+     * @return
+     */
+    @RequestMapping(path="/terms", method={RequestMethod.PATCH, RequestMethod.DELETE})
+    public String updateTerms(@RequestParam(name="chk", required = false) List<Integer> chks, Model model) {
+
+        termsUpdateService.processList(chks);
+
+        String message = request.getMethod().equalsIgnoreCase("DELETE") ? "삭제" : "수정";
+
+        message += "하였습니다.";
+
+        utils.showSessionMessage(message);
+
+        model.addAttribute("script", "parent.location.reload();");
+
         return "common/_excute_script";
     }
 

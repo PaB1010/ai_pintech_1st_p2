@@ -237,4 +237,20 @@ public class Utils {
 
         session.removeAttribute("showMessage");
     }
+
+    /**
+     * getParameter 편의 기능
+     *
+     * @param name
+     * @return
+     */
+    public String getParam(String name) {
+
+        return request.getParameter(name);
+    }
+
+    public String[] getParams(String name) {
+
+        return request.getParameterValues(name);
+    }
 }

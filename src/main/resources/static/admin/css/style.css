@@ -96,6 +96,39 @@ textarea {
     border-top: 1px solid #ccc;
 }
 
+.table-rows {
+    border-spacing: 0;
+    width: 100%;
+}
+
+.table-rows thead th {
+    background: #e6e6e6;
+    color: black;
+    padding: 7px 10px;
+    font-size: 1.15rem;
+    /*border-bottom: 1px solid #ccc;*/
+    /*text-align: left;*/
+}
+
+.table-rows thead th + th {
+    border-left: 1px solid #f8f8f8;
+}
+
+.table-rows tbody td {
+    border-bottom: 1px solid #ccc;
+    padding: 7px 10px;
+}
+
+.table-rows tbody tr:nth-of-type(2n) td {
+    background: rgba(234, 240, 252, 0.73);
+}
+
+.table-action {
+    padding: 20px 10px;
+    border-bottom: 1px solid dimgray;
+    font-size: 1.15rem;
+}
+
 /* Table 공통 E */
 
 /* 여백 공통 S */
@@ -163,6 +196,26 @@ textarea {
     font-size: 1.25rem;
 }
 
+.sbtn {
+    display: inline-block;
+    height: 40px;
+    border: 1px solid lightslategray;
+    color: lightslategray;
+    font-size: 1rem;
+    line-height: 38px;
+    padding: 0 15px;
+    border-radius: 3px;
+    min-width: 80px;
+    background: #fff;
+    cursor: pointer;
+}
+
+.sbtn.black {
+    background: lightslategray;
+    color: #fff;
+    border: none;
+}
+
 /* 버튼 공통 E */
 
 /* 라디오 버튼 공통 S */
@@ -209,6 +262,11 @@ input[type='checkbox']:checked + label {
     background:url("../images/check_on.png") no-repeat left center;
 }
 
+input[type='checkbox'] + label.standalone {
+    padding: 0;
+    width: 23px;
+    height: 23px;
+}
 
 
 /* 체크박스 공통 E */
