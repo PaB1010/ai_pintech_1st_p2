@@ -4,5 +4,17 @@
       layout:decorate="~{front/layouts/main}">
 <main layout:fragment="content">
     <h1>팔로우 목록</h1>
+    [[${items}]]
+    <li th:if="${items != null || !items.isEmpty}" th:each="item : ${items}" th:object="${item}">
+        <dl>
+            <div class="aboutList" th:text="#{프로필_이미지}"></div>
+            <th:block th:if="${profile.profileImage != null}"
+                  th:utext="${@utils.showImage(profile.profileImage.seq, 100, 130, 'image')}"></th:block>
+        </dl>
+        <dl>
+            <dt th:text="#{닉네임}"></dt>
+            <dd class="aboutList" th:text="${profile.nickName}"></dd>
+        </dl>
+    </li>
 </main>
 </html>

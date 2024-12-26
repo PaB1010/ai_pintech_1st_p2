@@ -4,17 +4,18 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.koreait.mypage.repositories.FollowRepository;
-import org.koreait.mypage.services.FollowService;
 import org.koreait.global.paging.CommonSearch;
 import org.koreait.global.paging.ListData;
 import org.koreait.member.entities.Member;
 import org.koreait.member.repositories.MemberRepository;
 import org.koreait.member.services.test.annotations.MockMember;
+import org.koreait.mypage.repositories.FollowRepository;
+import org.koreait.mypage.services.FollowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -65,9 +66,23 @@ public class FollowTest {
 
 //        memberRepository.saveAllAndFlush(members);
 
-        member1 = memberRepository.findById(1L).orElse(null);
-        member2 = memberRepository.findById(2L).orElse(null);
-        member3 = memberRepository.findById(3L).orElse(null);
+
+        List<Member> members = new ArrayList<>();
+
+        for (long i = 1; i <= 3; i++) {
+
+            Member member = new Member();
+
+            member = memberRepository.findById(i).orElse(null);
+
+            members.add(member);
+        }
+
+        memberRepository.saveAllAndFlush(members);
+
+        member1 = members.get(0);
+        member2 = members.get(1);
+        member3 = members.get(2);
 
         session.setAttribute("member", member1);
 
