@@ -253,4 +253,16 @@ public class Utils {
 
         return request.getParameterValues(name);
     }
+
+    /**
+     * 줄 개행 문자(\n 혹은 \r\n)를 <br>로 변환
+     *
+     * @param text
+     * @return
+     */
+    public String nl2br(String text) {
+
+        return text.replaceAll("\\r", "")
+                .replaceAll("\\n", "<br>");
+    }
 }
