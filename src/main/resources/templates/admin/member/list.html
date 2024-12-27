@@ -3,11 +3,11 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{admin/layouts/main}">
 <div layout:fragment="content">
-    <h1>회원검색</h1>
+    <h1>회원 검색</h1>
     <form name="frmSearch" method="GET" th:action="@{/admin/member/list}" th:object="${memberSearch}" autocomplete="off">
         <table class="table-cols">
             <tr>
-                <th width="180">날짜검색</th>
+                <th width="180">날짜 검색</th>
                 <td class="flex ac">
                     <select name="dateType" th:field="*{dateType}" class="w180 mr5">
                         <option value="createdAt">가입일</option>
@@ -22,7 +22,7 @@
                 </td>
             </tr>
             <tr>
-                <th>회원권한</th>
+                <th>회원 권한</th>
                 <td>
                     <span class="checkbox" th:each="authority, status : ${authorities}">
                         <input type="checkbox" name="authority" th:value="${authority.name}" th:id="${'authority-' + status.index}" th:field="*{authority}">
@@ -34,7 +34,7 @@
                 <th>키워드 검색</th>
                 <td class="flex">
                     <select name="sopt" th:field="*{sopt}" class="w180 mr5">
-                        <option value="ALL">통합검색</option>
+                        <option value="ALL">통합 검색</option>
                         <option value="EMAIL">이메일</option>
                         <option value="NAME">이름</option>
                     </select>
@@ -42,10 +42,10 @@
                 </td>
             </tr>
         </table>
-        <button type="submit" class="submit-btn">검색하기</button>
+        <button type="submit" class="submit-btn">검색</button>
     </form>
 
-    <h2>회원목록</h2>
+    <h2>회원 목록</h2>
     <form name="frmList" method="POST" th:action="@{/admin/member/list}" target="ifrmProcess">
         <input type="hidden" name="_method" value="PATCH">
 
@@ -57,7 +57,7 @@
                     <label for="check-all" class="standalone"></label>
                 </th>
                 <th width="180">이메일</th>
-                <th width="180">회원권한</th>
+                <th width="180">회원 권한</th>
                 <th width="180">회원명/닉네임</th>
                 <th width="180">가입일시</th>
                 <th width="180">비밀번호 변경일시</th>
@@ -85,21 +85,21 @@
                     <div th:if="*{credentialChangedAt != null}"
                          th:text="*{#temporals.format(credentialChangedAt, 'yyyy.MM.dd HH:mm:ss')}"></div>
                     <input type="checkbox" th:name="${'updateCredentialChangedAt_' + status.index}" value="true" th:id="${'updateCredentialChangedAt_' + status.index}">
-                    <label th:for="${'updateCredentialChangedAt_' + status.index}">갱신하기</label>
+                    <label th:for="${'updateCredentialChangedAt_' + status.index}">갱신</label>
                 </td>
                 <td align="center">
                     <th:block th:if="*{deletedAt != null}">
                         <div th:text="*{#temporals.format(deletedAt, 'yyyy.MM.dd HH:mm:ss')}"></div>
                         <input type="checkbox" th:name="${'deletedAt_' + status.index}" value="CANCEL" th:id="${'deletedAt_' + status.index}">
-                        <label th:for="${'deletedAt_' + status.index}">탈퇴취소</label>
+                        <label th:for="${'deletedAt_' + status.index}">탈퇴 취소</label>
                     </th:block>
                     <th:block th:if="*{deletedAt == null}">
                         <input type="checkbox" th:name="${'deletedAt_' + status.index}" value="RESIGN" th:id="${'deletedAt_' + status.index}">
-                        <label th:for="${'deletedAt_' + status.index}">탈퇴하기</label>
+                        <label th:for="${'deletedAt_' + status.index}">탈퇴</label>
                     </th:block>
                 </td>
                 <td>
-                    <button type="button" class="sbtn">정보수정</button>
+                    <button type="button" class="sbtn">정보 수정</button>
                 </td>
             </tr>
             </tbody>
@@ -107,7 +107,7 @@
 
 
         <div class="table-action" data-form-name="frmList">
-            선택 회원을 <button type="button" class="sbtn modify">수정하기</button>
+            선택 회원을 <button type="button" class="sbtn modify">수정</button>
         </div>
     </form>
 
