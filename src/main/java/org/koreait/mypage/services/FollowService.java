@@ -13,7 +13,6 @@ import org.koreait.mypage.entities.Follow;
 import org.koreait.mypage.entities.QFollow;
 import org.koreait.mypage.repositories.FollowRepository;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -37,7 +36,6 @@ public class FollowService {
     private final MemberUtil utils;
 
     private final HttpServletRequest request;
-    private final DataSourceTransactionManager dataSourceTransactionManager;
 
 
     /**

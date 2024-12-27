@@ -25,6 +25,7 @@ import static org.springframework.data.domain.Sort.Order.desc;
 public interface FollowRepository extends JpaRepository<Follow, Long>, QuerydslPredicateExecutor<Follow> {
 
     Follow findByFollowerAndFollower(Member following, Member follower);
+    // Follow FindByFollowing(Member following);
 
     // 해당 회원이 follow 하는 회원의 총합
     default long getTotalFollowings(Member member) {
@@ -77,13 +78,23 @@ public interface FollowRepository extends JpaRepository<Follow, Long>, QuerydslP
 
         QFollow follow = QFollow.follow;
 
+        // Follow follower = FindByFollowing(member);
+
+        // System.out.println(follower);
+
         Pageable pageable = PageRequest.of(page -1, limit, Sort.by(desc("createdAt")));
 
         Page<Follow> data = findAll(follow.follower.eq(member), pageable);
 
+        System.out.println("data : " + data);
+        System.out.println("follow : " + follow);
+
         List<Follow> follows = data.getContent();
+
         List<Member> items = null;
+
         if (follows != null) {
+
             items = follows.stream().map(Follow::getFollowing).toList();
         }
 
@@ -141,7 +152,7 @@ public interface FollowRepository extends JpaRepository<Follow, Long>, QuerydslP
         return null;
     }
 
-    // 회원dmf follow 하는 회원 목록
+    // 회원을 follow 하는 회원 목록
     default List<Member> getFollowers(Member member) {
 
         QFollow follow = QFollow.follow;

@@ -136,6 +136,8 @@ public class FollowTest {
     void test3() {
         ListData<Member> members = followService.getFollowers(paging);
 
+        System.out.println(members);
+
         assertEquals(0, members.getItems().size());
     }
 
