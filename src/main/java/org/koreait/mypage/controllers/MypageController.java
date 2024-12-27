@@ -208,12 +208,21 @@ public class MypageController {
 
         commonProcess("follow", model);
 
+        mode = "following";
+
         ListData<Member> data = followService.getList(mode, paging);
 
-        // model.addAttribute("items", data.getItems());
+        System.out.println("모드" + mode);
+
+        System.out.println("페이징" + paging);
+
+        System.out.println("데이터" + data);
+
         model.addAttribute("items", data.getItems());
         model.addAttribute("pagination", data.getPagination());
         model.addAttribute("mode", mode);
+
+        System.out.println("모델" + model);
 
         return utils.tpl("mypage/follow");
     }

@@ -230,7 +230,7 @@ public class MemberInfoService implements UserDetailsService {
 
             // andBuilder.and(member.authorities.);
 
-            // andBuilder.and(member.authorities.any().authority.in(authorities));
+            andBuilder.and(member.authorities.any().authority.in(authorities));
         }
         /* 권한 검색 E */
 

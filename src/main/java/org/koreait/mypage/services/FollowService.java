@@ -13,6 +13,7 @@ import org.koreait.mypage.entities.Follow;
 import org.koreait.mypage.entities.QFollow;
 import org.koreait.mypage.repositories.FollowRepository;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -36,6 +37,7 @@ public class FollowService {
     private final MemberUtil utils;
 
     private final HttpServletRequest request;
+    private final DataSourceTransactionManager dataSourceTransactionManager;
 
 
     /**
@@ -99,9 +101,7 @@ public class FollowService {
     public void unfollow(Member follower) {
 
         // follow 와 마찬가지로 회원 전용 기능이므로 비로그인시 처리 X
-        if (utils.isLogin()) {
-            return;
-        }
+        if (utils.isLogin()) return;
 
         if (follower == null) return;
 
@@ -213,6 +213,8 @@ public class FollowService {
         mode = StringUtils.hasText(mode) ? mode : "follower";
 
         ListData<Member> data = mode.equals("following") ? getFollowings(paging) : getFollowers(paging);
+
+        System.out.println("서비스 데이터" + data);
 
         // 추가 정보 처리 (2차 가공)
         data.getItems().forEach(memberInfoService::addInfo);

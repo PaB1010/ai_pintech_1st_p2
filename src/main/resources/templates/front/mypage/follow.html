@@ -5,7 +5,7 @@
 <main layout:fragment="content">
     <h1>팔로우 목록</h1>
     [[${items}]]
-    <li th:if="${items != null || !items.isEmpty}" th:each="item : ${items}" th:object="${item}">
+    <li th:unless="${items == null && items.isEmpty}" th:each="item : ${items}" th:object="${item}">
         <dl>
             <div class="aboutList" th:text="#{프로필_이미지}"></div>
             <th:block th:if="${profile.profileImage != null}"
