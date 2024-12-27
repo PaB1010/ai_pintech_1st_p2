@@ -11,7 +11,7 @@ window.addEventListener("DOMContentLoaded", function() {
 
         if (!frm) continue;
 
-        const buttons = frm.getElementsByTagName("button");
+        const buttons = tableAction.getElementsByTagName("button");
 
         for (const button of buttons) {
 

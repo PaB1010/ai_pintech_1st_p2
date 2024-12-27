@@ -111,6 +111,10 @@ commonLib.ajaxLoad = function(url, callback, method = 'GET', data, headers) {
     }); /* Promise E */
 };
 
+commonLib.popup = function(url, width = 350, height = 350, isAjax = false) {
+
+}
+
 window.addEventListener("DOMContentLoaded", function() {
 
     // checkBox 전체 토글 기능 S

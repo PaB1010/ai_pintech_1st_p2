@@ -2,6 +2,8 @@ package org.koreait.member.services;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.koreait.global.exceptions.scripts.AlertException;
+import org.koreait.global.libs.Utils;
 import org.koreait.member.constants.Authority;
 import org.koreait.member.controllers.RequestJoin;
 import org.koreait.member.entities.Authorities;
@@ -19,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,6 +50,8 @@ public class MemberUpdateService {
     private final MemberInfoService infoService;
 
     private final HttpSession session;
+
+    private final Utils utils;
     
     /**
      * 메서드 오버로드 - 커맨드 객체의 타입에 따라서
@@ -221,7 +226,44 @@ public class MemberUpdateService {
             authoritiesRepository.saveAllAndFlush(authorities);
         }
         /* 회원 권한 업데이트 처리 E */
+    }
 
+    /**
+     * 회원 목록 수정 처리
+     *
+     * @param chks
+     */
+    public void updateList(List<Integer> chks) {
 
+        if (chks == null || chks.isEmpty()) throw new AlertException("수정할 회원을 선택하세요.");
+
+        List<Member> members = new ArrayList<>();
+
+        for (int chk : chks) {
+
+            Long seq = Long.valueOf(utils.getParam("seq" + chk));
+
+            Member member = memberRepository.findById(seq).orElse(null);
+
+            if (member == null) continue;
+
+            // 비밀번호 변경일시 Update
+            if (utils.getParam("updateCredentialChangedAt_" + chk) != null) {
+
+                member.setCredentialChangedAt(LocalDateTime.now());
+            }
+
+            // 탈퇴(+취소) 처리
+            String deletedAt = utils.getParam("deletedAt_" + chk);
+
+            if (deletedAt != null) {
+
+                member.setDeletedAt(deletedAt.equals("CANCEL") ? null : LocalDateTime.now());
+            }
+
+            members.add(member);
+        }
+
+        memberRepository.saveAllAndFlush(members);
     }
 }

@@ -179,7 +179,7 @@ public class MemberInfoService implements UserDetailsService {
         // 검색 키워드
         String skey = search.getSkey();
 
-        sopt = StringUtils.hasText(sopt) ? sopt : "All";
+        sopt = StringUtils.hasText(sopt) ? sopt : "ALL";
 
         /**
          * sopt (검색 옵션)
@@ -230,7 +230,7 @@ public class MemberInfoService implements UserDetailsService {
 
             // andBuilder.and(member.authorities.);
 
-            andBuilder.and(member.authorities.any().authority.in(authorities));
+            // andBuilder.and(member.authorities.any().authority.in(authorities));
         }
         /* 권한 검색 E */
 
@@ -270,7 +270,7 @@ public class MemberInfoService implements UserDetailsService {
 
         // QueryDSL 활용해 Fetch Join 해 처음부터 Join 되도록 (지연 로딩 X)
 
-        List<Member> items = queryFactory.select(member)
+        List<Member> items = queryFactory.selectFrom(member)
                 .leftJoin(member.authorities)
                 .fetchJoin()
                 .where(andBuilder)

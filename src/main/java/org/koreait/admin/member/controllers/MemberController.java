@@ -4,8 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.koreait.admin.global.menu.SubMenus;
 import org.koreait.global.annotations.ApplyErrorPage;
 import org.koreait.global.libs.Utils;
-import org.koreait.member.libs.MemberUtil;
+import org.koreait.global.paging.ListData;
+import org.koreait.member.constants.Authority;
+import org.koreait.member.entities.Member;
 import org.koreait.member.services.MemberInfoService;
+import org.koreait.member.services.MemberUpdateService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -27,12 +30,19 @@ public class MemberController implements SubMenus {
 
     private final MemberInfoService memberInfoService;
 
-    private final MemberUtil memberUtil;
+    private final MemberUpdateService memberUpdateService;
 
-    @Override
+    // @Override
+    @ModelAttribute("menuCode")
     public String menuCode() {
 
         return "member";
+    }
+
+    @ModelAttribute("authorities")
+    public Authority[] authorities() {
+
+        return Authority.values();
     }
 
     /**
@@ -46,6 +56,11 @@ public class MemberController implements SubMenus {
 
         commonProcess("list", model);
 
+        ListData<Member> data = memberInfoService.getList(search);
+
+        model.addAttribute("items", data.getItems());
+        model.addAttribute("pagination", data.getPagination());
+
         return "admin/member/list";
     }
 
@@ -57,6 +72,8 @@ public class MemberController implements SubMenus {
      */
     @PatchMapping("/list")
     private String listPs(@RequestParam(name = "chk", required = false)List<Integer> chks, Model model) {
+
+        memberUpdateService.updateList(chks);
 
         utils.showSessionMessage("적용되었습니다.");
 
