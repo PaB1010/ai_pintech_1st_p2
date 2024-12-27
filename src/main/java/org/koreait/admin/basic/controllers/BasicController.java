@@ -43,7 +43,8 @@ public class BasicController implements SubMenus {
 
     private final Utils utils;
 
-    @Override
+    // @Override
+    @ModelAttribute("menuCode")
     public String menuCode() {
 
         return "basic";
