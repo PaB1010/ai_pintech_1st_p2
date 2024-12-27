@@ -8,10 +8,8 @@ import org.koreait.member.libs.MemberUtil;
 import org.koreait.member.services.MemberInfoService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -44,7 +42,7 @@ public class MemberController implements SubMenus {
      * @return
      */
     @GetMapping({"", "/list"})
-    public String list(Model model) {
+    public String list(@ModelAttribute MemberSearch search, Model model) {
 
         commonProcess("list", model);
 
@@ -75,5 +73,19 @@ public class MemberController implements SubMenus {
      */
     private void commonProcess(String mode, Model model) {
 
+        mode = StringUtils.hasText(mode) ? mode : "list";
+
+        String pageTitle = "";
+
+        if (mode.equals("list")) {
+
+            pageTitle = "회원 목록";
+        }
+
+        pageTitle += " - 회원 관리";
+
+        model.addAttribute("pageTitle", pageTitle);
+
+        model.addAttribute("subMenuCode", mode);
     }
 }
