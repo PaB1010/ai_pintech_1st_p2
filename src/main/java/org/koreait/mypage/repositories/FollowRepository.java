@@ -47,20 +47,23 @@ public interface FollowRepository extends JpaRepository<Follow, Long>, QuerydslP
     default ListData<Member> getFollowings(Member member, CommonSearch paging, HttpServletRequest request) {
 
         int page = Math.max(paging.getPage(), 1);
+
         int limit = paging.getPage();
+
         limit = limit < 1 ? 20 : limit;
 
         QFollow follow = QFollow.follow;
 
         Pageable pageable = PageRequest.of(page -1, limit, Sort.by(desc("createdAt")));
 
-        Page<Follow> data = findAll(follow.following.eq(member), pageable);
+        Page<Follow> data = findAll(follow.follower.eq(member), pageable);
 
         List<Follow> follows = data.getContent();
+
         List<Member> items = null;
 
         if (follows != null) {
-            items = follows.stream().map(Follow::getFollower).toList();
+            items = follows.stream().map(Follow::getFollowing).toList();
         }
 
         Pagination pagination = new Pagination(page, (int)data.getTotalElements(), 10, limit);
@@ -73,21 +76,16 @@ public interface FollowRepository extends JpaRepository<Follow, Long>, QuerydslP
     default ListData<Member> getFollowers(Member member, CommonSearch paging, HttpServletRequest request) {
 
         int page = Math.max(paging.getPage(), 1);
+
         int limit = paging.getLimit();
+
         limit = limit < 1 ? 20 : limit;
 
         QFollow follow = QFollow.follow;
 
-        // Follow follower = FindByFollowing(member);
-
-        // System.out.println(follower);
-
         Pageable pageable = PageRequest.of(page -1, limit, Sort.by(desc("createdAt")));
 
-        Page<Follow> data = findAll(follow.follower.eq(member), pageable);
-
-        System.out.println("data : " + data);
-        System.out.println("follow : " + follow);
+        Page<Follow> data = findAll(follow.following.eq(member), pageable);
 
         List<Follow> follows = data.getContent();
 
@@ -95,7 +93,7 @@ public interface FollowRepository extends JpaRepository<Follow, Long>, QuerydslP
 
         if (follows != null) {
 
-            items = follows.stream().map(Follow::getFollowing).toList();
+            items = follows.stream().map(Follow::getFollower).toList();
         }
 
         Pagination pagination = new Pagination(page, (int)data.getTotalElements(), 10, limit, request);
@@ -142,11 +140,11 @@ public interface FollowRepository extends JpaRepository<Follow, Long>, QuerydslP
 
         QFollow follow = QFollow.follow;
 
-        List<Follow> items = (List<Follow>)findAll(follow.following.eq(member));
+        List<Follow> items = (List<Follow>)findAll(follow.follower.eq(member));
 
         if (items != null) {
 
-            return items.stream().map(Follow::getFollower).toList();
+            return items.stream().map(Follow::getFollowing).toList();
         }
 
         return null;
@@ -157,11 +155,11 @@ public interface FollowRepository extends JpaRepository<Follow, Long>, QuerydslP
 
         QFollow follow = QFollow.follow;
 
-        List<Follow> items = (List<Follow>)findAll(follow.follower.eq(member));
+        List<Follow> items = (List<Follow>)findAll(follow.following.eq(member));
 
         if (items != null) {
 
-            return items.stream().map(Follow::getFollowing).toList();
+            return items.stream().map(Follow::getFollower).toList();
         }
 
         return null;

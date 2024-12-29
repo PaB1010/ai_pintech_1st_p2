@@ -208,14 +208,7 @@ public class MypageController {
 
         commonProcess("follow", model);
 
-        // mode = "following";
-
         ListData<Member> data = followService.getList(mode, paging);
-
-//        if (data.getItems().isEmpty()) {
-//
-//            System.out.println("아이템 empty");
-//        }
 
         model.addAttribute("items", data.getItems());
         model.addAttribute("pagination", data.getPagination());

@@ -134,9 +134,7 @@ public class FollowService {
      * @return
      */
     public ListData<Member> getFollowers(CommonSearch paging) {
-
         if (!utils.isLogin()) return null;
-
         return followRepository.getFollowers(utils.getMember(), paging, request);
     }
 
@@ -209,10 +207,8 @@ public class FollowService {
     public ListData<Member> getList(String mode, CommonSearch paging) {
 
         mode = StringUtils.hasText(mode) ? mode : "follower";
-
+        
         ListData<Member> data = mode.equals("following") ? getFollowings(paging) : getFollowers(paging);
-
-        System.out.println("서비스 데이터" + data);
 
         // 추가 정보 처리 (2차 가공)
         data.getItems().forEach(memberInfoService::addInfo);
