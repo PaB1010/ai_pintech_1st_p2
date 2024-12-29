@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{front/layouts/main}">
+<main layout:fragment="content">
+
+    <h1>Follower List</h1>
+    <ul class="items">
+        <li class="item" th:unless="${followers == null || followers.isEmpty()}" th:each="follower : ${followers}" th:object="${follower}">
+            <dl>
+                <th:block th:if="${follower.profileImage != null}"
+                          th:utext="${@utils.showImage(follower.profileImage.seq, 100, 130, 'image')}"></th:block>
+            </dl>
+            <dl>
+                <dt th:text="#{닉네임}"></dt>
+                <dd class="aboutList" th:text="${follower.nickName}"></dd>
+            </dl>
+        </li>
+    </ul>
+
+    <h1>Following List</h1>
+    <ul class="items">
+        <li class="item" th:unless="${followings == null || followings.isEmpty()}" th:each="following : ${followings}" th:object="${following}">
+            <dl>
+                <th:block th:if="${following.profileImage != null}"
+                          th:utext="${@utils.showImage(following.profileImage.seq, 100, 130, 'image')}"></th:block>
+            </dl>
+            <dl>
+                <dt th:text="#{닉네임}"></dt>
+                <dd class="aboutList" th:text="${following.nickName}"></dd>
+            </dl>
+        </li>
+    </ul>
+</main>
+</html>

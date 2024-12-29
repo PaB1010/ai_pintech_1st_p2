@@ -203,18 +203,32 @@ public class MypageController {
      * @param model
      * @return
      */
+//    @GetMapping("/follow")
+//    public String followList(@RequestParam(name="mode", defaultValue = "follower") String mode, CommonSearch paging, Model model) {
+//
+//        commonProcess("follow", model);
+//
+//        ListData<Member> data = followService.getList(mode, paging);
+//
+//        model.addAttribute("items", data.getItems());
+//        model.addAttribute("pagination", data.getPagination());
+//        model.addAttribute("mode", mode);
+//
+//        return utils.tpl("mypage/follow/follow");
+//    }
+
     @GetMapping("/follow")
-    public String followList(@RequestParam(name="mode", defaultValue = "follower") String mode, CommonSearch paging, Model model) {
+    public String followList(CommonSearch paging, Model model) {
 
         commonProcess("follow", model);
 
-        ListData<Member> data = followService.getList(mode, paging);
+        List<Member> followers = followService.getList("follower", paging).getItems();
+        List<Member> followings = followService.getList("following", paging).getItems();
 
-        model.addAttribute("items", data.getItems());
-        model.addAttribute("pagination", data.getPagination());
-        model.addAttribute("mode", mode);
+        model.addAttribute("followers", followers);
+        model.addAttribute("followings", followings);
 
-        return utils.tpl("mypage/follow");
+        return utils.tpl("mypage/follow/follow");
     }
 
     /**
@@ -264,10 +278,11 @@ public class MypageController {
             // addCommonScript.add("follow");
             pageTitle = utils.getMessage("My_Follow");
 
-            model.addAttribute("addCommonScript", addCommonScript);
-            model.addAttribute("addScript", addScript);
-            model.addAttribute("pageTitle", pageTitle);
-            model.addAttribute("addCss", addCss);
         }
+
+        model.addAttribute("addCommonScript", addCommonScript);
+        model.addAttribute("addScript", addScript);
+        model.addAttribute("pageTitle", pageTitle);
+        model.addAttribute("addCss", addCss);
     }
 }

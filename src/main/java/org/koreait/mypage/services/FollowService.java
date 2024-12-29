@@ -55,7 +55,7 @@ public class FollowService {
 
 
             // 자기 자신은 팔로우 하지 못하도록 체크
-           // if (follower.getSeq().equals(following.getSeq())) return;
+           if (follower.getSeq().equals(following.getSeq())) return;
 
             Follow follow = Follow.builder()
                     .following(following)
@@ -219,10 +219,10 @@ public class FollowService {
     /**
      * Following 상태 여부 체크
      *
-     * @param email
+     * @param nickName
      * @return
      */
-    public boolean isFollowing(String email) {
+    public boolean isFollowing(String nickName) {
 
         if (!utils.isLogin()) return false;
 
@@ -230,7 +230,7 @@ public class FollowService {
 
         BooleanBuilder builder = new BooleanBuilder();
 
-        builder.and(follow.follower.email.eq(email))
+        builder.and(follow.follower.nickName.eq(nickName))
                 .and(follow.following.in(utils.getMember()));
 
         return followRepository.exists(builder);
