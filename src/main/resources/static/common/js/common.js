@@ -149,7 +149,7 @@ commonLib.popup = function(url, width = 350, height = 350, isAjax = false) {
     layerEls.forEach(el => el.parentElement.removeChild(el));
 
     const layerDim = document.createElement("div");
-    layerDim.className = "layer.-dim";
+    layerDim.className = "layer-dim";
 
     const layerPopup = document.createElement("div");
     layerPopup.className = "layer-popup";
@@ -265,7 +265,7 @@ window.addEventListener("DOMContentLoaded", function() {
         el.addEventListener("click", function() {
 
             const { url, width, height } = this.dataset;
-            
+
             commonLib.popup(url, width, height);
         });
     }

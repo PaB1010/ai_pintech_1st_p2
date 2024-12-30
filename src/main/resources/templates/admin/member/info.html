@@ -37,7 +37,7 @@
             <th th:text="#{이메일}"></th>
             <td>
                 <th:block th:text="*{email}"></th:block>
-                <input type="hidden" name="email th:field=*{email}">
+                <input type="hidden" name="email" th:field="*{email}">
                 <div class="error" th:each="err : ${#fields.errors('email')}" th:text="${err}"></div>
             </td>
         </tr>
