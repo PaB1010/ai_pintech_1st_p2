@@ -38,7 +38,7 @@ commonLib.fileManager = {
 
             /* 유효성 검사 E */
 
-            /* 전송 양식 만들기 S */
+            /* 동적 전송 양식 만들기 S */
 
             const formData = new FormData();
 
@@ -59,7 +59,7 @@ commonLib.fileManager = {
                 formData.append("file", file);
             }
 
-            /* 전송 양식 만들기 E */
+            /* 동적 전송 양식 만들기 E */
 
             /* 양식 전송 처리 S */
 

@@ -1,3 +1,4 @@
+// commonLib 객체 없을 경우 새로 생성
 var commonLib = commonLib ?? {};
 
 /**

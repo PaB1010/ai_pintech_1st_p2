@@ -5,8 +5,11 @@
         <meta charset="UTF-8">
         <meta name="keywords" th:if="*{keywords != null}" th:content="*{keywords}">
         <meta name="description" th:if="*{description != null}" th:content="*{description}">
+<!--    CSRF : 같은 출처에서 같은 토큰을 가지고 접근해야 올바른 접근으로 판단하는 Spring Security 토큰 검증 -->
+<!--    검증 실패시 Status 401-->
         <meta name="_csrf" th:content="${_csrf.token}">
         <meta name="_csrf_header" th:content="${_csrf.headerName}">
+<!--    Context Path -->
         <meta name="rootUrl" th:content="@{/}">
 
         <title>
