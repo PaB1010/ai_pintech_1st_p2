@@ -265,4 +265,17 @@ public class Utils {
         return text.replaceAll("\\r", "")
                 .replaceAll("\\n", "<br>");
     }
+
+    /**
+     * Popup 편의 기능
+     *
+     * @param url
+     * @param width
+     * @param height
+     * @return
+     */
+    public String popup(String url, int width, int height) {
+
+        return String.format("commonLib.pup('%s', %d, %d);", url, width, height);
+    }
 }

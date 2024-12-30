@@ -30,7 +30,9 @@ public class Menus {
         // 회원 관리
         submenus.put("member", List.of(
 
-            new MenuDetail("list", "회원 목록", "/admin/member/list")
+            new MenuDetail("list", "회원 목록", "/admin/member/list"),
+
+            new MenuDetail("message", "쪽지 관리", "/admin/member/message")
         ));
 
         // 게시판 관리

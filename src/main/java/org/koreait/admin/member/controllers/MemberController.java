@@ -1,5 +1,6 @@
 package org.koreait.admin.member.controllers;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.koreait.admin.global.menu.SubMenus;
 import org.koreait.global.annotations.ApplyErrorPage;
@@ -9,11 +10,15 @@ import org.koreait.member.constants.Authority;
 import org.koreait.member.entities.Member;
 import org.koreait.member.services.MemberInfoService;
 import org.koreait.member.services.MemberUpdateService;
+import org.koreait.mypage.controllers.RequestProfile;
+import org.koreait.mypage.validators.ProfileValidator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,6 +36,8 @@ public class MemberController implements SubMenus {
     private final MemberInfoService memberInfoService;
 
     private final MemberUpdateService memberUpdateService;
+
+    private final ProfileValidator profileValidator;
 
     // @Override
     @ModelAttribute("menuCode")
@@ -83,6 +90,52 @@ public class MemberController implements SubMenus {
     }
 
     /**
+     * 개별 회원 정보 수정 양식
+     *
+     * @param email
+     * @param model
+     * @return
+     */
+    @GetMapping("/info/{email}")
+    public String info(@PathVariable("email") String email, Model model) {
+
+        commonProcess("info", model);
+
+        RequestProfile form = memberInfoService.getProfile(email);
+
+        model.addAttribute("requestProfile", form);
+
+        return "admin/member/info";
+    }
+
+    @PatchMapping("/info")
+    public String infoPs(@Valid RequestProfile form, Errors errors, Model model) {
+
+        commonProcess("info", model);
+
+        profileValidator.validate(form, errors);
+
+        if (errors.hasErrors()) {
+            return "admin/member/info";
+        }
+
+        memberUpdateService.process(form, form.getAuthorities());
+
+        model.addAttribute("script", "parent.location.reload();");
+
+        return "common/_execute_script";
+    }
+
+    @GetMapping("/message")
+    public String messageList(Model model) {
+        
+        commonProcess("message", model);
+        
+        
+        return "admin/member/message";
+    }
+
+    /**
      * 공통 처리 부분
      *
      * @param mode
@@ -92,17 +145,34 @@ public class MemberController implements SubMenus {
 
         mode = StringUtils.hasText(mode) ? mode : "list";
 
+        List<String> addCommonScript = new ArrayList<>();
+        List<String> addScript = new ArrayList<>();
+
+
         String pageTitle = "";
 
         if (mode.equals("list")) {
 
             pageTitle = "회원 목록";
+
+        } else if (mode.equals("info")) {
+
+            pageTitle = "회원 정보 수정";
+
+            addCommonScript.add("address");
+            addCommonScript.add("fileManager");
+            addScript.add("member/info");
+            
+        } else if (mode.equals("message")) {
+            
+            pageTitle = "쪽지 관리";
         }
 
         pageTitle += " - 회원 관리";
 
         model.addAttribute("pageTitle", pageTitle);
-
         model.addAttribute("subMenuCode", mode);
+        model.addAttribute("addCommonScript", addCommonScript);
+        model.addAttribute("addScript", addScript);
     }
 }

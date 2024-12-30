@@ -15,6 +15,7 @@ import org.koreait.member.repositories.MemberRepository;
 import org.koreait.mypage.controllers.RequestProfile;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -137,11 +138,11 @@ public class MemberUpdateService {
      */
     public void process(RequestProfile form, List<Authority> authorities) {
 
-        // 로그인한 사용자의 정보
-        // Member member = memberUtil.getMember();
-        Member member = memberUtil.getMember();
+        String email = form.getEmail();
 
-        // Member member2 = modelMapper.map(form, Member.class);
+        // 로그인한 사용자의 정보
+        // 관리자가 정보 수정할때는 수정할 회원의 email로 조회해서 가져오고, 본인 수정할 경우에는 memberUtil.getMember 본인 정보 조회
+        Member member = memberUtil.isAdmin() && StringUtils.hasText(email) ? memberRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email)) : memberUtil.getMember();
 
         member.setName(form.getName());
         member.setNickName(form.getNickName());
@@ -180,19 +181,18 @@ public class MemberUpdateService {
             _authorities = authorities.stream().map(a -> Authorities.builder().authority(a).member(member).build()).toList();
         }
 
-        System.out.println(member);
-        //System.out.println(member2);
-
         save(member, _authorities);
 
-        Member _member = memberRepository.findByEmail(member.getEmail()).orElse(null);
+        if (!StringUtils.hasText(email)) {
+            Member _member = memberRepository.findByEmail(member.getEmail()).orElse(null);
 
-        if (_member != null) {
+            if (_member != null) {
 
-            // 로그인 회원 정보 업데이트
-            infoService.addInfo(_member);
+                // 로그인 회원 정보 업데이트
+                infoService.addInfo(_member);
 
-            session.setAttribute("member", _member);
+                session.setAttribute("member", _member);
+            }
         }
     }
 

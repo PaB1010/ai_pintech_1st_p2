@@ -17,6 +17,8 @@ import org.koreait.member.entities.Authorities;
 import org.koreait.member.entities.Member;
 import org.koreait.member.entities.QMember;
 import org.koreait.member.repositories.MemberRepository;
+import org.koreait.mypage.controllers.RequestProfile;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -27,6 +29,7 @@ import org.springframework.util.StringUtils;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -50,6 +53,8 @@ public class MemberInfoService implements UserDetailsService {
     private final JPAQueryFactory queryFactory;
 
     private final HttpServletRequest request;
+
+    private final ModelMapper modelMapper;
 
     // 회원 조회해서 UserDetails 구현체로 완성해 반환값 내보냄
     // 회원 정보가 필요할때마다 호출됨
@@ -150,6 +155,50 @@ public class MemberInfoService implements UserDetailsService {
     }
 
     /**
+     * email 로 회원 조회
+     *
+     * @param email
+     * @return
+     */
+    public Member get(String email) {
+        MemberInfo memberInfo = (MemberInfo)loadUserByUsername(email);
+
+        return memberInfo.getMember();
+    }
+
+    /**
+     * 관리자용
+     *
+     * Email 로 조회 후 RequestProfile 로 변환해 get
+     *
+     * @param email
+     * @return
+     */
+    public RequestProfile getProfile(String email) {
+
+        Member member = get(email);
+
+        RequestProfile profile = modelMapper.map(member, RequestProfile.class);
+
+        List<Authority> authorities = member.getAuthorities()
+                .stream()
+                .map(Authorities::getAuthority).toList();
+
+        profile.setAuthorities(authorities);
+
+        String optionalTerms = member.getOptionalTerms();
+
+        if (StringUtils.hasText(optionalTerms)) {
+
+            profile.setOptionalTerms(Arrays.stream(optionalTerms.split("||")).toList());
+        }
+
+        profile.setMode("admin");
+
+        return profile;
+    }
+
+    /**
      * 회원 목록
      *
      * @param search
@@ -225,10 +274,6 @@ public class MemberInfoService implements UserDetailsService {
         List<Authority> authorities = search.getAuthority();
 
         if (authorities != null && !authorities.isEmpty()) {
-
-            // List<Authorities> _authorities = authorities.stream().map(a -> )
-
-            // andBuilder.and(member.authorities.);
 
             andBuilder.and(member.authorities.any().authority.in(authorities));
         }

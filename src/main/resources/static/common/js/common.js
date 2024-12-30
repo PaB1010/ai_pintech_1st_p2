@@ -29,16 +29,19 @@ commonLib.url = function(url) {
     return `${commonLib.getMeta('rootUrl').replace("/","")}${url}`;
 }
 
+
 /**
-*  Ajax 요청 처리 함수
-*
-* @params url : (필수)요청 주소 / http[s] : 외부 URL - Context path 추가 X
-* @params method : 요청 방식 - GET / POST / DELETE / PATCH ...
-* @params callback : 응답 완료 후 후속 처리 콜백 함수
-* @params data : 요청 Data(Body 있을때만 가능, POST / PUT / PATCH)
-* @params headers : 추가 요청 Header
-*/
-commonLib.ajaxLoad = function(url, callback, method = 'GET', data, headers) {
+ *  Ajax 요청 처리 함수
+ *
+ * @params url : (필수)요청 주소 / http[s] : 외부 URL - Context path 추가 X
+ * @params method : 요청 방식 - GET / POST / DELETE / PATCH ...
+ * @params callback : 응답 완료 후 후속 처리 콜백 함수
+ * @params data : 요청 Data(Body 있을때만 가능, POST / PUT / PATCH)
+ * @params headers : 추가 요청 Header
+ * @param isText : true면 text false면 JSON
+ * @returns {Promise<unknown>}
+ */
+commonLib.ajaxLoad = function(url, callback, method = 'GET', data, headers, isText = false) {
 
     if (!url) return;
 
@@ -75,13 +78,19 @@ commonLib.ajaxLoad = function(url, callback, method = 'GET', data, headers) {
         // 204가 아닐때에만 JSON 형태로 변환
         if (res.status !== 204)
 
-            return res.json();
+            return isText ? res.text() : res.json();
 
         else {
                 resolve();
             }
         })
         .then(json => {
+
+            if (isText) {
+
+                resolve(json);
+                return;
+            }
 
             // global_rests_JSONData.java
             // 응답(처리) 성공시
@@ -111,10 +120,108 @@ commonLib.ajaxLoad = function(url, callback, method = 'GET', data, headers) {
     }); /* Promise E */
 };
 
+/**
+ * 레이어 팝업
+ *
+ * @param url
+ * @param width
+ * @param height
+ * @param isAjax
+ */
 commonLib.popup = function(url, width = 350, height = 350, isAjax = false) {
 
+    /* 레이어 팝업 요소 동적 추가 S */
+    const layerEls = document.querySelectorAll(".layer-dim", ".layer-popup");
+
+    layerEls.forEach(el => el.parentElement.removeChild(el));
+
+    const layerDim = document.createElement("div");
+
+    layerDim.className = "layer.-dim";
+
+    const layerPopup = document.createElement("div");
+
+    layerPopup.className = "layer-popup";
+
+    /* 레이어 팝업 가운데 배치 S */
+    const xpos = (innerWidth - width) / 2;
+    const ypos = (innerHeight - height) / 2;
+
+    layerPopup.style.left = xpos + "px";
+    layerPopup.style.top = ypos + "px";
+
+    layerPopup.style.width = width + "px";
+    layerPopup.style.height = height + "px";
+    /* 레이어 팝업 가운데 배치 E */
+
+    /* 레이어 팝업 컨텐츠 영역 추가 */
+
+    const content = document.createElement("div");
+
+    content.className = "layer-content";
+
+    layerPopup.append(content);
+
+    /* 레이어 팝업 닫기 버튼 추가 S */
+    const button = document.createElement("button");
+    const icon = document.createElement("i");
+
+    button.className = "layer-close";
+    button.type = "button";
+
+    icon.className = "xi-close";
+
+    button.append(icon);
+    layerPopup.prepend(button);
+
+    button.addEventListener("click", commonLib.popupClose);
+
+    /* 레이어 팝업 닫기 버튼 추가 E */
+
+    document.body.append(layerDim);
+
+    document.body.append(layerPopup);
+    /* 레이어 팝업 요소 동적 추가 E */
+
+    /* 팝업 컨텐츠 로드 S */
+    if (isAjax) {
+        // 컨텐츠를 ajax 로 로드
+        const { ajaxLoad } = commonLib;
+
+        ajaxLoad(url, null, 'GET', null, null, true)
+            .then((text) => content.innerHTML = text)
+
+    } else {
+        // 컨텐츠를 iframe 으로 동적 로드
+        const iframe = document.createElement("iframe");
+
+        iframe.width = width - 80;
+        iframe.height = height - 80;
+
+        iframe.frameBorder = 0;
+
+        iframe.src = commonLib.url(url);
+
+        content.append(iframe);
+    }
+    /* 팝업 컨텐츠 로드 E */
 }
 
+/**
+ * 레이어 팝업 제거
+ *
+ */
+commonLib.popupClose = function() {
+
+    const layerEls = document.querySelectorAll(".layer-dim, .layer-popup");
+
+    layerEls.forEach(el => el.parentElement.removeChild(el));
+}
+
+/**
+ * checkBox 전체 토글
+ *
+ */
 window.addEventListener("DOMContentLoaded", function() {
 
     // checkBox 전체 토글 기능 S
@@ -139,4 +246,18 @@ window.addEventListener("DOMContentLoaded", function() {
         });
     }
     // checkBox 전체 토글 기능 E
+
+    /* 팝업 버튼 클릭 처리 S */
+    const showPopups = document.getElementsByClassName("show-popup");
+
+    for( const el of showPopups) {
+
+        el.addEventListener("click", function() {
+
+            const { url, width, height } = this.dataset;
+
+            commonLib.popup(url, width, height);
+        });
+    }
+    /* 팝업 버튼 클릭 처리 E */
 });

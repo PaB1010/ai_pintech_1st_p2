@@ -10,7 +10,8 @@
         <meta name="rootUrl" th:content="@{/}">
 
         <title>
-            <th:block th:if="${pageTitle != null}" th:text="${#strings.concat(pageTitle, ' -')}"></th:block>
+            <th:block th:if="${pageTitle != null}"
+            th:text="${#strings.concat(pageTitle, ' - ')}"></th:block>
             <th:block th:text="*{siteTitle}"></th:block>
         </title>
 
