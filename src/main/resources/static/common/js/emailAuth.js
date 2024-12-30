@@ -45,6 +45,7 @@ commonLib.emailAuth = {
 
             this.stop();
 
+            // setInterval 함수 주기적 반복 실행
             this.intervalId = setInterval(function() {
 
                 const seconds = --commonLib.emailAuth.timer.seconds;

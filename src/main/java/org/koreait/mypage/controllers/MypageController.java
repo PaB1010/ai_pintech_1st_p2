@@ -203,20 +203,6 @@ public class MypageController {
      * @param model
      * @return
      */
-//    @GetMapping("/follow")
-//    public String followList(@RequestParam(name="mode", defaultValue = "follower") String mode, CommonSearch paging, Model model) {
-//
-//        commonProcess("follow", model);
-//
-//        ListData<Member> data = followService.getList(mode, paging);
-//
-//        model.addAttribute("items", data.getItems());
-//        model.addAttribute("pagination", data.getPagination());
-//        model.addAttribute("mode", mode);
-//
-//        return utils.tpl("mypage/follow/follow");
-//    }
-
     @GetMapping("/follow")
     public String followList(CommonSearch paging, Model model) {
 
@@ -230,6 +216,20 @@ public class MypageController {
 
         return utils.tpl("mypage/follow/follow");
     }
+
+//    @GetMapping("/follow")
+//    public String followList(@RequestParam(name="mode", defaultValue = "follower") String mode, CommonSearch paging, Model model) {
+//
+//        commonProcess("follow", model);
+//
+//        ListData<Member> data = followService.getList(mode, paging);
+//
+//        model.addAttribute("items", data.getItems());
+//        model.addAttribute("pagination", data.getPagination());
+//        model.addAttribute("mode", mode);
+//
+//        return utils.tpl("mypage/follow/follow");
+//    }
 
     /**
      * Controller 공통 처리 영역

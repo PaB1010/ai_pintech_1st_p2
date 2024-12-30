@@ -25,7 +25,6 @@ import static org.springframework.data.domain.Sort.Order.desc;
 public interface FollowRepository extends JpaRepository<Follow, Long>, QuerydslPredicateExecutor<Follow> {
 
     Follow findByFollowerAndFollower(Member following, Member follower);
-    // Follow FindByFollowing(Member following);
 
     // 해당 회원이 follow 하는 회원의 총합
     default long getTotalFollowings(Member member) {
