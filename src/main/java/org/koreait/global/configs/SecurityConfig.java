@@ -85,7 +85,7 @@ public class SecurityConfig {
          * hasAnyRole(...)
          */
         http.authorizeHttpRequests(c -> {
-            c.requestMatchers("/mypage/**").authenticated() // 인증한 회원만 접근 가능
+            c.requestMatchers("/mypage/**", "/message/**").authenticated() // 인증한 회원만 접근 가능한 주소 통제
                     .requestMatchers("/member/login", "/member/join", "/member/agree").anonymous() // 미인증 회원만 접근 가능
                     .requestMatchers("/admin/**").hasAnyAuthority("MANAGER", "ADMIN") // 관리자 페이지는 MANAGER, ADMIN 권한만 접근 가능
                     .anyRequest().permitAll(); // 나머지 페이지는 모두 접근 가능

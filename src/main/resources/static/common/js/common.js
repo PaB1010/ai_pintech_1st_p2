@@ -270,4 +270,63 @@ window.addEventListener("DOMContentLoaded", function() {
         });
     }
     /* 팝업 버튼 클릭 처리 E */
+
+
+
 });
+
+/**
+ * WysWYG(CKEditor) 동적 로드 범용 기능
+ *
+ * CKEditor 가 로딩된 경우에만
+ * 입력 받은 DOM 객체를 WysWYG 으로 변경
+ *
+ */
+commonLib.loadEditor = function(id, height = 350) {
+
+    // CKEditor 없거나 || (대상 DOM 객체의) id 없을 경우 return
+    // !ClassicEditor 쓰지 않은 이유, var 시 문제 유발 가능성
+    if (typeof ClassicEditor === 'undefined' || !id) return;
+
+    // CKEditor 안전하게 로드 됐을 시
+    return new Promise((resolve, reject) => {
+
+        (async() => {
+
+            try {
+
+                // WysWYG API - create(매개변수 = 변경할 DOM 객체)
+                // Promise 반환
+                const editor = await ClassicEditor.create(document.getElementById(id));
+
+                resolve(editor);
+                
+                // editor 높이 스타일 고정
+                editor.editing.view.change((writer) => {
+
+                    writer.setStyle(
+                        "height",
+                        `${height}px`,
+                        editor.editing.view.document.getRoot()
+                    );
+                });
+                /*
+                editor.ui.view.editable.element.style.height = `${height}px`;
+
+                const editorAreas = document.getElementsByClassName("ck-editor__editable");
+
+                for (const el of editorAreas) {
+
+                    el.style.height = `${height}px`;
+                }
+                */
+
+            } catch (err) {
+
+                console.error(err);
+
+                reject(err)
+            }
+        })();
+    });
+}

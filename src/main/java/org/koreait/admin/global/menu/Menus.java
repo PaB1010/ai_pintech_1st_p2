@@ -45,6 +45,19 @@ public class Menus {
            new MenuDetail("posts", "게시글 관리", "/admin/board/posts")
         ));
 
+        // 상품 관리
+
+        submenus.put("product", List.of(
+
+           new MenuDetail("list", "상품 목록", "/admin/product/list"),
+
+           new MenuDetail("add", "상품 등록", "/admin/product/add"),
+
+           new MenuDetail("category", "분류 관리", "/admin/product/category"),
+
+           new MenuDetail("delivery", "배송 정책 관리", "/admin/product/delivery")
+        ));
+
         // 공지 (웹소켓 이용) 추가 예정
     }
 
