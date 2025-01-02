@@ -39,13 +39,15 @@ public class SentimentService {
 
             // Process Builder 이용 Python 명령어 사용
             // python naver.py D:/naver_bert data
-            ProcessBuilder builder = new ProcessBuilder(runPath, scriptPath, "naver.py", bertPath, data);
+            ProcessBuilder builder = new ProcessBuilder(runPath, scriptPath + "naver.py", bertPath, data);
 
             Process process = builder.start();
 
             InputStream in = process.getInputStream();
 
-            System.out.printf("%s, %s, %s%n", runPath, scriptPath, bertPath);
+            process.waitFor();
+
+            // System.out.printf("%s, %s, %s%n", runPath, scriptPath, bertPath);
 
             // process 형태로 반환된 값을 double 변환
             return om.readValue(in.readAllBytes(), double[].class);
