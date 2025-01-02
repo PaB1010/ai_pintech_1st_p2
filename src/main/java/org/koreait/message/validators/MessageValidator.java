@@ -2,6 +2,7 @@ package org.koreait.message.validators;
 
 import lombok.RequiredArgsConstructor;
 import org.koreait.member.libs.MemberUtil;
+import org.koreait.member.repositories.MemberRepository;
 import org.koreait.message.controllers.RequestMessage;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,8 @@ import org.springframework.validation.Validator;
 public class MessageValidator implements Validator {
 
     private final MemberUtil memberUtil;
+    
+    private final MemberRepository memberRepository;
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -36,18 +39,17 @@ public class MessageValidator implements Validator {
         boolean notice = form.isNotice();
 
         // 관리자가 아니고 && 공지 쪽지일 경우
-        if (!memberUtil.isAdmin() && notice) {
-
-            notice = false;
-
-            form.setNotice(notice);
-//          form.setNotice(false);
-        }
+        if (!memberUtil.isAdmin() && notice) form.setNotice(false);
 
         // 관리자가 아니고 && 공지 쪽지 아니고 && 이메일이 없을 경우
         if (!memberUtil.isAdmin() && !notice && !StringUtils.hasText(email)) {
 
             errors.rejectValue("email", "NotBlank");
+            
+        } else if (!memberRepository.exists(email)) {
+            // 수신쪽 회원이 존재하지 않을 경우
+
+            errors.reject("NotFound.member");
         }
     }
 }

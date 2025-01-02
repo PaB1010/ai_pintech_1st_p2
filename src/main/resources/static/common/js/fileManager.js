@@ -114,10 +114,14 @@ window.addEventListener("DOMContentLoaded", function() {
             // 비구조 할당
             const {gid, location, single, imageOnly, done } = this.dataset;
 
-            // null인 fileEl에 동적 추가
+            // null 인 fileEl에 동적 추가
             if (!fileEl)  {
                 fileEl = document.createElement("input");
                 fileEl.type = 'file';
+                
+            } else {
+                // 초기화
+                fileEl.value = '';
             }
 
             fileEl.gid = gid;
@@ -140,19 +144,19 @@ window.addEventListener("DOMContentLoaded", function() {
             fileEl.removeEventListener("change", fileEventHandler);
             fileEl.addEventListener("change", fileEventHandler);
         });
-        
-        // change EventListener 바로 아래에 있다가 이쪽으로 빼내서 버그 수정
-        function fileEventHandler(e) {
+    }
 
-            const files = e.currentTarget.files;
+    // change EventListener 바로 아래에 있다가 이쪽으로 빼내서 버그 수정
+    function fileEventHandler(e) {
 
-            const {gid, location, single, imageOnly, done } = fileEl;
+        const files = e.currentTarget.files;
 
-            // 비구조 할당
-            const { fileManager } = commonLib;
+        const {gid, location, single, imageOnly, done } = fileEl;
 
-            fileManager.upload(files, gid, location, single, imageOnly, done);
-        }
+        // 비구조 할당
+        const { fileManager } = commonLib;
+
+        fileManager.upload(files, gid, location, single, imageOnly, done);
     }
 
     // Drag & Drop File Upload 처리

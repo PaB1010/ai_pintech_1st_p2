@@ -10,6 +10,38 @@ window.addEventListener("DOMContentLoaded", function () {
             // then 구간 외부에서도 접근 가능하게 처리
             window.editor = editor;
         });
+
+    // IMG 본문 추가 이벤트 처리
+    const insertEditors = document.querySelectorAll(".insert-editor");
+
+    insertEditors.forEach(el => {
+
+        el.addEventListener("click", e => insertImage(e.currentTarget.dataset.url));
+    });
+
+    // 첨부 파일 삭제 버튼 이벤트 처리
+    const removeEls = document.querySelectorAll(".file-item .remove");
+
+    const { fileManager } = commonLib;
+
+    removeEls.forEach(el => {
+
+        el.addEventListener("click", e => {
+
+           if (confirm('정말 삭제하겠습니까?')) {
+
+               console.log(el);
+               const seq = e.currentTarget.dataset.seq;
+
+               fileManager.delete(seq, () => {
+
+                   const el = document.getElementById(`file-${seq}`);
+
+                   el.parentElement.removeChild(el);
+               });
+           }
+        });
+    });
 });
 
 /**
@@ -32,6 +64,8 @@ function callbackFileUpload(files) {
 
     const domParser = new DOMParser();
 
+    const { fileManager } = commonLib;
+
     for (const { seq, fileUrl, fileName, location } of files) {
 
         // 파일 목록 -> tpl 치환
@@ -46,7 +80,11 @@ function callbackFileUpload(files) {
         // DOM 객체 생성
         const dom = domParser.parseFromString(html, "text/html");
 
-        const fileItem = dom.querySelector(".file-item")
+        const fileItem = dom.querySelector(".file-item");
+
+        const el = fileItem.querySelector(".insert-editor");
+
+        const removeEl = fileItem.querySelector(".remove");
 
         if (location === 'editor') {
             // Editor 에 추가될 IMG 일 경우
@@ -54,17 +92,36 @@ function callbackFileUpload(files) {
             imageUrls.push(fileUrl);
 
             targetEditor.append(fileItem);
+
+            el.addEventListener("click", function () {
+
+                const { url } = this.dataset;
+
+                insertImage(url);
+            });
             
         } else {
             // 다운로드를 위한 첨부 파일일 경우
-
-            const el = fileItem.querySelector(".insert-editor");
             
             // el 자기 자신 제거
             el.parentElement.removeChild(el);
 
             targetAttach.append(fileItem);
         }
+        
+        removeEl.addEventListener("click", function () {
+
+            if (!confirm('정말 삭제하겠습니까?')) return;
+
+            fileManager.delete(seq, (f) => {
+               // 삭제 후 후속 처리
+               
+               const el = document.getElementById(`file-${f.seq}`);
+               
+               // 혹시 모르니 el 자기자신 요소있을 경우 삭제
+               if (el) el.parentElement.removeChild(el);
+            });
+        });
     }
 
     // IMG 한번에 모아서 Insert
@@ -76,8 +133,10 @@ function callbackFileUpload(files) {
  */
 function insertImage(imageUrls) {
 
+    // 배열이 아닌 문자열 일 경우 배열에 담아줌
+    imageUrls = typeof imageUrls === 'string' ? [imageUrls] : imageUrls;
+
     // execute = 이미 정해져있는 명령어
     // Editor 에 IMG Upload
     editor.execute('insertImage', { source : imageUrls })
-
 }
