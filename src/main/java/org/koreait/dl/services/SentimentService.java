@@ -45,7 +45,7 @@ public class SentimentService {
 
             InputStream in = process.getInputStream();
 
-            process.waitFor();
+            // process.waitFor();
 
             // System.out.printf("%s, %s, %s%n", runPath, scriptPath, bertPath);
 
