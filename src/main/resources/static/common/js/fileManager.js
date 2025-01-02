@@ -140,6 +140,8 @@ window.addEventListener("DOMContentLoaded", function() {
             fileEl.removeEventListener("change", fileEventHandler);
             fileEl.addEventListener("change", fileEventHandler);
         });
+        
+        // change EventListener 바로 아래에 있다가 이쪽으로 빼내서 버그 수정
         function fileEventHandler(e) {
 
             const files = e.currentTarget.files;
