@@ -139,19 +139,18 @@ window.addEventListener("DOMContentLoaded", function() {
             // Event 선 제거 후, 다시 추가 -> Event 가 한번만 실행되게 하기 위해서
             fileEl.removeEventListener("change", fileEventHandler);
             fileEl.addEventListener("change", fileEventHandler);
-
-            function fileEventHandler(e) {
-
-                    const files = e.currentTarget.files;
-
-                    const {gid, location, single, imageOnly, done } = fileEl;
-
-                    // 비구조 할당
-                    const { fileManager } = commonLib;
-
-                    fileManager.upload(files, gid, location, single, imageOnly, done);
-                }
         });
+        function fileEventHandler(e) {
+
+            const files = e.currentTarget.files;
+
+            const {gid, location, single, imageOnly, done } = fileEl;
+
+            // 비구조 할당
+            const { fileManager } = commonLib;
+
+            fileManager.upload(files, gid, location, single, imageOnly, done);
+        }
     }
 
     // Drag & Drop File Upload 처리
