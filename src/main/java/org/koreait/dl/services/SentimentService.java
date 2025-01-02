@@ -1,14 +1,11 @@
 package org.koreait.dl.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.koreait.global.rests.JSONData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.InputStream;
 import java.util.List;
@@ -38,7 +35,7 @@ public class SentimentService {
 
         try {
 
-            String data = om.writeValueAsString(items);
+            String data = String.join("__", items);
 
             // Process Builder 이용 Python 명령어 사용
             // python naver.py D:/naver_bert data
