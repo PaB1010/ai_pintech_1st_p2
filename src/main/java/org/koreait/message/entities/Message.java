@@ -62,4 +62,14 @@ public class Message extends BaseEntity {
     // 2차 가공용(추가정보 형태) 다운로드 받을 첨부 파일
     @Transient
     private List<FileInfo> attachFiles;
+
+    // 2차 가공용(추가정보 형태) 수신인=현재 로그인 계정 일치 여부
+    @Transient
+    private boolean received;
+
+    // 발신인이 삭제
+    private boolean deletedBySender;
+
+    // 수신인이 삭제
+    private boolean deletedByReceiver;
 }

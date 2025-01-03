@@ -6,7 +6,11 @@ import org.koreait.file.constants.FileStatus;
 import org.koreait.file.services.FileInfoService;
 import org.koreait.global.annotations.ApplyErrorPage;
 import org.koreait.global.libs.Utils;
+import org.koreait.global.paging.ListData;
+import org.koreait.message.entities.Message;
+import org.koreait.message.services.MessageInfoService;
 import org.koreait.message.services.MessageSendService;
+import org.koreait.message.services.MessageStatusService;
 import org.koreait.message.validators.MessageValidator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,6 +43,10 @@ public class MessageController {
 
     private final MessageSendService sendService;
 
+    private final MessageInfoService infoService;
+
+    private final MessageStatusService statusService;
+
     @ModelAttribute("addCss")
     public List<String> addCss() {
 
@@ -56,8 +64,6 @@ public class MessageController {
         
         // 파일 첨부시 Random gid 발급
         form.setGid(UUID.randomUUID().toString());
-
-        model.addAttribute("send", model);
 
         return utils.tpl("message/form");
     }
@@ -89,8 +95,6 @@ public class MessageController {
 
         sendService.process(form);
 
-        model.addAttribute("send", model);
-
         // 전송 후 쪽지 목록으로
         return "redirect:/message/list";
     }
@@ -102,11 +106,18 @@ public class MessageController {
      * @return
      */
     @GetMapping("/list")
-    public String list(Model model) {
+    public String list(@ModelAttribute MessageSearch search, Model model) {
 
         commonProcess("list", model);
 
-        model.addAttribute("list", model);
+        String mode = search.getMode();
+
+        search.setMode(StringUtils.hasText(mode) ? mode : "receive");
+
+        ListData<Message> data = infoService.getList(search);
+
+        model.addAttribute("items", data.getItems());
+        model.addAttribute("pagination", data.getPagination());
 
         return utils.tpl("message/list");
     }
@@ -122,7 +133,12 @@ public class MessageController {
 
         commonProcess("view", model);
 
-        model.addAttribute("view", model);
+        Message item = infoService.get(seq);
+
+        model.addAttribute("item", item);
+
+        // 미열람 -> 열람 변경
+        statusService.change(seq);
 
         return utils.tpl("message/view");
     }

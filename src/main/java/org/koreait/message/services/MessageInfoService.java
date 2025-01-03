@@ -5,6 +5,7 @@ import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.koreait.file.services.FileInfoService;
 import org.koreait.global.libs.Utils;
 import org.koreait.global.paging.ListData;
 import org.koreait.global.paging.Pagination;
@@ -36,6 +37,8 @@ public class MessageInfoService {
     private final Utils utils;
 
     private final MemberUtil memberUtil;
+
+    private final FileInfoService fileInfoService;
 
     /**
      * 쪽지 개별 조회
@@ -94,15 +97,15 @@ public class MessageInfoService {
 
         String mode = search.getMode();
 
-        mode = StringUtils.hasText(mode) ? mode : "receive";
-
         Member member = memberUtil.getMember();
+
+        mode = StringUtils.hasText(mode) ? mode : "receive";
 
         // send = 발신 쪽지 목록
         // receive = 수신 쪽지 목록
-        andBuilder.and(mode.equals("send") ? message.sender().eq(member) : message.receiver.eq(member));
+        andBuilder.and(mode.equals("send") ? message.sender.eq(member) : message.receiver.eq(member));
 
-        /* 검색 조건 처리 E */
+        andBuilder.and(mode.equals("send") ? message.deletedBySender.eq(false) : message.deletedByReceiver.eq(false));
 
         /* 발신인 조건 검색 */
         List<String> sender = search.getSender();
@@ -113,6 +116,7 @@ public class MessageInfoService {
             // 발신인 이메일로 조회하는 기능
             andBuilder.and(message.sender.email.in(sender));
         }
+        /* 검색 조건 처리 E */
 
         /* 키워드 검색 처리 S */
         String sopt = search.getSopt();
@@ -155,10 +159,19 @@ public class MessageInfoService {
     /**
      * 추가 정보 2차 가공 처리
      *
+     * 첨부 파일 관련
+     *
      * @param item
      */
     private void addInfo(Message item) {
 
+        String gid = item.getGid();
 
+        item.setEditorImages(fileInfoService.getList(gid, "editor"));
+        item.setAttachFiles(fileInfoService.getList(gid, "attach"));
+
+        // 로그인한 본인이 받은 쪽지인지 여부
+        item.setReceived(item.getReceiver().getSeq().equals(memberUtil.getMember().getSeq()));
+        // item.setReceived(Objects.equals(item.getReceiver().getSeq(), memberUtil.getMember().getSeq()));
     }
 }
