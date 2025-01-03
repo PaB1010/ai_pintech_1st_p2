@@ -1,5 +1,6 @@
 package org.koreait.file.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.koreait.global.entities.BaseMemberEntity;
@@ -20,6 +21,7 @@ import java.io.Serializable;
         @Index(name = "idx_gid", columnList = "gid, createdAt"),
         @Index(name = "idx_gid_location", columnList = "gid, location, createdAt")
 })
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class FileInfo extends BaseMemberEntity implements Serializable {
 
     // File 등록 번호, 증감 번호

@@ -34,7 +34,7 @@ public class TermsInfoService {
 
     public Terms get(String code) {
 
-        return service.get(String.format("term_%s", code), Terms.class);
+        return Objects.requireNonNullElseGet(service.get(String.format("term_%s", code), Terms.class), Terms::new);
     }
 
     public List<Terms> getList() {
