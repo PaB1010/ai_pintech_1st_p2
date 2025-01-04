@@ -41,23 +41,21 @@ public class FollowService {
     /**
      * Follow 기능
      *
-     * @param follower : Following 할 회원
+     * @param following : Following 할 회원
      */
-    public void follow(Member follower) {
+    public void follow(Member following) {
 
         // 회원 전용 기능이므로 비로그인시 처리 X
-        if (!utils.isLogin()) {
-            return;
-        }
+        if (!utils.isLogin()) return;
 
         try {
-            Member following = utils.getMember();
 
+            Member follower = utils.getMember();
 
             // 자기 자신은 팔로우 하지 못하도록 체크
            if (follower.getSeq().equals(following.getSeq())) return;
 
-            Follow follow = Follow.builder()
+           Follow follow = Follow.builder()
                     .following(following)
                     .follower(follower)
                     .build();
@@ -74,49 +72,61 @@ public class FollowService {
     // Seq 로 Follow
     public void follow(Long seq) {
 
-        Member follower = memberRepository.findById(seq).orElse(null);
+        Member following = memberRepository.findById(seq).orElse(null);
 
-        if (follower == null) return;
+        if (following == null) return;
 
-        follow(follower);
+        follow(following);
     }
 
     // Email 로 Follow
     public void follow(String email) {
 
-        Member follower = memberRepository.findByEmail(email).orElse(null);
+        Member following = memberRepository.findByEmail(email).orElse(null);
 
-        if (follower == null) return;
+        if (following == null) return;
 
-        follow(follower);
+        follow(following);
     }
 
     /**
      * UnFollow 기능
      *
-     * @param follower : Following 취소할 회원
+     * @param following : Following 취소할 회원
      */
-    public void unfollow(Member follower) {
+    public void unfollow(Member following) {
 
         // follow 와 마찬가지로 회원 전용 기능이므로 비로그인시 처리 X
-        if (utils.isLogin()) return;
+        if (!utils.isLogin()) return;
 
-        if (follower == null) return;
+        if (following == null) return;
 
-        Member following = utils.getMember();
+        try {
 
-        Follow follow = followRepository.findByFollowerAndFollower(following, follower);
+            Member follower = utils.getMember();
 
-        followRepository.delete(follow);
-        followRepository.flush();
+            Follow follow = followRepository.findByFollowingAndFollower(following, follower);
+
+            if (follow == null) return;
+
+            followRepository.delete(follow);
+            followRepository.flush();
+
+            // follow Data 중복시 유니크 제약 조건 예외 발생
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
     }
 
     // Seq 로 unFollow
     public void unfollow(Long seq) {
 
-        Member follower = memberRepository.findById(seq).orElse(null);
+        Member following = memberRepository.findById(seq).orElse(null);
 
-        if (follower == null) return;
+        if (following == null) return;
+
+        unfollow(following);
     }
 
     // Email 로 unFollow
@@ -125,6 +135,8 @@ public class FollowService {
         Member follower = memberRepository.findByEmail(email).orElse(null);
 
         if (follower == null) return;
+
+        unfollow(follower);
     }
 
     /**
@@ -219,10 +231,10 @@ public class FollowService {
     /**
      * Following 상태 여부 체크
      *
-     * @param nickName
+     * @param seq
      * @return
      */
-    public boolean isFollowing(String nickName) {
+    public boolean isFollowing(Long seq) {
 
         if (!utils.isLogin()) return false;
 
@@ -230,11 +242,9 @@ public class FollowService {
 
         BooleanBuilder builder = new BooleanBuilder();
 
-        builder.and(follow.follower.nickName.eq(nickName))
+        builder.and(follow.follower.seq.eq(seq))
                 .and(follow.following.in(utils.getMember()));
 
         return followRepository.exists(builder);
     }
-
-
 }

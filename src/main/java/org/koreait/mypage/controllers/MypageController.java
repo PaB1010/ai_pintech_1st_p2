@@ -198,7 +198,6 @@ public class MypageController {
     /**
      * Follow 목록
      *
-     * @param mode
      * @param paging
      * @param model
      * @return
@@ -211,11 +210,17 @@ public class MypageController {
         List<Member> followers = followService.getList("follower", paging).getItems();
         List<Member> followings = followService.getList("following", paging).getItems();
 
+        // List<Member> allFollows = newArrayList(followers, followings);
+
         model.addAttribute("followers", followers);
         model.addAttribute("followings", followings);
 
+        // model.addAttribute("items", allFollows);
+
+
         return utils.tpl("mypage/follow/follow");
     }
+
 
 //    @GetMapping("/follow")
 //    public String followList(@RequestParam(name="mode", defaultValue = "follower") String mode, CommonSearch paging, Model model) {

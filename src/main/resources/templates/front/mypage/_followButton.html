@@ -1,8 +1,17 @@
 <!DOCTYPE html>
-<html xmlns:th="http:;//www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="followButton">
+    <h1>팔로우버튼</h1>
 
+    <div class="items">
 
+        <div class="item" th:unless="${items == null || items.isEmpty()}" th:each="item : ${items}" th:object="${item}">
+            <div>123123</div>
+            <th:block th:if="isLogin">
+                <button type="button" th:if="*{@followService.isFollowing(seq)}" class="follow_action unfollow" th:data-seq="*{seq}">UnFollow</button>
+                <button type="button" th:unless="*{@followService.isFollowing(seq)}" class="follow_action" th:data-seq="*{seq}">Follow</button>
+            </th:block>
 
+        </div>
 </th:block>
 </html>
