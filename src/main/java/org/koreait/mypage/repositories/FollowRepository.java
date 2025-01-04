@@ -47,7 +47,7 @@ public interface FollowRepository extends JpaRepository<Follow, Long>, QuerydslP
 
         int page = Math.max(paging.getPage(), 1);
 
-        int limit = paging.getPage();
+        int limit = paging.getLimit();
 
         limit = limit < 1 ? 20 : limit;
 

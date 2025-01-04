@@ -260,6 +260,7 @@ public class MemberController {
         Member member = data.getMember();
 
         model.addAttribute("profile", member);
+        model.addAttribute("seq", data.getMember().getSeq());
 
         return utils.tpl("mypage/about");
     }

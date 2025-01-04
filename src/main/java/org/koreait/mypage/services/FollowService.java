@@ -146,7 +146,9 @@ public class FollowService {
      * @return
      */
     public ListData<Member> getFollowers(CommonSearch paging) {
+
         if (!utils.isLogin()) return null;
+
         return followRepository.getFollowers(utils.getMember(), paging, request);
     }
 
