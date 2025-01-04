@@ -13,14 +13,20 @@ commonLib.follow = {
 
         const { ajaxLoad } = commonLib;
 
-        ajaxLoad(`api/member/follow/${seq}`, function(item) {
+        // ajaxLoad(`api/member/follow/${seq}`, function(item) {
+        //
+        //     if (typeof callbackFollow === 'function') {
+        //
+        //         callbackFollow(item);
+        //     }
+        // }, "GET")
+        //     .catch(err => console.error(err));
 
-            if (typeof callbackFollow === 'function') {
-
-                callbackFollow(item);
-            }
-        }, "GET")
-            // .catch(err => console.error(err));
+        ajaxLoad(`api/member/follow/${seq}`, null, "GET")
+            .then(res => {
+                if (typeof callbackFollow === 'function') callbackFollow();
+            })
+            .catch(err => console.error(err));
   },
 
     /**
