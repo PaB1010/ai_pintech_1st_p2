@@ -21,8 +21,10 @@ public class FileInfoServiceTest {
     @Test
     @DisplayName("없는 파일 번호로 조회시에 FileNotFoundException 발생하는지 테스트")
     void notExistsFileInfoTest() {
+
         // 테스트 성공시 발생된 예외가 반환
         FileNotFoundException thrown = assertThrows(FileNotFoundException.class, () -> {
+
             infoService.get(99999L);
         });
 
@@ -30,6 +32,8 @@ public class FileInfoServiceTest {
         HttpStatus status = thrown.getStatus();
 
         assertEquals("NotFound.file", message);
+
+        // 동일성 비교 위해 Equals 아닌 Same 사용
         assertSame(HttpStatus.NOT_FOUND, status);
     }
 }

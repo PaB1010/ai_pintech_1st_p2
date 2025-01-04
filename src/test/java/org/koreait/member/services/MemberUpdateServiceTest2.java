@@ -37,7 +37,9 @@ public class MemberUpdateServiceTest2 {
 
     @BeforeEach
     void init() {
+
         RequestJoin form = new RequestJoin();
+
         form.setEmail("user01@test.org");
         form.setName("이이름");
         form.setNickName("닉네임");
@@ -52,6 +54,7 @@ public class MemberUpdateServiceTest2 {
         service.process(form);
 
         Member member = repository.findByEmail(form.getEmail()).orElse(null);
+
         profile = mapper.map(member, RequestProfile.class);
     }
 
@@ -59,12 +62,16 @@ public class MemberUpdateServiceTest2 {
     @DisplayName("회원정보 수정 성공시 예외가 발생하지 않는 테스트")
     @WithUserDetails(value="user01@test.org", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void updateSuccessTest() {
+
         profile.setName("(수정)이이름");
+
         assertDoesNotThrow(() -> {
+
             service.process(profile);
         });
 
         Member member = repository.findByEmail(profile.getEmail()).orElse(null);
+
         assertEquals(profile.getName(), member.getName());
     }
 }
