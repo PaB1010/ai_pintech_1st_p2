@@ -261,6 +261,7 @@ public class MemberController {
 
         model.addAttribute("profile", member);
         model.addAttribute("seq", data.getMember().getSeq());
+        model.addAttribute("useFollowButton", true);
 
         return utils.tpl("mypage/about");
     }
@@ -316,6 +317,8 @@ public class MemberController {
         } else if (mode.equals("about")) {
 
             pageTitle = utils.getMessage("About_Me");
+
+            addCommonScript.add("follow");
 
              addCss.add("mypage/about");
 

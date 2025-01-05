@@ -240,12 +240,14 @@ public class FollowService {
 
         if (!utils.isLogin()) return false;
 
+        if (seq == null) return false;
+
         QFollow follow = QFollow.follow;
 
         BooleanBuilder builder = new BooleanBuilder();
 
-        builder.and(follow.follower.seq.eq(seq))
-                .and(follow.following.in(utils.getMember()));
+        builder.and(follow.following.seq.eq(seq))
+                    .and(follow.follower.in(utils.getMember()));
 
         return followRepository.exists(builder);
     }

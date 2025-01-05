@@ -9,25 +9,41 @@ commonLib.follow = {
      * @param seq
      * @param callbackFollow
      */
-    follow(seq, callbackFollow) {
+    async follow(seq, callbackFollow) {
 
-        const { ajaxLoad } = commonLib;
+        const {ajaxLoad} = commonLib;
 
-        // ajaxLoad(`api/member/follow/${seq}`, function(item) {
-        //
-        //     if (typeof callbackFollow === 'function') {
-        //
-        //         callbackFollow(item);
-        //     }
-        // }, "GET")
-        //     .catch(err => console.error(err));
+        try {
 
-        ajaxLoad(`api/member/follow/${seq}`, null, "GET")
-            .then(res => {
-                if (typeof callbackFollow === 'function') callbackFollow();
-            })
-            .catch(err => console.error(err));
-  },
+            // 절대 경로 사용
+            // /api/member 가 아닌 api/member 사용시 Controller 에서 Mapping 된 경로인 /mypage/about 이 url 앞에 붙어버림
+            const res = await ajaxLoad(`/api/member/follow/${seq}`, null, "GET");
+            // const res = await new Promise((resolve, reject) => {
+            //
+            //     ajaxLoad(`api/member/follow/${seq}`, (response) => {
+            //
+            //         if (response) {
+            //
+            //             resolve(response);
+            //
+            //         } else {
+            //
+            //             reject(new Error("응답이 없습니다."));
+            //         }
+            //     }, "GET");
+            // });
+
+            if (typeof callbackFollow === 'function') {
+
+                callbackFollow();
+
+            }
+
+        } catch (err) {
+
+            alert(err.message);
+        }
+    },
 
     /**
      * Unfollow 기능
@@ -35,18 +51,35 @@ commonLib.follow = {
      * @param seq
      * @param callbackUnfollow
      */
-    unfollow(seq, callbackUnfollow) {
+    async unfollow(seq, callbackUnfollow) {
 
-        const { ajaxLoad } = commonLib;
+        const {ajaxLoad} = commonLib;
 
-        ajaxLoad(`api/member/unfollow/${seq}`, function(item) {
+        try {
+
+            const res = await ajaxLoad(`/api/member/unfollow/${seq}`, null, "GET");
+            // ajaxLoad(`api/member/unfollow/${seq}`, (response) => {
+            //
+            //     if (response) {
+            //
+            //         resolve(response);
+            //
+            //     } else {
+            //
+            //         reject(new Error("응답이 없습니다."));
+            //     }
+            // }, "GET");
 
             if (typeof callbackUnfollow === 'function') {
 
-                callbackUnfollow(item);
+                callbackUnfollow();
+
             }
-        }, "GET")
-            // .catch(err => console.error(err));
+
+        } catch (err) {
+
+            alert(err.message);
+        }
     }
 };
 
@@ -59,27 +92,52 @@ window.addEventListener("DOMContentLoaded", function () {
     // Follow & UnFollow 처리
     for (const el of followings) {
 
-        el.addEventListener("click", function() {
+        el.addEventListener("click", async function() {
 
-           const classList = this.classList;
+            const classList = this.classList;
 
-           const action = classList.contains("unfollow") ? unfollow : follow;
+            if (this.classList.contains("guest")) { // 미로그인 상태
 
-           action(this.dataset.seq, function() {
+                alert("로그인이 필요한 서비스 입니다.");
 
-               if (classList.contains("unfollow")) {
+                // 비구조 할당
+                const { pathname, search } = location;
 
-                   classList.remove("unfollow");
+                // search 는 항상 있는 것은 아니라 삼항조건으로 유무 체크 후 추가
+                const redirectUrl = search ? pathname + search : pathname;
 
-                   el.innerText = "Follow";
+                // 로그인 후 원래 페이지로 돌아오도록
+                location.href = commonLib.url(`/member/login?redirectUrl=${redirectUrl}`);
 
-               } else {
+                return;
+            }
 
-                   classList.add("unfollow");
+            try {
+                if (classList.contains("unfollow")) {
 
-                   el.innerText = "Unfollow";
-               }
-           })
+                    await commonLib.follow.unfollow(this.dataset.seq, function () {
+
+                        classList.remove("unfollow");
+
+                        el.innerText = "Follow";
+                    });
+                    console.log("Unfollow 완료!");
+
+                } else {
+
+                    await commonLib.follow.follow(this.dataset.seq, function () {
+
+                        classList.add("unfollow");
+
+                        el.innerText = "Unfollow";
+
+                    });
+                    console.log("Follow 완료!");
+                }
+            } catch (err) {
+
+                alert("Follow/Unfollow 요청에 실패했습니다: " + err.message);
+            }
         });
     }
 });
