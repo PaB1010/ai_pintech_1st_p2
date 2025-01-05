@@ -59,6 +59,8 @@
 
             <main layout:fragment="content"></main>
 
+        <th:block th:replace="~{common/_session_message::message}"></th:block>
+
         <footer th:replace="~{front/outlines/_footer::common}"></footer>
     </body>
 </html>

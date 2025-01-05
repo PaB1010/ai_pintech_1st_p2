@@ -18,20 +18,6 @@ commonLib.follow = {
             // 절대 경로 사용
             // /api/member 가 아닌 api/member 사용시 Controller 에서 Mapping 된 경로인 /mypage/about 이 url 앞에 붙어버림
             const res = await ajaxLoad(`/api/member/follow/${seq}`, null, "GET");
-            // const res = await new Promise((resolve, reject) => {
-            //
-            //     ajaxLoad(`api/member/follow/${seq}`, (response) => {
-            //
-            //         if (response) {
-            //
-            //             resolve(response);
-            //
-            //         } else {
-            //
-            //             reject(new Error("응답이 없습니다."));
-            //         }
-            //     }, "GET");
-            // });
 
             if (typeof callbackFollow === 'function') {
 
@@ -58,17 +44,6 @@ commonLib.follow = {
         try {
 
             const res = await ajaxLoad(`/api/member/unfollow/${seq}`, null, "GET");
-            // ajaxLoad(`api/member/unfollow/${seq}`, (response) => {
-            //
-            //     if (response) {
-            //
-            //         resolve(response);
-            //
-            //     } else {
-            //
-            //         reject(new Error("응답이 없습니다."));
-            //     }
-            // }, "GET");
 
             if (typeof callbackUnfollow === 'function') {
 
@@ -121,7 +96,7 @@ window.addEventListener("DOMContentLoaded", function () {
 
                         el.innerText = "Follow";
                     });
-                    console.log("Unfollow 완료!");
+                    location.reload();
 
                 } else {
 
@@ -132,11 +107,11 @@ window.addEventListener("DOMContentLoaded", function () {
                         el.innerText = "Unfollow";
 
                     });
-                    console.log("Follow 완료!");
+                    location.reload();
                 }
             } catch (err) {
 
-                alert("Follow/Unfollow 요청에 실패했습니다: " + err.message);
+                alert(err.message);
             }
         });
     }
