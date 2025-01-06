@@ -11,6 +11,7 @@ import org.koreait.global.paging.ListData;
 import org.koreait.global.paging.Pagination;
 import org.koreait.member.entities.Member;
 import org.koreait.member.libs.MemberUtil;
+import org.koreait.message.constants.MessageStatus;
 import org.koreait.message.controllers.MessageSearch;
 import org.koreait.message.entities.Message;
 import org.koreait.message.entities.QMessage;
@@ -213,5 +214,23 @@ public class MessageInfoService {
                 || item.getReceiver().getSeq().equals(member.getSeq())));
 
         item.setDeletable(deletable);
+    }
+
+    /**
+     * 미열람 쪽지 개수
+     * 
+     * @return
+     */
+    public long totalUnRead() {
+
+        BooleanBuilder andBuilder = new BooleanBuilder();
+
+        QMessage message = QMessage.message;
+
+        // 현재 로그인한 회원이 수신한 쪽지중 읽지 않은 쪽지
+        andBuilder.and(message.receiver.eq(memberUtil.getMember()))
+                .and(message.status.eq(MessageStatus.UNREAD));
+
+        return messageRepository.count(andBuilder);
     }
 }

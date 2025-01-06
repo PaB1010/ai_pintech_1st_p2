@@ -1,5 +1,7 @@
 package org.koreait.message.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +22,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * 쪽지
@@ -52,6 +51,8 @@ public class MessageController {
 
     private final MessageDeleteService deleteService;
 
+    private final ObjectMapper om;
+
     @ModelAttribute("addCss")
     public List<String> addCss() {
 
@@ -79,7 +80,7 @@ public class MessageController {
      * @return
      */
     @PostMapping
-    public String process(@Valid RequestMessage form, Errors errors, Model model) {
+    public String process(@Valid RequestMessage form, Errors errors, Model model, HttpServletRequest request) {
 
         commonProcess("send", model);
 
@@ -98,10 +99,38 @@ public class MessageController {
             return utils.tpl("message/form");
         }
 
-        sendService.process(form);
+        Message message = sendService.process(form);
 
-        // 전송 후 쪽지 목록으로
-        return "redirect:/message/list";
+        // 전체 미열람 쪽지
+        long totalUnRead = infoService.totalUnRead();
+
+        /* Object Mapper 이용해 Map 형태로 가공해서 JSON 형태로 가공 S */
+        Map<String, Object> data = new HashMap<>();
+
+        data.put("item", message);
+        data.put("totalUnRead", totalUnRead);
+
+        StringBuffer sb = new StringBuffer();
+
+        try {
+            String json = om.writeValueAsString(data);
+
+            sb.append(String.format("if (typeof webSocket != undefined) { webSocket.onopen = () => webSocket.send('%s'); }", json));
+
+        } catch (JsonProcessingException e) {
+
+            e.printStackTrace();
+        }
+
+        sb.append(String.format("location.replace('%s');", request.getContextPath() + "/message/list"));
+
+        /* Object Mapper 이용해 Map 형태로 가공해서 JSON 형태로 가공 E */
+
+        System.out.println(sb);
+
+        model.addAttribute("script", sb.toString());
+
+        return "common/_execute_script";
     }
 
     /**
