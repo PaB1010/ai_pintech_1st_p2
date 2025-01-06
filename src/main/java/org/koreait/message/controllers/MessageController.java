@@ -145,16 +145,25 @@ public class MessageController {
 
 
     /**
-     * 쪽지 개별 & 다수 삭제
+     * 쪽지 개별 삭제
      *
      * @param seq
      * @return
      */
-    @DeleteMapping
-    public String delete(@RequestParam(name = "seq", required = false) List<String> seq) {
+    @GetMapping("/delete/{seq}")
+    public String delete(@PathVariable("seq") Long seq) {
+
+
 
         return "redirect:/message/list";
     }
+
+//     list에서 쪽지 다수 삭제
+//    @GetMapping("/delete/{seq}")
+//    public String delete(@RequestParam(name = "seq", required = false) List<String> seq) {
+//
+//        return "redirect:/message/list";
+//    }
 
     /**
      * 공통 처리

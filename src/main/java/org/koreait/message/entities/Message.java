@@ -17,6 +17,8 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+// columnList 에서는 DB Table 명이 아닌 Entity 의 Field 명 사용
+@Table(indexes = @Index(name = "idx_notice_created_at", columnList = "notice DESC, createdAt DESC"))
 public class Message extends BaseEntity {
 
     @Id
@@ -63,13 +65,13 @@ public class Message extends BaseEntity {
     @Transient
     private List<FileInfo> attachFiles;
 
-    // 2차 가공용(추가정보 형태) 수신인=현재 로그인 계정 일치 여부
+    // 2차 가공용(추가정보 형태) 수신자 = 현재 로그인 계정 일치 여부
     @Transient
     private boolean received;
 
-    // 발신인이 삭제
+    // 발신자가 쪽지 삭제
     private boolean deletedBySender;
 
-    // 수신인이 삭제
+    // 수신자가 쪽지 삭제
     private boolean deletedByReceiver;
 }

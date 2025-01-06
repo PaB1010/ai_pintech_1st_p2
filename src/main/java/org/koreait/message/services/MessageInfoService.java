@@ -60,8 +60,18 @@ public class MessageInfoService {
 
             Member member = memberUtil.getMember();
 
+            BooleanBuilder orBuilder2 = new BooleanBuilder();
+
+            BooleanBuilder andBuilder = new BooleanBuilder();
+
+            // (공지 쪽지 & 수신자 null) || 현재 로그인중인 멤버가 받은 쪽지
+            orBuilder2.or(andBuilder.and(message.notice.eq(true)).and(message.receiver.isNull()))
+                            .or(message.receiver.eq(member));
+
             orBuilder.or(message.sender.eq(member))
-                    .or(message.receiver.eq(member));
+                            .or(orBuilder2);
+
+
 
             builder.and(orBuilder);
         }
@@ -102,8 +112,23 @@ public class MessageInfoService {
         mode = StringUtils.hasText(mode) ? mode : "receive";
 
         // send = 발신 쪽지 목록
-        // receive = 수신 쪽지 목록
-        andBuilder.and(mode.equals("send") ? message.sender.eq(member) : message.receiver.eq(member));
+        // receive = 수신 쪽지 목록 (공지일 경우 없을 수도 있음)
+        if (mode.equals("send")) {
+
+            andBuilder.and(message.sender.eq(member));
+
+        } else {
+            // 공지가 아닐 경우에만 receive 추가
+            BooleanBuilder orBuilder = new BooleanBuilder();
+
+            BooleanBuilder andBuilder1 = new BooleanBuilder();
+
+            // (공지 쪽지 & 수신자 null) || 현재 로그인중인 멤버가 받은 쪽지
+            orBuilder.or(andBuilder1.and(message.notice.eq(true)).and(message.receiver.isNull()))
+                    .or(message.receiver.eq(member));
+
+            andBuilder.and(orBuilder);
+        }
 
         andBuilder.and(mode.equals("send") ? message.deletedBySender.eq(false) : message.deletedByReceiver.eq(false));
 
@@ -140,8 +165,9 @@ public class MessageInfoService {
                 .where(andBuilder)
                 .limit(limit)
                 .offset(offset)
-                // 쪽지 최신순 정렬
-                .orderBy(message.createdAt.desc())
+                // 1차 정렬 : 공지 최신순 & 2차 정렬 : 쪽지 생성일 최신순
+                // index 넣어서 빠른 조회
+                .orderBy(message.notice.desc(), message.createdAt.desc())
                 .fetch();
 
         items.forEach(this::addInfo);
@@ -171,7 +197,11 @@ public class MessageInfoService {
         item.setAttachFiles(fileInfoService.getList(gid, "attach"));
 
         // 로그인한 본인이 받은 쪽지인지 여부
-        item.setReceived(item.getReceiver().getSeq().equals(memberUtil.getMember().getSeq()));
+        item.setReceived(
+                // 공지 쪽지 && 수신자 Null || 로그인한 회원 == 수신자 회원
+                (item.isNotice() && item.getReceiver() == null) ||
+                item.getReceiver().getSeq().equals(memberUtil.getMember().getSeq())
+        );
         // item.setReceived(Objects.equals(item.getReceiver().getSeq(), memberUtil.getMember().getSeq()));
     }
 }

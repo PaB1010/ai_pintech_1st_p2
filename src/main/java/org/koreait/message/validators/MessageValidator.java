@@ -46,8 +46,10 @@ public class MessageValidator implements Validator {
 
             errors.rejectValue("email", "NotBlank");
             
-        } else if (!memberRepository.exists(email)) {
-            // 수신쪽 회원이 존재하지 않을 경우
+        }
+
+        // 공지 쪽지 아니고 & DB에 없는 수신자가 email 일 경우
+        if (!notice && !memberRepository.exists(email)) {
 
             errors.reject("NotFound.member");
         }
