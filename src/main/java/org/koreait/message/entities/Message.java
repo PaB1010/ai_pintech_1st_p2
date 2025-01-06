@@ -68,6 +68,10 @@ public class Message extends BaseEntity {
     // 2차 가공용(추가정보 형태) 수신자 = 현재 로그인 계정 일치 여부
     @Transient
     private boolean received;
+    
+    // 2차 가공용(추가정보 형태) 삭제 가능 여부 - 일반 사용자는 공지 쪽지 삭제 불가
+    @Transient
+    private boolean deletable;
 
     // 발신자가 쪽지 삭제
     private boolean deletedBySender;

@@ -193,15 +193,25 @@ public class MessageInfoService {
 
         String gid = item.getGid();
 
+        Member member = memberUtil.getMember();
+
         item.setEditorImages(fileInfoService.getList(gid, "editor"));
         item.setAttachFiles(fileInfoService.getList(gid, "attach"));
 
         // 로그인한 본인이 받은 쪽지인지 여부
         item.setReceived(
                 // 공지 쪽지 && 수신자 Null || 로그인한 회원 == 수신자 회원
-                (item.isNotice() && item.getReceiver() == null) ||
-                item.getReceiver().getSeq().equals(memberUtil.getMember().getSeq())
+                (item.isNotice() && item.getReceiver() == null)
+                        || item.getReceiver().getSeq().equals(member.getSeq())
         );
         // item.setReceived(Objects.equals(item.getReceiver().getSeq(), memberUtil.getMember().getSeq()));
+
+        // 삭제 가능 여부
+        // (공지 && 관리자) || (공지 아니고 && 현재 로그인한 회원이 받은 쪽지) || 현재 로그인한 회원이 보낸 쪽지
+        boolean deletable = (item.isNotice() && memberUtil.isAdmin())
+                || (!item.isNotice() && (item.getSender().getSeq().equals(member.getSeq())
+                || item.getReceiver().getSeq().equals(member.getSeq())));
+
+        item.setDeletable(deletable);
     }
 }
