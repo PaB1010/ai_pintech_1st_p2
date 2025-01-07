@@ -18,14 +18,15 @@ public class WebSocketConfig implements WebSocketConfigurer {
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
 
         // prod 환경 변수에서 가져와 도메인 설정
-        String profile = System.getenv("spring.profiles.active");
+       // String profile = System.getenv("spring.profiles.active");
 
         // ws://(도메인)localhost:3000/message
         registry.addHandler(messageHandler, "/msg")
+                .setAllowedOrigins("*");
                 // 허용할 도메인, 여러개 가능
                 // .setAllowedOrigins("http://joinfar.xzy:3000", "https://joinfar.xzy:4000");
                 // 개발시 : localhost
                 // 실제 배포시 : 지정한 도메인 허용
-                .setAllowedOrigins(profile.contains("prod") ? "" : "http://localhost:3000");
+                //.setAllowedOrigins(profile.contains("prod") ? "" : "http://localhost:3000");
     }
 }
