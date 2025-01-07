@@ -217,20 +217,33 @@ public class MessageInfoService {
     }
 
     /**
-     * 미열람 쪽지 개수
+     * 미열람 쪽지 개수 (특정 회원)
      * 
      * @return
      */
-    public long totalUnRead() {
+    public long totalUnRead(String email) {
 
         BooleanBuilder andBuilder = new BooleanBuilder();
 
         QMessage message = QMessage.message;
 
         // 현재 로그인한 회원이 수신한 쪽지중 읽지 않은 쪽지
-        andBuilder.and(message.receiver.eq(memberUtil.getMember()))
+        andBuilder.and(message.receiver.email.eq(email))
                 .and(message.status.eq(MessageStatus.UNREAD));
 
         return messageRepository.count(andBuilder);
+    }
+
+
+    /**
+     * 미열람 쪽지 개수 (현재 로그인 회원)
+     * 
+     * @return
+     */
+    public long totalUnRead() {
+
+        Member member = memberUtil.getMember();
+
+        return totalUnRead(member.getEmail());
     }
 }

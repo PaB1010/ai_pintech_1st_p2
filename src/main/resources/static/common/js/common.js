@@ -137,7 +137,7 @@ commonLib.ajaxLoad = function(url, callback, method = 'GET', data, headers, isTe
  * @param height
  * @param isAjax
  */
-commonLib.popup = function(url, width = 350, height = 350, isAjax = false) {
+commonLib.popup = function(url, width = 350, height = 350, isAjax = false, message) {
 
     /* 레이어 팝업 요소 동적 추가 S */
     // layer-dim : 배경
@@ -201,6 +201,14 @@ commonLib.popup = function(url, width = 350, height = 350, isAjax = false) {
         ajaxLoad(url, null, 'GET', null, null, true)
             .then((text) => content.innerHTML = text)
 
+    } else if (message) {
+        // 쪽지 팝업
+
+        content.innerHTML = `<div class="message">
+                            <i class="xi-info"></i>
+                            ${message}
+                            </div>`;
+
     } else {
         // 컨텐츠를 iframe 으로 동적 로드
         const iframe = document.createElement("iframe");
@@ -215,6 +223,17 @@ commonLib.popup = function(url, width = 350, height = 350, isAjax = false) {
         content.append(iframe);
     }
     /* 팝업 컨텐츠 로드 E */
+}
+
+/**
+ * 메세지 출력 팝업 - 상단위 레이어 팝업 간소화
+ *
+ * @param message
+ */
+commonLib.message = function (message, width = 350, height = 200) {
+
+    commonLib.popup(null, width = width, height = height, false, message)
+
 }
 
 /**

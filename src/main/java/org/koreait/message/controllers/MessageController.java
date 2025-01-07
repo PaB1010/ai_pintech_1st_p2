@@ -102,11 +102,12 @@ public class MessageController {
         Message message = sendService.process(form);
 
         // 전체 미열람 쪽지
-        long totalUnRead = infoService.totalUnRead();
+        long totalUnRead = infoService.totalUnRead(form.getEmail());
 
         /* Object Mapper 이용해 Map 형태로 가공해서 JSON 형태로 가공 S */
         Map<String, Object> data = new HashMap<>();
 
+        // message.js 에서 비구조할당해 분해해 사용
         data.put("item", message);
         data.put("totalUnRead", totalUnRead);
 
