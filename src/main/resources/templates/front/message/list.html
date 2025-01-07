@@ -2,8 +2,8 @@
 <html
         xmlns:th="http://www.thymeleaf.org"
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        layout:decorate="~{front/layouts/main}">
-<main layout:fragment="content">
+        layout:decorate="~{front/layouts/mypage}">
+<section layout:fragment="content">
 
     <h1 th:text="#{쪽지함}"></h1>
 
@@ -51,5 +51,5 @@
     </ul>
 
     <th:block th:replace="~{common/_pagination::pagination}"></th:block>
-</main>
+</section>
 </html>

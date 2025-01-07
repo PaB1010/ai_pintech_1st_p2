@@ -7,20 +7,22 @@ main {
 
 main > aside {
     width: 200px;
-    display: flex;
-    flex-direction: column;
+}
+
+main > aside > a {
+    display: block;
+    height: 45px;
+    line-height: 44px;
+}
+
+main > aside > a + a {
+    border-top: 1px solid lightsteelblue;
 }
 
 main > section {
     flex-grow: 1;
     padding: 30px;
 }
-
-main > aside > a {
-    display: block;
-    
-}
-
 /* MyPage Layout E */
 
 .profile-image {
