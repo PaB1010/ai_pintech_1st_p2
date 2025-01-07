@@ -18,8 +18,8 @@ import java.io.Serializable;
 @Entity
 // 빠른 조회 위해 index 부여
 @Table(indexes = {
-        @Index(name = "idx_gid", columnList = "gid, createdAt"),
-        @Index(name = "idx_gid_location", columnList = "gid, location, createdAt")
+        @Index(name = "idx_gid", columnList = "gid, listOrder, createdAt"),
+        @Index(name = "idx_gid_location", columnList = "gid, location, listOrder, createdAt")
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FileInfo extends BaseMemberEntity implements Serializable {
@@ -71,6 +71,12 @@ public class FileInfo extends BaseMemberEntity implements Serializable {
     // 추후에 이 값이 false File 들은 Schedule 설정해 주기적으로 삭제
     // done 은 boolean 값으로 선택도가 2가지(1, 0)뿐이므로 index 부여하지 않는 것이 조회에 유리
     private boolean done;
+
+    // 1개의 이미지만 노출되는 경우 대표 이미지 선택
+    private boolean selected;
+
+    // 정렬 순서, 오름 차순
+    private long listOrder;
 
     // 이미지 형식 여부
     // ★ Thumbnail 제작은 IMG 로만 해야해서 만든 메서드 ★

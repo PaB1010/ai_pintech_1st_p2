@@ -13,6 +13,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -179,6 +181,39 @@ public class ProductController implements SubMenus {
      */
     private void commonProcess(String mode, Model model) {
 
+        mode = StringUtils.hasText(mode) ? mode : "list";
+
+        List<String> addCommonScript = new ArrayList<>();
+        List<String> addScript = new ArrayList<>();
+
+        String pageTitle = "";
+
+        if (mode.equals("list")) {
+
+            pageTitle = "상품 목록";
+
+        } else if (mode.equals("add") || mode.equals("edit")) {
+
+            pageTitle = mode.equals("edit") ? "상품 수정" : "상품 등록";
+
+            addCommonScript.add("fileManager");
+            addCommonScript.add("ckeditor5/ckeditor");
+            addScript.add("product/product");
+
+        } else if (mode.equals("category")) {
+
+            pageTitle = "분류 관리";
+
+        } else if (mode.equals("delivery")) {
+
+            pageTitle = "배송 정책 관리";
+        }
+
+        pageTitle += " - 상품 관리";
+
+        model.addAttribute("pageTitle", pageTitle);
+        model.addAttribute("addCommonScript", addCommonScript);
+        model.addAttribute("addScript", addScript);
         model.addAttribute("subMenuCode", mode);
     }
 }

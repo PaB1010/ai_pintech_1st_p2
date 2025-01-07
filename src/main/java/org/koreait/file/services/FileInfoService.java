@@ -75,8 +75,8 @@ public class FileInfoService {
             andBuilder.and(fileInfo.done.eq(status == FileStatus.DONE));
         }
 
-        // 생성일자 오름차순으로 정렬해서 반환
-        List<FileInfo> items =  (List<FileInfo>)infoRepository.findAll(andBuilder, Sort.by(asc("createdAt")));
+        // 1차 정렬 listOrder 기준 오름차순 정렬, 2차 정렬 생성일자 오름차순 정렬해서 반환
+        List<FileInfo> items =  (List<FileInfo>)infoRepository.findAll(andBuilder, Sort.by(asc("listOrder"), asc("createdAt")));
         System.out.println(items);
 
         // List 추가 정보 2차 가공 처리
