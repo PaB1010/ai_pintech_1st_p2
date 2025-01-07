@@ -1,24 +1,29 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head th:object="${siteConfig}">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, user-scalable=yes,maximum-scale=2.0, minimum-scale=0.5, initial-scale=1.0">
     <meta name="keywords" th:if="*{keywords != null}" th:content="*{keywords}">
     <meta name="description" th:if="*{description != null}" th:content="*{description}">
+    <!--    CSRF : 같은 출처에서 같은 토큰을 가지고 접근해야 올바른 접근으로 판단하는 Spring Security 토큰 검증 -->
+    <!--    검증 실패시 Status 401-->
     <meta name="_csrf" th:content="${_csrf.token}">
     <meta name="_csrf_header" th:content="${_csrf.headerName}">
+    <!--    Context Path -->
     <meta name="rootUrl" th:content="@{/}">
+
     <!--        쪽지 확인 알람용 회원 정보-->
     <meta th:if="${@memberUtil.isLogin()}" name="user" th:content="${profile.email}">
 
     <title>
-        <th:block th:if="${pageTitle != null}" th:text="${#strings.concat(pageTitle, ' -')}"></th:block>
+        <th:block th:if="${pageTitle != null}"
+        th:text="${#strings.concat(pageTitle, ' - ')}"></th:block>
         <th:block th:text="*{siteTitle}"></th:block>
     </title>
 
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/xeicon@2.3.3/xeicon.min.css">
+<!--    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/xeicon@2.3.3/xeicon.min.css">-->
     <link rel="stylesheet" type="text/css" th:href="@{/common/css/style.css?v={v}(v=*{cssVersion})}">
+    <link rel="stylesheet" type="text/css" th:href="@{/front/css/mypage/style.css?v={v}(v=*{jsVersion})}">
 
     <th:block th:if="${addCommonCss != null}">
         <link rel="stylesheet" type="text/css"
@@ -27,11 +32,11 @@
 
     <th:block layout:fragment="addCommonCss"></th:block>
 
-    <link rel="stylesheet" type="text/css" th:href="@{/mobile/css/style.css?v={v}(v=*{cssVersion})}">
+    <link rel="stylesheet" type="text/css" th:href="@{/front/css/style.css?v={v}(v=*{cssVersion})}">
 
     <th:block th:if="${addCss != null}">
         <link rel="stylesheet" type="text/css" th:each="cssPath : ${addCss}"
-              th:href="@{/mobile/css/{path}.css?v={v}(path=${cssPath}, v=*{cssVersion})}">
+              th:href="@{/front/css/{path}.css?v={v}(path=${cssPath}, v=*{cssVersion})}">
     </th:block>
 
     <th:block layout:fragment="addCss"></th:block>
@@ -47,17 +52,24 @@
 
     <th:block layout:fragment="addCommonScript"></th:block>
 
-    <script th:src="@{/mobile/js/common.js?v={v}(v=*{jsVersion})}"></script>
+    <script th:src="@{/front/js/common.js?v={v}(v=*{jsVersion})}"></script>
 
     <th:block th:if="${addScript != null}">
-        <script th:each="jsPath : ${addScript}" th:src="@{/mobile/js/{path}.js?v={v}(path=${jsPath}, v=*{jsVersion})}"></script>
+        <script th:each="jsPath : ${addScript}" th:src="@{/front/js/{path}.js?v={v}(path=${jsPath}, v=*{jsVersion})}"></script>
     </th:block>
 
     <th:block layout:fragment="addScript"></th:block>
 </head>
-    <body>
-        <header th:replace="~{mobile/outlines/_header::common}"></header>
-            <main layout:fragment="content"></main>
-        <footer th:replace="~{mobile/outlines/_footer::common}"></footer>
-    </body>
+<body>
+<header th:replace="~{front/outlines/_header::common}"></header>
+
+<main class="layout-width">
+    <aside th:replace="~{front/mypage/_side_menu::menu}"></aside>
+    <section layout:fragment="content"></section>
+</main>
+
+<th:block th:replace="~{common/_session_message::message}"></th:block>
+
+<footer th:replace="~{front/outlines/_footer::common}"></footer>
+</body>
 </html>

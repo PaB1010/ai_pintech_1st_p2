@@ -12,6 +12,9 @@
 <!--    Context Path -->
         <meta name="rootUrl" th:content="@{/}">
 
+        <!--        쪽지 확인 알람용 회원 정보-->
+        <meta th:if="${@memberUtil.isLogin()}" name="user" th:content="${profile.email}">
+
         <title>
             <th:block th:if="${pageTitle != null}"
             th:text="${#strings.concat(pageTitle, ' - ')}"></th:block>

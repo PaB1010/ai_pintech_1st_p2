@@ -1,3 +1,28 @@
+/* MyPage Layout S */
+
+main {
+    display: flex;
+    padding: 40px 0 100px;
+}
+
+main > aside {
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+}
+
+main > section {
+    flex-grow: 1;
+    padding: 30px;
+}
+
+main > aside > a {
+    display: block;
+    
+}
+
+/* MyPage Layout E */
+
 .profile-image {
 
     width : 250px;

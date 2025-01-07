@@ -1,22 +1,23 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{front/layouts/main}">
-<main layout:fragment="content">
-    <div class="link">
-        <a th:href="@{/mypage/profile}">
-            <th:block th:text="#{회원_정보_수정}"></th:block>
-        </a>
-        <a th:href="@{/mypage/about}">
-            <th:block th:text="#{About_Me}"></th:block>
-        </a>
-        <a th:href="@{/mypage/wishlist}">
-            <th:block th:text="#{찜_목록_관리}"></th:block>
-        </a>
-        <a th:href="@{/mypage/follow}">
-            <th:block th:text="#{팔로우_관리}"></th:block>
-        </a>
+      layout:decorate="~{front/layouts/mypage}">
+<section layout:fragment="content">
+    <h1 th:text="#{마이페이지}"></h1>
+<!--    <div class="link">-->
+<!--        <a th:href="@{/mypage/profile}">-->
+<!--            <th:block th:text="#{회원_정보_수정}"></th:block>-->
+<!--        </a>-->
+<!--        <a th:href="@{/mypage/about}">-->
+<!--            <th:block th:text="#{About_Me}"></th:block>-->
+<!--        </a>-->
+<!--        <a th:href="@{/mypage/wishlist}">-->
+<!--            <th:block th:text="#{찜_목록_관리}"></th:block>-->
+<!--        </a>-->
+<!--        <a th:href="@{/mypage/follow}">-->
+<!--            <th:block th:text="#{팔로우_관리}"></th:block>-->
+<!--        </a>-->
 
-    </div>
-</main>
+<!--    </div>-->
+</section>
 </html>
