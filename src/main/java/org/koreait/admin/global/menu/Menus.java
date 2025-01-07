@@ -40,6 +40,7 @@ public class Menus {
 
            new MenuDetail("list", "게시판 목록", "/admin/board/list"),
 
+           // 게시판 설정 추가, 1게시판 설정 = 1게시판
            new MenuDetail("add", "게시판 등록", "/admin/board/add"),
 
            new MenuDetail("posts", "게시글 관리", "/admin/board/posts")
