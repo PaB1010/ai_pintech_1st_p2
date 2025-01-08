@@ -46,6 +46,9 @@ public class RequestBoard {
     // 댓글 사용 여부
     private boolean useComment;
 
+    // 게시글 작성 후 이동 경로 (list, view)
+    private String locationAfterWriting;
+
     // 게시판 스킨
     private String skin;
 

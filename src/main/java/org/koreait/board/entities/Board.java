@@ -5,11 +5,12 @@ import lombok.Data;
 import org.koreait.global.entities.BaseMemberEntity;
 import org.koreait.member.constants.Authority;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Data
-public class Board extends BaseMemberEntity {
+public class Board extends BaseMemberEntity implements Serializable {
 
     @Id
     @Column(length = 30)
@@ -36,6 +37,12 @@ public class Board extends BaseMemberEntity {
     private boolean useAttachFile;
 
     private boolean useComment;
+
+
+    // 게시글 작성 후 이동 경로
+    // list : 목록
+    // view : 게시글 조회
+    private String locationAfterWriting;
 
     private String skin;
 
