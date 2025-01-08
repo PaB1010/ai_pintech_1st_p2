@@ -305,7 +305,10 @@ commonLib.loadEditor = function(id, height = 350) {
 
     // CKEditor 없거나 || (대상 DOM 객체의) id 없을 경우 return
     // !ClassicEditor 쓰지 않은 이유, var 시 문제 유발 가능성
-    if (typeof ClassicEditor === 'undefined' || !id) return;
+    if (typeof ClassicEditor === 'undefined' || !id) {
+
+        return Promise.resolve();
+    }
 
     // CKEditor 안전하게 로드 됐을 시
     return new Promise((resolve, reject) => {
@@ -348,4 +351,22 @@ commonLib.loadEditor = function(id, height = 350) {
             }
         })();
     });
+}
+
+/**
+ * Editor 에 올라갈 IMG
+ */
+commonLib.insertEditorImage = function(imageUrls ,editor) {
+
+    // editor 없을 경우 전역변수에서 조회
+    editor = editor ?? window.editor;
+
+    if (!editor) return;
+
+    // 배열이 아닌 문자열 일 경우 배열에 담아줌
+    imageUrls = typeof imageUrls === 'string' ? [imageUrls] : imageUrls;
+
+    // execute = 이미 정해져있는 명령어
+    // Editor 에 IMG Upload
+    editor.execute('insertImage', { source : imageUrls })
 }

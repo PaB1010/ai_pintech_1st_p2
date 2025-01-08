@@ -16,7 +16,7 @@ window.addEventListener("DOMContentLoaded", function () {
 
     insertEditors.forEach(el => {
 
-        el.addEventListener("click", e => insertImage(e.currentTarget.dataset.url));
+        el.addEventListener("click", e => commonLib.insertEditorImage(e.currentTarget.dataset.url));
     });
 
     // 첨부 파일 삭제 버튼 이벤트 처리
@@ -97,7 +97,7 @@ function callbackFileUpload(files) {
 
                 const { url } = this.dataset;
 
-                insertImage(url);
+                commonLib.insertEditorImage(url);
             });
             
         } else {
@@ -125,18 +125,5 @@ function callbackFileUpload(files) {
     }
 
     // IMG 한번에 모아서 Insert
-    if (imageUrls.length > 0) insertImage(imageUrls);
-}
-
-/**
- * Editor 에 올라갈 IMG
- */
-function insertImage(imageUrls) {
-
-    // 배열이 아닌 문자열 일 경우 배열에 담아줌
-    imageUrls = typeof imageUrls === 'string' ? [imageUrls] : imageUrls;
-
-    // execute = 이미 정해져있는 명령어
-    // Editor 에 IMG Upload
-    editor.execute('insertImage', { source : imageUrls })
+    if (imageUrls.length > 0) commonLib.insertEditorImage(imageUrls);
 }
