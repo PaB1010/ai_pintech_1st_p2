@@ -20,12 +20,14 @@ import org.koreait.global.paging.ListData;
 import org.koreait.global.paging.Pagination;
 import org.koreait.member.entities.Member;
 import org.koreait.member.libs.MemberUtil;
+import org.koreait.mypage.services.FollowService;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Lazy
 @Service
@@ -33,6 +35,8 @@ import java.util.List;
 public class BoardInfoService {
 
     private final BoardConfigInfoService configInfoService;
+
+    private final FollowService followService;
 
     private final BoardDataRepository boardDataRepository;
 
@@ -335,6 +339,20 @@ public class BoardInfoService {
         String email = member.getEmail();
 
         search.setEmail(List.of(email));
+
+        return getList(search);
+    }
+
+    public ListData<BoardData> getMyFollowingList(BoardSearch search) {
+
+        // 템플릿 출력시 오류 방지위한 빈 객체
+        if (!memberUtil.isLogin() || followService.getTotalFollowings() < 1L ) return new ListData<>(List.of(), null);
+
+        List<String> emails = followService.getFollowings().stream()
+
+                .map(Member::getEmail).collect(Collectors.toList());
+
+        search.setEmail(emails);
 
         return getList(search);
     }

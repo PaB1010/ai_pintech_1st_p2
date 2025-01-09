@@ -7,5 +7,6 @@
         <a th:href="@{/message/list}" th:text="${#strings.concat(#messages.msg('쪽지함'), '(', totalUnRead, ')')}"></a>
         <a th:href="@{/mypage/wishlist}" th:text="#{찜_목록_관리}"></a>
         <a th:href="@{/mypage/follow}" th:text="#{팔로우_관리}"></a>
+        <a th:href="@{/mypage/follow/board}" th:text="#{팔로우_타임라인}"></a>
     </aside>
 </html>

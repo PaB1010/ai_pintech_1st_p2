@@ -177,7 +177,7 @@ public class FollowService {
     }
 
     /**
-     * 현재 로그인한 회원을 follow 한 회원 목록
+     * 현재 로그인한 회원이 follow 한 회원 목록
      * @return
      */
     public List<Member> getFollowings() {

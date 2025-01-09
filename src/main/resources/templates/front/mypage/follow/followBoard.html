@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{front/layouts/mypage}">
+<section layout:fragment="content">
+
+
+    <div th:each="board : ${boardData}" th:object="${board}">
+
+        <div class="view-content">
+            <div class="subject">
+                <span class="badge" th:if="*{category != null}" th:text="*{category}"></span>
+                <th:block th:text="*{subject}"></th:block>
+            </div>
+            <div class="post-info">
+                <div class="left">
+                    <span class="poster">
+                        <th:block th:text="*{poster}"></th:block>
+                        <th:block th:if="*{member != null}">
+                            (<th:block th:text="*{member.email}"></th:block>)
+                            <a th:if="${@memberUtil.isLogin()}" th:href="@{/message?email={email}(email=*{member.email})}" target="_blank">
+                                <i class="xi-mail"></i>
+                            </a>
+                        </th:block>
+                    </span>
+                    <span class="view-count">
+                        <th:block th:text="#{조회수}"></th:block> :
+                        <th:block th:text="*{viewCount >= 1000L ? #numbers.formatInteger(viewCount, 3, 'COMMA') : viewCount}"></th:block>
+                    </span>
+                </div>
+                <div class="right">
+                    <span class="ip-info" th:text="*{'IP : ' + ipAddr}"></span>
+                    <span class="post-date">
+                        <th:block th:text="#{작성일시}"></th:block>
+                        <th:block th:text="*{#temporals.format(createdAt, 'yyyy.MM.dd HH:mm:ss')}"></th:block>
+                    </span>
+                </div>
+            </div>
+            <!--// post-info-->
+            <div class="content" th:utext="*{content}"></div>
+
+            <ul class="download-files" th:if="*{attachFiles != null && !attachFiles.isEmpty()}">
+                <li th:each="file, status : *{attachFiles}" th:object="${file}">
+                    #<th:block th:text="${status.count}"></th:block>
+                    <a th:href="@{/api/file/download/{seq}(seq=*{seq})}" th:text="*{fileName}"></a>
+                </li>
+            </ul>
+        </div>
+        <!--// view content-->
+
+
+    </div>
+
+<!--    <th:block th:replace="~{common/_pagination::pagination}"></th:block>-->
+</section>
+</html>

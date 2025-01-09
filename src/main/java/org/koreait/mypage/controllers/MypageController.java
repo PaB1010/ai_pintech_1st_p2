@@ -3,6 +3,9 @@ package org.koreait.mypage.controllers;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.koreait.board.controllers.BoardSearch;
+import org.koreait.board.entities.BoardData;
+import org.koreait.board.services.BoardInfoService;
 import org.koreait.global.annotations.ApplyErrorPage;
 import org.koreait.global.libs.Utils;
 import org.koreait.global.paging.CommonSearch;
@@ -51,6 +54,8 @@ public class MypageController {
     private final MemberInfoService memberInfoService;
 
     private final PokemonInfoService pokemonInfoService;
+
+    private final BoardInfoService boardInfoService;
 
     private final FollowService followService;
 
@@ -219,8 +224,22 @@ public class MypageController {
 
         // model.addAttribute("items", allFollows);
 
-
         return utils.tpl("mypage/follow/follow");
+    }
+
+    @GetMapping("/follow/board")
+    public String followBoard(CommonSearch paging, Model model) {
+
+        commonProcess("follow", model);
+
+        BoardSearch boardSearch = modelMapper.map(paging, BoardSearch.class);
+
+        ListData<BoardData> data = boardInfoService.getMyFollowingList(boardSearch);
+
+        model.addAttribute("boardData", data.getItems());
+        model.addAttribute("pagination", data.getPagination());
+
+        return utils.tpl("mypage/follow/followBoard");
     }
 
 
