@@ -7,15 +7,20 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.koreait.board.controllers.BoardSearch;
+import org.koreait.board.controllers.RequestBoard;
 import org.koreait.board.entities.Board;
 import org.koreait.board.entities.BoardData;
 import org.koreait.board.entities.QBoardData;
 import org.koreait.board.exceptions.BoardDataNotFoundException;
 import org.koreait.board.repositories.BoardDataRepository;
 import org.koreait.board.services.configs.BoardConfigInfoService;
+import org.koreait.file.services.FileInfoService;
 import org.koreait.global.libs.Utils;
 import org.koreait.global.paging.ListData;
 import org.koreait.global.paging.Pagination;
+import org.koreait.member.entities.Member;
+import org.koreait.member.libs.MemberUtil;
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -27,15 +32,22 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardInfoService {
 
+    private final BoardConfigInfoService configInfoService;
+
     private final BoardDataRepository boardDataRepository;
 
-    private final BoardConfigInfoService configInfoService;
+    private final FileInfoService fileInfoService;
 
     private final JPAQueryFactory queryFactory;
 
     private final HttpServletRequest request;
 
+    private final ModelMapper modelMapper;
+
+    private final MemberUtil memberUtil;
+
     private final Utils utils;
+
     /**
      * 게시글 단일 조회
      *
@@ -46,13 +58,43 @@ public class BoardInfoService {
 
         BoardData item = boardDataRepository.findById(seq).orElseThrow(BoardDataNotFoundException::new);
 
-        addInfo(item);
+        addInfo(item, true);
 
         return item;
     }
 
     /**
+     * 게시글 수정시 필요한 커맨드 객체 RequestBoard 로 변환해 반환
+     *
+     * @param seq
+     * @return
+     */
+    public RequestBoard getForm(Long seq) {
+
+        return getForm(get(seq));
+    }
+
+    /**
+     * 게시글 수정시 필요한 커맨드 객체 RequestBoard 로 변환해 반환
+     *
+     * Base Method
+     *
+     * @param item
+     * @return
+     */
+    public RequestBoard getForm(BoardData item) {
+
+        RequestBoard form = modelMapper.map(item, RequestBoard.class);
+
+        form.setMode("edit");
+
+        return form;
+    }
+
+    /**
      * 게시글 목록 조회
+     *
+     * Base Method
      *
      * @param search
      * @return
@@ -265,12 +307,72 @@ public class BoardInfoService {
 
         return getLatest(bid, 5);
     }
+
+    /**
+     * 현재 로그인한 회원이 작성한 게시글 목록 조회
+     *
+     * MyPage 에서 연동
+     *
+     * @param search
+     * @return
+     */
+    public ListData<BoardData> getMyList(BoardSearch search) {
+
+        // 템플릿 출력시 오류 방지위한 빈 객체
+        if (!memberUtil.isLogin()) return new ListData<>(List.of(), null);
+
+        Member member = memberUtil.getMember();
+
+        String email = member.getEmail();
+
+        search.setEmail(List.of(email));
+
+        return getList(search);
+    }
+
     /**
      * 추가 정보 처리
      *
      * @param item
      */
+    private void addInfo(BoardData item, boolean isView) {
+
+        /* 게시판 파일 정보 S */
+        String gid = item.getGid();
+
+        item.setEditorImages(fileInfoService.getList(gid, "editor"));
+        item.setAttachmentImages(fileInfoService.getList(gid, "attach"));
+        /* 게시판 파일 정보 E */
+
+        /* 이전 & 다음 게시글 S */
+
+        // 게시글 단일 상세조회일 경우에만 이전 & 다음 게시글 조회
+        if (isView) {
+
+            QBoardData boardData = QBoardData.boardData;
+
+            Long seq = item.getSeq();
+
+            // lt (seq 보다 작은 것) 중에 가장 최신인 것 1개 조회
+            BoardData prev = queryFactory.selectFrom(boardData)
+                            .where(boardData.seq.lt(seq))
+                            .orderBy(boardData.seq.desc())
+                            .fetchFirst();
+
+            // gt (seq 보다 큰 것) 중에서 가장 오래된 것 1개 조회
+            BoardData next = queryFactory.selectFrom(boardData)
+                            .where(boardData.seq.gt(seq))
+                            .orderBy(boardData.seq.asc())
+                            .fetchFirst();
+
+            item.setPrev(prev);
+            item.setNext(next);
+        }
+        /* 이전 & 다음 게시글 E */
+    }
+
     private void addInfo(BoardData item) {
 
+        addInfo(item, false);
     }
 }
