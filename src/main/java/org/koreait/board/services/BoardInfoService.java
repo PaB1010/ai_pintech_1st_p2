@@ -133,6 +133,14 @@ public class BoardInfoService {
             andBuilder.and(boardData.board.bid.in(bids));
         }
 
+        // 분류 검색
+        List<String> categories = search.getCategory();
+
+        if (categories != null && !categories.isEmpty()) {
+
+            andBuilder.and(boardData.category.in(categories));
+        }
+
         /**
          * 키워드 검색
          *
@@ -341,7 +349,7 @@ public class BoardInfoService {
         String gid = item.getGid();
 
         item.setEditorImages(fileInfoService.getList(gid, "editor"));
-        item.setAttachmentImages(fileInfoService.getList(gid, "attach"));
+        item.setAttachFiles(fileInfoService.getList(gid, "attach"));
         /* 게시판 파일 정보 E */
 
         /* 이전 & 다음 게시글 S */

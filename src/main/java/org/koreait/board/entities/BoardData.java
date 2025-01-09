@@ -74,6 +74,10 @@ public class BoardData extends BaseEntity implements Serializable {
     @Column(length = 60)
     private String youtubeUrl;
 
+    // 게시글 분류
+    @Column(length = 60)
+    private String category;
+
     // 이전 게시글
     @Transient
     private BoardData prev;
@@ -88,5 +92,5 @@ public class BoardData extends BaseEntity implements Serializable {
     
     // 첨부 파일
     @Transient
-    private List<FileInfo> attachmentImages;
+    private List<FileInfo> attachFiles;
 }

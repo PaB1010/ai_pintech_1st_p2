@@ -4,6 +4,14 @@
         <h1>
             <a th:href="@{/board/list/{bid}(bid=*{bid})}" th:text="*{name}"></a>
         </h1>
+<!--        <a th:if="${#requestdatavalues.url.contains('/board/list')}"-->
+<!--           th:href="@{/board/write/{bid}(bid=*{bid})}" th:text="#{게시글_작성}" class="btn"></a>-->
+
+<!--        <a th:if="${#request.requestURI.contains('/board/list')}"-->
+<!--                th:href="@{/board/write/{bid}(bid=*{bid})}" th:text="#{게시글_작성}" class="btn"></a>-->
+
+        [[${#uris.escapePath(uri)}]]
+
         <a th:href="@{/board/write/{bid}(bid=*{bid})}" th:text="#{게시글_작성}" class="btn"></a>
     </div>
 </html>

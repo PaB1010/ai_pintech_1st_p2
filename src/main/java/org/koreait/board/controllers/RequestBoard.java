@@ -46,6 +46,9 @@ public class RequestBoard {
     private String externalLink;
 
     private String youtubeUrl;
+    
+    // 게시글 분류
+    private String category;
 
     private List<FileInfo> editorImages;
 

@@ -18,4 +18,7 @@ public class BoardSearch extends CommonSearch {
     // 회원 이메일별 조회용
     // Mypage, 관리자쪽에서 사용
     private List<String> email;
+
+    // 분류 조회용
+    private List<String> category;
 }
