@@ -259,11 +259,11 @@ public class MemberController {
 
         Member member = data.getMember();
 
-        model.addAttribute("profile", member);
+        model.addAttribute("member", member);
         model.addAttribute("seq", data.getMember().getSeq());
-        model.addAttribute("useFollowButton", true);
+        // model.addAttribute("useFollowButton", true);
 
-        return utils.tpl("mypage/about");
+        return utils.tpl("member/about");
     }
 
     /**

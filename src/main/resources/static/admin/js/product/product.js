@@ -9,9 +9,7 @@ window.addEventListener("DOMContentLoaded", function() {
     const insertEditors = document.getElementsByClassName("insert-editor");
 
     for (const el of insertEditors) {
-
-        // 화살표 함수 : 이때의 this = window
-        el.addEventListener("click", (e) => insertEditorImage(e.currentTarget.dataset.url));
+        el.addEventListener("click", (e) => insertEditorImage(e.currentTarget.dataset.url))
     }
 
     // 파일 삭제 처리
@@ -29,12 +27,9 @@ window.addEventListener("DOMContentLoaded", function() {
 
             fileManager.delete(seq, () => {
 
-                if (!confirm('정말 처리하겠습니까?')) return;
-
-                // 삭제 후 후속처리
                 const el = document.getElementById(`file-${seq}`);
 
-               el.parentElement.removeChild(el);
+                el.parentElement.removeChild(el);
             });
         });
     }

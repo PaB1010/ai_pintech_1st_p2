@@ -124,7 +124,7 @@ public class MypageController {
 
         commonProcess("about", model);
 
-        model.addAttribute("useFollowButton", false);
+        // model.addAttribute("useFollowButton", false);
 
         return utils.tpl("mypage/about");
     }

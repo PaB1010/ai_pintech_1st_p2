@@ -186,7 +186,7 @@ public class Utils {
             // 배경 이미지 형태
             if (mode.equals("background")) {
 
-                return String.format("<div style='width: %dpx; height: %dpx; background:url(\"%s\") no-repeat center center; background-size:cover;' class='%s'%s></div>", width, height, imageUrl, className, seq != null && seq > 0L ? "data-seq" + seq + "'" : "");
+                return String.format("<div style='width: %dpx; height: %dpx; background:url(\"%s\") no-repeat center center; background-size:cover;' class='%s'%s></div>", width, height, imageUrl, className, seq != null && seq > 0L ? "data-seq='" + seq + "'" : "");
 
             } else {
                 // 이미지 태그 형태

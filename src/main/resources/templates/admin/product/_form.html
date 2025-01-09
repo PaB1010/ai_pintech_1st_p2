@@ -34,13 +34,13 @@
                 </td>
             </tr>
             <tr>
-                <th>상세 설명</th>
+                <th>상세설명</th>
                 <td>
                     <textarea name="description" th:field="*{description}" id="description"></textarea>
-                    <button type="button" class="sbtn file-upload" th:data-gid="*{gid}" data-location="editor" data-image-only="true">이미지 업로드</button>
+                    <button type="button" class="sbtn file-upload" th:data-gid="*{gid}" data-location="editor" data-image-only="true" ->이미지 업로드</button>
                     <div class="upload-files" id="editor-images">
                         <span th:if="*{editorImages != null}" th:each="item : *{editorImages}" class="file-item" th:id="${'file-' + item.seq}">
-                            <a th:href="@{/api/file/download/{seq}(seq=${item.seq})}" th:text="${item.fileName}"></a>
+                           <a th:href="@{/api/file/download/{seq}(seq=${item.seq})}" th:text="${item.fileName}"></a>
                             <i class="insert-editor xi-upload" th:data-url="${item.fileUrl}"></i>
                             <i class="remove xi-close" th:data-seq="${item.seq}"></i>
                         </span>
@@ -59,7 +59,6 @@
                         <div th:if="*{mainImages != null}" th:each="item : *{mainImages}" th:object="${item}" class="image-item" th:id="*{'file-' + seq}">
                             <i class="remove xi-close" th:data-seq="*{'file-' + seq}"></i>
                             <th:block th:utext="*{@utils.showBackground(seq, 200, 100, 'inner show-image')}"></th:block>
-<!--                            <div class="inner show-image" style="background: url('[thumbUrl]') no-repeat center center; background-size: cover" data-seq="[seq]"></div>-->
                         </div>
                     </div>
                 </td>
@@ -72,7 +71,6 @@
                         <div th:if="*{listImages != null}" th:each="item : *{listImages}" th:object="${item}" class="image-item" th:id="*{'file-' + seq}">
                             <i class="remove xi-close" th:data-seq="*{'file-' + seq}"></i>
                             <th:block th:utext="*{@utils.showBackground(seq, 200, 100, 'inner show-image')}"></th:block>
-                            <!--                            <div class="inner show-image" style="background: url('[thumbUrl]') no-repeat center center; background-size: cover" data-seq="[seq]"></div>-->
                         </div>
                     </div>
                 </td>
