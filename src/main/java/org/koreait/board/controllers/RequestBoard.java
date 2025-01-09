@@ -42,6 +42,11 @@ public class RequestBoard {
     // 공지글 여부
     private boolean notice;
 
+    // 외부 링크
+    private String externalLink;
+
+    private String youtubeUrl;
+
     private List<FileInfo> editorImages;
 
     private List<FileInfo> attachFiles;

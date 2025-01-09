@@ -52,7 +52,11 @@ public class BoardData extends BaseEntity implements Serializable {
 
     // 조회수
     private long viewCount;
+    
+    // 댓글수
+    private long commentCount;
 
+    // 추천수
     private long recommendCount;
 
     // IP 주소 - 관리자 차단용

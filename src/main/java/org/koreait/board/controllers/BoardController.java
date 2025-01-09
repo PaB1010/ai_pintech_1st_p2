@@ -74,6 +74,8 @@ public class BoardController {
     /**
      * 게시글 조회
      *
+     * pageTitle = 게시글 제목
+     *
      * @param seq
      * @param model
      * @return
