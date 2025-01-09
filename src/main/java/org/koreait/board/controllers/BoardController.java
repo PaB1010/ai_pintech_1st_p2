@@ -187,6 +187,10 @@ public class BoardController {
 
         mode = StringUtils.hasText(mode) ? mode : "write";
 
+        if (mode.equals("edit")) commonProcess(form.getSeq(), mode, model);
+
+        else commonProcess(form.getBid(), mode, model);
+
         commonProcess(form.getBid(), mode, model);
 
         boardValidator.validate(form, errors);
@@ -281,6 +285,7 @@ public class BoardController {
         model.addAttribute("addCommonScript", addCommonScript);
         model.addAttribute("addScript", addScript);
         model.addAttribute("addCss", addCss);
+        model.addAttribute("mode", mode);
     }
 
     /**

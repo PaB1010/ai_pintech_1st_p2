@@ -10,8 +10,6 @@
 <!--        <a th:if="${#request.requestURI.contains('/board/list')}"-->
 <!--                th:href="@{/board/write/{bid}(bid=*{bid})}" th:text="#{게시글_작성}" class="btn"></a>-->
 
-        [[${#uris.escapePath(uri)}]]
-
-        <a th:href="@{/board/write/{bid}(bid=*{bid})}" th:text="#{게시글_작성}" class="btn"></a>
+        <a th:if="${mode == 'list'}" th:href="@{/board/write/{bid}(bid=*{bid})}" th:text="#{게시글_작성}" class="btn"></a>
     </div>
 </html>

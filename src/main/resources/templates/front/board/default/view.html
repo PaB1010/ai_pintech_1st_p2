@@ -56,8 +56,10 @@
         <div class="view-buttons">
             <a th:href="@{/board/list/{bid}(bid=${board.bid})}" th:text="#{목록}"></a>
             <a th:href="@{/board/write/{bid}(bid=${board.bid})}" th:text="#{글_작성}"></a>
-            <a th:href="@{/board/edit/{seq}(seq=*{seq})}" th:text="#{수정}"></a>
-            <a th:href="@{/board/delete/{seq}(seq=*{seq})}" th:text="#{삭제}" onclick="return confirm('정말 삭제하겠습니까?');"></a>
+            <th:block th:if="${boardData.member == @memberUtil.getMember() || @memberUtil.isAdmin()}">
+                <a th:href="@{/board/edit/{seq}(seq=*{seq})}" th:text="#{수정}"></a>
+                <a th:href="@{/board/delete/{seq}(seq=*{seq})}" th:text="#{삭제}" onclick="return confirm('정말 삭제하겠습니까?');"></a>
+            </th:block>
         </div>
         <!--// view-buttons -->
 
