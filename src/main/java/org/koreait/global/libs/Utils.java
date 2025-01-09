@@ -149,13 +149,12 @@ public class Utils {
      * @param url - 외부 링크 이미지
      * @param width - 값이 있으면 썸네일
      * @param height - 값이 있으면 썸네일
-     * @param mode - image : IMG Tag로 출력, background : 배경 이미지 형태 출력
+     * @param mode - image : IMG 태그 출력, background : 배경 이미지 형태 출력
      * @return
      */
     public String showImage(Long seq, String url, int width, int height, String mode, String className) {
 
         try {
-
             String imageUrl = null;
 
             // seq가 있는 경우
@@ -187,7 +186,7 @@ public class Utils {
             // 배경 이미지 형태
             if (mode.equals("background")) {
 
-                return String.format("<div style='width: %dpx; height: %dpx; background:url(\"%s\") no-repeat center center; background-size:cover;' class='%s'></div>", width, height, imageUrl, className);
+                return String.format("<div style='width: %dpx; height: %dpx; background:url(\"%s\") no-repeat center center; background-size:cover;' class='%s'%s></div>", width, height, imageUrl, className, seq != null && seq > 0L ? "data-seq" + seq + "'" : "");
 
             } else {
                 // 이미지 태그 형태
