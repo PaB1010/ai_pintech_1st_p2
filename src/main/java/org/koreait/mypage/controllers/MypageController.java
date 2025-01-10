@@ -15,6 +15,7 @@ import org.koreait.member.entities.Member;
 import org.koreait.member.libs.MemberUtil;
 import org.koreait.member.services.MemberInfoService;
 import org.koreait.member.services.MemberUpdateService;
+import org.koreait.member.social.services.KakaoLoginService;
 import org.koreait.mypage.services.FollowService;
 import org.koreait.mypage.validators.ProfileValidator;
 import org.koreait.pokemon.controllers.PokemonSearch;
@@ -59,6 +60,8 @@ public class MypageController {
 
     private final FollowService followService;
 
+    private final KakaoLoginService kakaoLoginService;
+
     // profile 이라는 속성명을 가지고 template 에서 회원 조회를 바로
     // ★ About 에서 이거 가져다 쓰기 ★
     @ModelAttribute("profile")
@@ -93,6 +96,10 @@ public class MypageController {
 
             form.setOptionalTerms(Arrays.stream(optionalTerms.split("\\|\\|")).toList());
         }
+
+        // 회원 정보만 업데이트 해주는 방식
+        form.setKakaoLoginConnectUrl(kakaoLoginService.getLoginUrl("connect"));
+        form.setKakaoLoginDisconnectUrl(kakaoLoginService.getLoginUrl("disconnect"));
 
         model.addAttribute("requestProfile", form);
 

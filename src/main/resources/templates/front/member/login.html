@@ -32,7 +32,14 @@
             <a th:href="@{/member/find_pass}" th:text="#{비밀번호_찾기}"></a>
         </div>
 
-        <a th:href="@{/member/agree}" th:Text="#{회원_가입}" class="join-link"></a>
+        <a th:href="@{/member/agree}" th:text="#{회원_가입}" class="join-link"></a>
+
+        <th:block th:if="*{kakaoLoginUrl != null && kakaoLoginUrl != ''}">
+            <h2 th:text="#{소셜_로그인}"></h2>
+            <a th:href="*{kakaoLoginUrl}">
+                <img th:src="@{/front/images/kakao_login.png}">
+            </a>
+        </th:block>
     </form>
 
 </main>

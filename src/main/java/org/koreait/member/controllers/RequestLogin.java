@@ -20,4 +20,8 @@ public class RequestLogin implements Serializable {
     
     // Email & PW 검증 후 ErrorCode
     private List<String> errorCodes;
+
+    private String kakaoLoginUrl;
+
+    // private String NaverLoginUrl;
 }

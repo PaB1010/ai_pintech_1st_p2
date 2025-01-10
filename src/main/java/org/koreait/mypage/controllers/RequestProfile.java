@@ -59,4 +59,10 @@ public class RequestProfile {
     private List<Authority> authorities;
 
     private FileInfo profileImage;
+
+    // 카카오 로그인 연결 URL
+    private String kakaoLoginConnectUrl;
+
+    // 카카오 로그인 연결 해제 URL
+    private String kakaoLoginDisconnectUrl;
 }

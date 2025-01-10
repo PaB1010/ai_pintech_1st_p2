@@ -10,12 +10,12 @@ import org.koreait.global.rests.JSONData;
 import org.koreait.global.services.CodeValueService;
 import org.koreait.member.MemberInfo;
 import org.koreait.member.entities.Member;
-import org.koreait.member.libs.MemberUtil;
 import org.koreait.member.services.MemberDeleteService;
 import org.koreait.member.services.MemberInfoService;
 import org.koreait.member.services.MemberUpdateService;
 import org.koreait.member.social.constants.SocialChannel;
 import org.koreait.member.social.entities.SocialConfig;
+import org.koreait.member.social.services.KakaoLoginService;
 import org.koreait.member.validators.JoinValidator;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -28,6 +28,7 @@ import org.springframework.web.bind.support.SessionStatus;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Controller
@@ -40,8 +41,6 @@ public class MemberController {
 
     // 공통 기능 의존 주입
     private final Utils utils;
-
-    private final MemberUtil memberUtil;
     
     // 회원 가입 검증 의존 주입
     private final JoinValidator joinValidator;
@@ -55,6 +54,8 @@ public class MemberController {
 
     // 소셜 로그인 설정 조회용
     private final CodeValueService codeValueService;
+
+    private final KakaoLoginService kakaoLoginService;
 
     @ModelAttribute("requestAgree")
     public RequestAgree requestAgree() {
@@ -85,7 +86,7 @@ public class MemberController {
     public SocialChannel socialChannel() {
 
         // 기본값 null, KakaoCallback 에서 set 설정 예정
-        return null;
+        return SocialChannel.NONE;
     }
 
     @ModelAttribute("socialToken")
@@ -96,10 +97,16 @@ public class MemberController {
     }
 
     @GetMapping("/login")
-    public String login(@ModelAttribute RequestLogin form, Errors errors, Model model) {
+    public String login(@ModelAttribute RequestLogin form, Errors errors, Model model, HttpSession session) {
 
         // 로그인 페이지 공통 처리
         commonProcess("login", model);
+
+        session.setAttribute("socialChannel", SocialChannel.NONE);
+        session.setAttribute("socialToken", null);
+
+
+        form.setKakaoLoginUrl(kakaoLoginService.getLoginUrl(form.getRedirectUrl()));
 
         // 로그인 검증 실패해서 에러코드가 있을 경우
         if (form.getErrorCodes() != null) {
@@ -179,7 +186,7 @@ public class MemberController {
      * @return
      */
     @PostMapping("/join")
-    public String join(RequestAgree agree, Errors errors, @ModelAttribute RequestJoin form, Model model, @SessionAttribute("socialChannel") SocialChannel socialChannel, @SessionAttribute("socialToken") String socialToken) {
+    public String join(RequestAgree agree, Errors errors, @ModelAttribute RequestJoin form, Model model, @SessionAttribute(name = "socialChannel", required = false) SocialChannel socialChannel, @SessionAttribute(name = "socialToken", required = false) String socialToken) {
         
         // 회원 가입 공통 처리
         commonProcess("join", model);
@@ -318,7 +325,7 @@ public class MemberController {
         List<String> addCss = new ArrayList<>();
 
         // 소셜 로그인 설정
-        SocialConfig socialConfig = codeValueService.get("socialConfig", SocialConfig.class);
+        SocialConfig socialConfig = Objects.requireNonNullElseGet(codeValueService.get("socialConfig", SocialConfig.class), SocialConfig::new);
 
         // 로그인 공통 처리
         if (mode.equals("login")) {

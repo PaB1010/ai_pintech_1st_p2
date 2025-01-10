@@ -84,12 +84,13 @@ public class MemberUpdateService {
             member.setOptionalTerms(String.join("||", optionalTerms));
         }
 
-        // 비밀번호 해시화 - BCrypt (단방성, 유동 해시)
-        String hash = passwordEncoder.encode(form.getPassword());
-        member.setPassword(hash);
-
-        // ★ 비밀번호 변경 일자 Null 이 아닌 오늘로 설정 ★
-        member.setCredentialChangedAt(LocalDateTime.now());
+        if (!form.isSocial()) {
+            // 비밀번호 해시화 - BCrypt (단방성, 유동 해시)
+            String hash = passwordEncoder.encode(form.getPassword());
+            member.setPassword(hash);
+            // ★ 비밀번호 변경 일자 Null 이 아닌 오늘로 설정 ★
+            member.setCredentialChangedAt(LocalDateTime.now());
+        }
 
         // 소셜 로그인 관련
         member.setSocialChannel(form.getSocialChannel());
