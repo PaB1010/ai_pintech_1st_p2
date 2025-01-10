@@ -29,7 +29,7 @@ import java.util.List;
  * 회원 가입 & 정보 수정 기능
  *
  */
-// @Lazy = 지연 로딩 - 최초로 해당 Bean을 사용할 때 생성
+// @Lazy = 지연 로딩 - 최초로 해당 Bean 사용할 때 생성
 @Lazy
 @Service
 @RequiredArgsConstructor
@@ -90,6 +90,10 @@ public class MemberUpdateService {
 
         // ★ 비밀번호 변경 일자 Null 이 아닌 오늘로 설정 ★
         member.setCredentialChangedAt(LocalDateTime.now());
+
+        // 소셜 로그인 관련
+        member.setSocialChannel(form.getSocialChannel());
+        member.setSocialToken(form.getSocialToken());
 
         // 회원 권한 부여
         Authorities auth = new Authorities();

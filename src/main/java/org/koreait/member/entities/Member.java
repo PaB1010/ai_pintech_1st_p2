@@ -7,6 +7,7 @@ import lombok.ToString;
 import org.koreait.file.entities.FileInfo;
 import org.koreait.global.entities.BaseEntity;
 import org.koreait.member.constants.Gender;
+import org.koreait.member.social.constants.SocialChannel;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -60,6 +61,17 @@ public class Member extends BaseEntity implements Serializable {
 
     @Column(length = 50)
     private String optionalTerms; // 선택 약관
+
+    // 소셜 로그인 채널
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private SocialChannel socialChannel;
+
+    // 소셜 로그인 기본 ID
+    // 일치 - 로그인 성공, 불일치 - 로그인 실패
+    // 숫자가 아닌 문자로 발급받는 경우도 있어 String 사용
+    @Column(length = 65)
+    private String socialToken;
 
     @JsonIgnore // 순환 참조 발생 방지용
     @ToString.Exclude

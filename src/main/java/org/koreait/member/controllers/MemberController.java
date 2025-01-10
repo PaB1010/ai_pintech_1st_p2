@@ -7,12 +7,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.koreait.global.annotations.ApplyErrorPage;
 import org.koreait.global.libs.Utils;
 import org.koreait.global.rests.JSONData;
+import org.koreait.global.services.CodeValueService;
 import org.koreait.member.MemberInfo;
 import org.koreait.member.entities.Member;
 import org.koreait.member.libs.MemberUtil;
 import org.koreait.member.services.MemberDeleteService;
 import org.koreait.member.services.MemberInfoService;
 import org.koreait.member.services.MemberUpdateService;
+import org.koreait.member.social.constants.SocialChannel;
+import org.koreait.member.social.entities.SocialConfig;
 import org.koreait.member.validators.JoinValidator;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -32,7 +35,7 @@ import java.util.List;
 @RequestMapping("/member")
 @RequiredArgsConstructor
 // ★ 주문서 처럼 여러 Page 에 걸쳐 같은 값을 가지고 작업할때에 SessionAttributes ★
-@SessionAttributes({"requestAgree", "requestLogin", "authCodeVerified"})
+@SessionAttributes({"requestAgree", "requestLogin", "authCodeVerified", "socialChannel", "socialToken"})
 public class MemberController {
 
     // 공통 기능 의존 주입
@@ -49,6 +52,9 @@ public class MemberController {
     private final MemberDeleteService deleteService;
 
     private final MemberInfoService infoService;
+
+    // 소셜 로그인 설정 조회용
+    private final CodeValueService codeValueService;
 
     @ModelAttribute("requestAgree")
     public RequestAgree requestAgree() {
@@ -73,6 +79,20 @@ public class MemberController {
     public boolean authCodeVerified() {
 
         return false;
+    }
+
+    @ModelAttribute("socialChannel")
+    public SocialChannel socialChannel() {
+
+        // 기본값 null, KakaoCallback 에서 set 설정 예정
+        return null;
+    }
+
+    @ModelAttribute("socialToken")
+    public String socialToken() {
+
+        // 기본값 null, KakaoCallback 에서 set 설정 예정
+        return null;
     }
 
     @GetMapping("/login")
@@ -153,15 +173,19 @@ public class MemberController {
 
     /**
      * 회원가입 양식 페이지
+     *
      * - 필수 약관 동의 여부 검증
      *
      * @return
      */
     @PostMapping("/join")
-    public String join(RequestAgree agree, Errors errors, @ModelAttribute RequestJoin form, Model model) {
+    public String join(RequestAgree agree, Errors errors, @ModelAttribute RequestJoin form, Model model, @SessionAttribute("socialChannel") SocialChannel socialChannel, @SessionAttribute("socialToken") String socialToken) {
         
         // 회원 가입 공통 처리
         commonProcess("join", model);
+
+        form.setSocialChannel(socialChannel);
+        form.setSocialToken(socialToken);
         
         // 회원가입 양식 첫 유입에서는 Session 단위 저장인 이메일 인증 상태 false 로 초기화
         model.addAttribute("authCodeVerified", false);
@@ -182,7 +206,7 @@ public class MemberController {
      * @return
      */
     @PostMapping("/join_ps")
-    public String joinPs(@SessionAttribute("requestAgree") RequestAgree agree, @Valid RequestJoin form, Errors errors, SessionStatus status, Model model) {
+    public String joinPs(@SessionAttribute("requestAgree") RequestAgree agree, @Valid RequestJoin form, Errors errors, SessionStatus status, Model model, HttpSession session) {
 
         // 회원 가입 공통 처리
         commonProcess("join", model);
@@ -213,6 +237,11 @@ public class MemberController {
 
         // 회원가입 처리 완료 후 -> Login page 이동
         // return "redirect:/member/login";
+
+        // 인증 관련 세션 정보 삭제
+        session.removeAttribute("socialChannel");
+        session.removeAttribute("socialToken");
+        session.removeAttribute("authCodeVerified");
 
         // 회원 가입 처리 완료 후 member/registerend 이동
         return utils.tpl("member/registerend");
@@ -288,11 +317,13 @@ public class MemberController {
 
         List<String> addCss = new ArrayList<>();
 
+        // 소셜 로그인 설정
+        SocialConfig socialConfig = codeValueService.get("socialConfig", SocialConfig.class);
+
         // 로그인 공통 처리
         if (mode.equals("login")) {
 
             pageTitle = utils.getMessage("로그인");
-
 
         } else if (mode.equals("join")) {
             // 회원 가입 공통 처리
@@ -333,5 +364,7 @@ public class MemberController {
 
         // Front 쪽에 추가할 Script
         model.addAttribute("addScript", addScript);
+
+        model.addAttribute("socialConfig", socialConfig);
     }
 }

@@ -9,6 +9,7 @@ import org.koreait.member.repositories.MemberRepository;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
+import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 import java.time.LocalDate;
@@ -113,6 +114,9 @@ public class JoinValidator implements Validator, PasswordValidator {
         String confirmPassword = form.getConfirmPassword();
         String nickName = form.getNickName();
         LocalDate birthDt = form.getBirthDt();
+        
+        // 소셜 로그인 여부
+        boolean isSocial = form.isSocial();
 
         // 1. 이메일 중복 여부 체크 S
 
@@ -123,23 +127,30 @@ public class JoinValidator implements Validator, PasswordValidator {
 
         // 1. 이메일 중복 여부 체크 E
 
-        // 2. 비밀번호 복잡성 S
+        if (!isSocial) {
 
-        if (!alphaCheck(password, false) || !numberCheck(password) || !specialCharscehk(password)) {
-            errors.rejectValue("password", "Complexity");
+            // 필수 여부 체크
+            ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "NotBlank");
+            ValidationUtils.rejectIfEmptyOrWhitespace(errors, "confirmPassword", "NotBlank");
+
+            // 2. 비밀번호 복잡성 S
+
+            if (!alphaCheck(password, false) || !numberCheck(password) || !specialCharscehk(password)) {
+
+                errors.rejectValue("password", "Complexity");
+            }
+
+            // 2. 비밀번호 복잡성 E
+
+            // 3. 비밀번호, 비밀번호 확인 일치 여부 S
+
+            if (!password.equals(confirmPassword)) {
+
+                errors.rejectValue("confirmPassword", "Mismatch");
+            }
+
+            // 3. 비밀번호, 비밀번호 확인 일치 여부 E
         }
-
-        // 2. 비밀번호 복잡성 E
-
-        // 3. 비밀번호, 비밀번호 확인 일치 여부 S
-
-        if (!password.equals(confirmPassword)) {
-
-            errors.rejectValue("confirmPassword", "Mismatch");
-        }
-
-        // 3. 비밀번호, 비밀번호 확인 일치 여부 E
-
         // 4. 닉네임 공백 여부 검증 S
 
         if (nickName.contains(" ")) {

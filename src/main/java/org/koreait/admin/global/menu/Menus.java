@@ -24,7 +24,9 @@ public class Menus {
             new MenuDetail("siteConfig", "사이트 기본정보", "/admin/basic/siteConfig"),
 
             // 약관은 많이 쓰니 회원쪽 한정이 아닌 공용으로
-            new MenuDetail("terms", "약관 관리", "/admin/basic/terms")
+            new MenuDetail("terms", "약관 관리", "/admin/basic/terms"),
+
+            new MenuDetail("social", "소셜 로그인", "/admin/basic/social")
         ));
 
         // 회원 관리

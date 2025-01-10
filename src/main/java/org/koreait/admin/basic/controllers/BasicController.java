@@ -11,6 +11,7 @@ import org.koreait.global.entities.SiteConfig;
 import org.koreait.global.entities.Terms;
 import org.koreait.global.libs.Utils;
 import org.koreait.global.services.CodeValueService;
+import org.koreait.member.social.entities.SocialConfig;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -109,6 +110,7 @@ public class BasicController implements SubMenus {
 
     /**
      * 약관 등록 처리
+     *
      * @param form
      * @param errors
      * @param model
@@ -155,6 +157,45 @@ public class BasicController implements SubMenus {
     }
 
     /**
+     * 소셜 로그인 설정 양식 & 목록
+     *
+     * @param model
+     * @return
+     */
+    @GetMapping("/social")
+    public String social(Model model) {
+
+        commonProcess("social", model);
+
+        SocialConfig form = codeValueService.get("siteConfig", SocialConfig.class);
+
+        form = Objects.requireNonNullElseGet(form, SocialConfig::new);
+
+        model.addAttribute("socialConfig", form);
+
+        return "admin/basic/social";
+    }
+
+    /**
+     * 소셜 로그인 설정 처리
+     *
+     * @param form
+     * @param model
+     * @return
+     */
+    @PostMapping("/social")
+    public String socialPs(SocialConfig form, Model model) {
+
+        commonProcess("social", model);
+
+        codeValueService.save("socialConfig", form);
+
+        utils.showSessionMessage("저장되었습니다.");
+
+        return "admin/basic/social";
+    }
+
+    /**
      * 기본(basic) 설정 공통 처리 부분
      *
      * @param mode
@@ -173,6 +214,10 @@ public class BasicController implements SubMenus {
         } else if (mode.equals("terms")) {
 
             pageTitle = "약관 관리";
+            
+        } else if (mode.equals("social")) {
+            
+            pageTitle = "소셜 설정";
         }
 
         pageTitle += " - 기본설정";

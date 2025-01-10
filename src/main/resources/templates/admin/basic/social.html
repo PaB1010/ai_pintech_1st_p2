@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/layouts/main}">
+<div layout:fragment="content">
+    <h1>소셜 로그인 설정</h1>
+    <form name="frmSave" method="POST" th:action="@{/admin/basic/social}" autocomplete="off" th:object="${socialConfig}">
+        <table class="table-cols mb30">
+            <tr>
+                <th width="180">사용 여부</th>
+                <td>
+                    <span class="radio">
+                        <input type="radio" name="useKakaoLogin" value="true" id="useKakaoLogin-true" th:field="*{useKakaoLogin}">
+                        <label for="useKakaoLogin-true">사용</label>
+                    </span>
+
+                    <span class="radio">
+                        <input type="radio" name="useKakaoLogin" value="false" id="useKakaoLogin-false" th:field="*{useKakaoLogin}">
+                        <label for="useKakaoLogin-false">미사용</label>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <th>REST API KEY</th>
+                <td>
+                    <input type="text" name="kakaoRestApiKey" th:field="*{kakaoRestApiKey}">
+                </td>
+            </tr>
+        </table>
+        <div class="button-group">
+            <button type="reset" class="btn">초기화</button>
+            <button type="submit" class="btn black">저장</button>
+        </div>
+    </form>
+</div>
+</html>

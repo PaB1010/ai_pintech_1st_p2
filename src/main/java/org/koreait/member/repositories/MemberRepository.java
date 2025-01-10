@@ -23,6 +23,9 @@ public interface MemberRepository extends JpaRepository<Member, Long>, QuerydslP
     @EntityGraph(attributePaths = "authorities")
     Optional<Member> findByNickName(String nickName);
 
+    // 없으면 그냥 return 할거라 Optional 사용X
+    Member findBySocialChannelAndSocialToken(String channel, String token);
+
     // Default 메서드 - Email 중복 체크
     default boolean exists(String email) {
 
