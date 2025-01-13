@@ -102,9 +102,9 @@ public class MemberController {
         // 로그인 페이지 공통 처리
         commonProcess("login", model);
 
-        session.setAttribute("socialChannel", SocialChannel.NONE);
-        session.setAttribute("socialToken", null);
-
+        // 세션이 아닌 모델로 처리
+        model.addAttribute("socialChannel", SocialChannel.NONE);
+        model.addAttribute("socialToken", null);
 
         form.setKakaoLoginUrl(kakaoLoginService.getLoginUrl(form.getRedirectUrl()));
 
