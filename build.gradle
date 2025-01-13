@@ -23,7 +23,16 @@ repositories {
 	mavenCentral()
 }
 
+// Spring Cloud Version 전역 변수
+ext {
+	set('springCloudVersion', "2024.0.0")
+}
+
 dependencies {
+
+	// Spring Cloud 관련 의존 2개
+	implementation 'org.springframework.cloud:spring-cloud-starter-config'
+	implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
 
 	implementation 'org.hibernate.validator:hibernate-validator'
 
@@ -73,6 +82,13 @@ dependencies {
 
 	// 문제 있을 시 제거
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+// Spring Cloud dependency
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
 }
 
 tasks.named('test') {
