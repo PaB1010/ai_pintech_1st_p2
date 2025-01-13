@@ -19,6 +19,7 @@ import org.koreait.member.entities.QMember;
 import org.koreait.member.repositories.MemberRepository;
 import org.koreait.mypage.controllers.RequestProfile;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -40,7 +41,7 @@ import java.util.List;
  * UserDetailsService
  *
  */
-//@Lazy // 순환 참조 방지용
+@Lazy // 순환 참조 방지용
 @Service
 @RequiredArgsConstructor
 public class MemberInfoService implements UserDetailsService {

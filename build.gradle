@@ -25,7 +25,7 @@ repositories {
 
 // Spring Cloud Version 전역 변수
 ext {
-	set('springCloudVersion', "2024.0.0")
+	set('springCloudVersion', "2023.0.3")
 }
 
 dependencies {

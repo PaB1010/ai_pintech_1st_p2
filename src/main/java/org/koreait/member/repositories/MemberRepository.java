@@ -17,7 +17,7 @@ public interface MemberRepository extends JpaRepository<Member, Long>, QuerydslP
 
     // Query Method
     // 권한(Authority)은 @OneToMany 라서 지연 로딩 상태지만
-    // finByEmail 메서드 사용시에는 즉시 로딩되도록
+    // finByEmail 메서드 사용시에는 즉시 로딩되도록 fetch Join
     @EntityGraph(attributePaths = "authorities")
     Optional<Member> findByEmail(String email);
 
