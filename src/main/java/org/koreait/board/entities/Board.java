@@ -38,6 +38,8 @@ public class Board extends BaseMemberEntity implements Serializable {
 
     private boolean useComment;
 
+    // 게시글 조회 하단에 게시글 목록 노출 여부
+    private boolean listUnderView;
 
     // 게시글 작성 후 이동 경로
     // list : 목록
@@ -64,4 +66,10 @@ public class Board extends BaseMemberEntity implements Serializable {
 
     @Transient
     private List<String> categories;
+
+    @Transient
+    private boolean listable;
+
+    @Transient
+    private boolean writable;
 }

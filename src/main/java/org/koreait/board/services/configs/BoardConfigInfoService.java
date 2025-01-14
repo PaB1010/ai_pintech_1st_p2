@@ -12,6 +12,8 @@ import org.koreait.board.exceptions.BoardNotFoundException;
 import org.koreait.board.repositories.BoardRepository;
 import org.koreait.global.paging.ListData;
 import org.koreait.global.paging.Pagination;
+import org.koreait.member.constants.Authority;
+import org.koreait.member.libs.MemberUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
@@ -34,6 +36,8 @@ public class BoardConfigInfoService {
     private final BoardRepository boardRepository;
 
     private final HttpServletRequest request;
+
+    private final MemberUtil memberUtil;
 
     private final ModelMapper modelMapper;
 
@@ -130,7 +134,7 @@ public class BoardConfigInfoService {
         return new ListData<>(items, pagination);
     }
 
-    private void addInfo(Board item) {
+    public void addInfo(Board item) {
 
         String category = item.getCategory();
 
@@ -144,5 +148,18 @@ public class BoardConfigInfoService {
 
             item.setCategories(categories);
         }
+
+        /* listable, writable S */
+        Authority listAuthority = item.getListAuthority();
+
+        boolean listable = listAuthority == Authority.ALL || (listAuthority == Authority.USER && memberUtil.isLogin()) || (listAuthority == Authority.ADMIN && memberUtil.isAdmin());
+
+        Authority writeAuthority = item.getWriteAuthority();
+
+        boolean writeable = writeAuthority == Authority.ALL ||  (writeAuthority == Authority.USER && memberUtil.isLogin()) || (writeAuthority == Authority.ADMIN && memberUtil.isAdmin());
+
+        item.setListable(listable);
+        item.setWritable(writeable);
+        /* listable, writable E */
     }
 }

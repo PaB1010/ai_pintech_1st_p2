@@ -1,20 +1,23 @@
 package org.koreait.board.controllers;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.koreait.board.entities.Board;
 import org.koreait.board.entities.BoardData;
-import org.koreait.board.services.BoardInfoService;
-import org.koreait.board.services.BoardUpdateService;
-import org.koreait.board.services.BoardViewUpdateService;
+import org.koreait.board.exceptions.GuestPasswordCheckException;
+import org.koreait.board.services.*;
 import org.koreait.board.services.configs.BoardConfigInfoService;
 import org.koreait.board.validators.BoardValidator;
 import org.koreait.file.constants.FileStatus;
 import org.koreait.file.services.FileInfoService;
 import org.koreait.global.annotations.ApplyErrorPage;
+import org.koreait.global.entities.SiteConfig;
+import org.koreait.global.exceptions.scripts.AlertException;
 import org.koreait.global.libs.Utils;
 import org.koreait.global.paging.ListData;
+import org.koreait.global.services.CodeValueService;
 import org.koreait.member.libs.MemberUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Controller
@@ -49,6 +53,12 @@ public class BoardController {
     private final BoardInfoService boardInfoService;
 
     private final BoardViewUpdateService boardViewUpdateService;
+
+    private final BoardDeleteService boardDeleteService;
+
+    private final BoardAuthService boardAuthService;
+
+    private final CodeValueService codeValueService;
 
     /**
      * 사용자별 공통 데이터
@@ -93,7 +103,7 @@ public class BoardController {
      * @return
      */
     @GetMapping("/view/{seq}")
-    public String view(@PathVariable("seq") Long seq, Model model) {
+    public String view(@PathVariable("seq") Long seq, Model model, @ModelAttribute RequestComment form) {
 
         commonProcess(seq, "view", model);
 
@@ -103,6 +113,23 @@ public class BoardController {
         BoardData data = (BoardData) model.getAttribute("boardData");
 
         data.setViewCount(viewCount);
+
+        Board board = data.getBoard();
+
+        // 게시글 조회 페이지 하단에 게시글 목록 출력 사용할 경우
+        if (board.isListUnderView()) {
+
+            ListData<BoardData> listData = boardInfoService.getList(board.getBid(), new BoardSearch());
+
+            model.addAttribute("items", listData.getItems());
+            model.addAttribute("pagination", listData.getPagination());
+        }
+
+        // 댓글 사용하는 경우
+        if (board.isUseComment() && memberUtil.isLogin()) {
+
+            form.setCommenter(memberUtil.getMember().getNickName());
+        }
 
         return utils.tpl("board/view");
     }
@@ -166,6 +193,8 @@ public class BoardController {
 
         Board board = commonValue.getBoard();
 
+        boardDeleteService.delete(seq);
+
         return utils.tpl("redirect:/board/list/" + board.getBid());
     }
 
@@ -217,6 +246,49 @@ public class BoardController {
     }
 
     /**
+     * 비회원 비밀번호 처리
+     *
+     * @return
+     */
+    @ExceptionHandler(GuestPasswordCheckException.class)
+    public String guestPassword(Model model) {
+
+        SiteConfig config = Objects.requireNonNullElseGet(codeValueService.get("siteConfig", SiteConfig.class), SiteConfig::new);
+
+        model.addAttribute("siteConfig", config);
+
+        return utils.tpl("board/password");
+    }
+
+    /**
+     * 비회원 비밀번호 검증
+     *
+     * @param password
+     * @param session
+     * @param model
+     * @return
+     */
+    @PostMapping("/password")
+    public String validateGuestPassword(@RequestParam(name = "password", required = false) String password, HttpSession session, Model model) {
+
+        // 히든 프레임 예정
+        if (!StringUtils.hasText(password)) throw new AlertException(utils.getMessage("NotBlank.password"));
+
+        Long seq = (Long) session.getAttribute("seq");
+
+
+        if (!boardValidator.checkGuestPassword(password, seq)) throw new AlertException(utils.getMessage("Mismatch.password"));
+
+        // 비회원 비밀번호 검증 성공시 Session (board_게시글번호) 추가
+        session.setAttribute("board_" + seq, true);
+
+        // 비회원 비밀번호 인증 완료된 경우 새로 고침
+        model.addAttribute("script", "parent.location.reload();");
+
+        return "common/_execute_script";
+    }
+
+    /**
      * 공통 처리 부분
      *
      * Base Method
@@ -225,6 +297,12 @@ public class BoardController {
      * @param model
      */
     private void commonProcess(String bid, String mode, Model model) {
+
+        // 게시판 권한 체크
+        if (!List.of("edit", "delet").contains(mode)) {
+
+            boardAuthService.check(mode, bid);
+        }
 
         Board board = configInfoService.get(bid);
 
@@ -302,10 +380,15 @@ public class BoardController {
         BoardData item = boardInfoService.get(seq);
         Board board = item.getBoard();
 
+        String bid = board.getBid();
+
+        // 게시판 권한 체크
+        boardAuthService.check(mode, seq);
+
         // 게시글 제목 - 게시판명
         String pageTitle = String.format("%s - %s", item.getSubject(), board.getName());
 
-        String bid = board.getBid();
+
 
         commonProcess(bid, mode, model);
 

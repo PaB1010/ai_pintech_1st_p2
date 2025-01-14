@@ -394,8 +394,35 @@ public class BoardInfoService {
 
             item.setPrev(prev);
             item.setNext(next);
+            /* 이전 & 다음 게시글 E */
         }
-        /* 이전 & 다음 게시글 E */
+        /* listable, writable, editable, mine 처리 S */
+        Board board = item.getBoard();
+
+        configInfoService.addInfo(board);
+
+        boolean listable = board.isListable();
+
+        boolean writeable = board.isWritable();
+
+        Member member = item.getMember();
+        Member loggedMember = memberUtil.getMember();
+
+        // 비회원 게시글 - 비밀번호 확인이 필요하므로 버튼 노출
+        // 회원 게시글 - 로그인한 회원과 일치하면 버튼 노출
+        boolean editable = member == null
+
+                || (memberUtil.isLogin() && loggedMember.getEmail().equals(member.getEmail()));
+
+        boolean mine = request.getSession().getAttribute("board_" + item.getSeq()) != null
+
+                || (member != null && memberUtil.isLogin() && loggedMember.getEmail().equals(member.getEmail()));
+
+        item.setListable(listable);
+        item.setWritable(writeable);
+        item.setEditable(editable);
+        item.setMine(mine);
+        /* listable, writable, editable, mine 처리 E */
     }
 
     private void addInfo(BoardData item) {

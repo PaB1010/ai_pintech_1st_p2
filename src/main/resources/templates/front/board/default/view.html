@@ -54,17 +54,21 @@
         </div>
         <!--// view content-->
         <div class="view-buttons">
-            <a th:href="@{/board/list/{bid}(bid=${board.bid})}" th:text="#{목록}"></a>
-            <a th:href="@{/board/write/{bid}(bid=${board.bid})}" th:text="#{글_작성}"></a>
-            <th:block th:if="${boardData.member == @memberUtil.getMember() || @memberUtil.isAdmin()}">
-                <a th:href="@{/board/edit/{seq}(seq=*{seq})}" th:text="#{수정}"></a>
-                <a th:href="@{/board/delete/{seq}(seq=*{seq})}" th:text="#{삭제}" onclick="return confirm('정말 삭제하겠습니까?');"></a>
-            </th:block>
+            <a th:if="*{listable}" th:href="@{/board/list/{bid}(bid=${board.bid})}" th:text="#{목록}"></a>
+            <a th:if="*{writable}" th:href="@{/board/write/{bid}(bid=${board.bid})}" th:text="#{글_작성}"></a>
+            <a th:if="*{editable}" th:href="@{/board/edit/{seq}(seq=*{seq})}" th:text="#{수정}"></a>
+            <a th:if="*{editable}" th:href="@{/board/delete/{seq}(seq=*{seq})}" th:text="#{삭제}" onclick="return confirm('정말 삭제하겠습니까?');"></a>
         </div>
         <!--// view-buttons -->
 
         <th:block th:if="${board.useComment}">
             <th:block th:replace="~{front/board/default/_comment::comment}"></th:block>
+        </th:block>
+
+        <th:block th:if="${board.listUnderView}">
+            <th:block th:replace="~{front/board/default/_items::items}"></th:block>
+<!--            현재 게시글 seq가 있는 페이지-->
+            <th:block th:replace="~{common/_pagination::pagination}"></th:block>
         </th:block>
     </th:block>
 </html>

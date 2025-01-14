@@ -91,6 +91,9 @@ public class BoardUpdateService {
 
         fileDoneService.process(form.getGid());
 
+        // 비회원 게시글 인증 정보 삭제
+        request.getSession().removeAttribute("board_" + seq);
+
         return data;
 
         /* 게시글 작성 & 수정 공통 반영 사항 E */

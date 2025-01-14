@@ -28,7 +28,7 @@
             </dd>
         </dl>
 
-        <dl th:if="${(requestBoard.mode == 'write' && !@memberUtil.isLogin())
+        <dl th:if="${((requestBoard.mode == null || requestBoard.mode == 'write') && !@memberUtil.isLogin())
                     || (requestBoard.mode == 'edit' && boardData.member == null)}">
             <dt th:text="#{비밀번호}"></dt>
             <dd>
