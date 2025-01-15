@@ -7,6 +7,7 @@ import org.koreait.admin.basic.services.TermsInfoService;
 import org.koreait.admin.basic.services.TermsUpdateService;
 import org.koreait.admin.global.menu.SubMenus;
 import org.koreait.global.annotations.ApplyErrorPage;
+import org.koreait.global.contants.Device;
 import org.koreait.global.entities.SiteConfig;
 import org.koreait.global.entities.Terms;
 import org.koreait.global.libs.Utils;
@@ -64,6 +65,9 @@ public class BasicController implements SubMenus {
 
         // 최초에 null 일 경우 새로 생성
         SiteConfig form = Objects.requireNonNullElseGet(codeValueService.get("siteConfig", SiteConfig.class), SiteConfig::new);
+
+        // default 값 ALL
+        form.setDevice(Objects.requireNonNullElse(form.getDevice(), Device.ALL));
 
         model.addAttribute("siteConfig", form);
 
