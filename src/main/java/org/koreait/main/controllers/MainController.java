@@ -5,9 +5,9 @@ import org.koreait.global.libs.Utils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -16,6 +16,18 @@ import java.util.List;
 public class MainController {
 
     private final Utils utils;
+
+    @ModelAttribute("addCss")
+    public List<String> addCss() {
+
+        return List.of("board/gallery/style", "main/style");
+    }
+
+    @ModelAttribute("addScript")
+    public List<String> addScript() {
+
+        return List.of("main/common");
+    }
 
     // 상단쪽 클래스명 위의 @RequestMappin의 ("/") 값이 똑같으면 생략 가능
     @GetMapping

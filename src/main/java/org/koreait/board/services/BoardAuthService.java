@@ -4,8 +4,10 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.koreait.board.entities.Board;
 import org.koreait.board.entities.BoardData;
+import org.koreait.board.entities.CommentData;
 import org.koreait.board.exceptions.BoardNotFoundException;
 import org.koreait.board.exceptions.GuestPasswordCheckException;
+import org.koreait.board.services.comment.CommentInfoService;
 import org.koreait.board.services.configs.BoardConfigInfoService;
 import org.koreait.global.exceptions.scripts.AlertBackException;
 import org.koreait.global.libs.Utils;
@@ -25,6 +27,8 @@ import java.util.List;
 public class BoardAuthService {
 
     private final BoardConfigInfoService configInfoService;
+
+    private final CommentInfoService commentInfoService;
 
     private final BoardInfoService infoService;
 
@@ -47,14 +51,29 @@ public class BoardAuthService {
 
         if (!StringUtils.hasText(mode) || !StringUtils.hasText(bid)
 
-                || (List.of("edit", "delete").contains(mode) && (seq == null || seq < 1L))) {
+                || (List.of("edit", "delete", "comment").contains(mode) && (seq == null || seq < 1L))) {
 
             throw new AlertBackException(utils.getMessage("BadRequest"), HttpStatus.BAD_REQUEST);
         }
 
         if (memberUtil.isAdmin()) return;
 
-        Board board = configInfoService.get(bid);
+        Board board = null;
+
+        CommentData comment = null;
+
+        if (mode.equals("comment")) { // 댓글 수정 & 삭제
+
+            comment = commentInfoService.get(seq);
+
+            BoardData data = comment.getData();
+
+            board = data.getBoard();
+
+        } else {
+
+            board = configInfoService.get(bid);
+        }
 
         // 게시판 사용 여부 체크
         if (!board.isOpen()) {
@@ -74,6 +93,8 @@ public class BoardAuthService {
 
         // false 일 경우 AlertBackException
         boolean isVerified = true;
+
+        Member member = memberUtil.getMember();
 
         if (List.of("write", "list").contains(mode)) {
 
@@ -95,8 +116,6 @@ public class BoardAuthService {
 
             Member poster = item.getMember();
 
-            Member member = memberUtil.getMember();
-
             if (poster == null) { // 비회원 게시글
                 /**
                  * 비회원 게시글이 인증된 경우 = Session Key(board_게시글번호)가 존재
@@ -111,6 +130,24 @@ public class BoardAuthService {
 
                 // 미로그인 상태 || 로그인 상태이지만 게시글 작성자가 아닐 경우
             } else if (!memberUtil.isLogin() || !poster.getEmail().equals(member.getEmail())) { // 회원 게시글 - 작성한 회원 본인만 수정 & 삭제 가능 통제
+
+                isVerified = false;
+            }
+
+        } else if (mode.equals("comment")) { // 댓글 수정 & 삭제
+
+            Member commenter = comment.getMember();
+
+            if (commenter == null) { // 비회원 작성 댓글
+
+                if (session.getAttribute("comment_" + seq) == null) { // 댓글 비회원 인증 X
+
+                    session.setAttribute("cSeq", seq);
+
+                    throw new GuestPasswordCheckException();
+                }
+
+            } else if (!memberUtil.isLogin() || !commenter.getEmail().equals(member.getEmail())) { // 회원 작성 댓글
 
                 isVerified = false;
             }
@@ -132,7 +169,18 @@ public class BoardAuthService {
 
     public void check(String mode, Long seq) {
 
-        BoardData item = infoService.get(seq);
+        BoardData item = null;
+
+        if (mode.equals("comment")) {
+
+            CommentData comment = commentInfoService.get(seq);
+
+            item = comment.getData();
+
+        } else {
+
+            item = infoService.get(seq);
+        }
 
         Board board = item.getBoard();
 

@@ -50,6 +50,8 @@ public class ApiFileController {
 
     private final ThumbnailService thumbnailService;
 
+    private final FileImageService imageService;
+
     /**
      * File Upload
      *
@@ -209,5 +211,17 @@ public class ApiFileController {
             out.write(bis.readAllBytes());
 
         } catch (IOException e) {}
+    }
+
+    /**
+     * 목록 노출 이미지 선택
+     *
+     * @param seq
+     */
+    @GetMapping("/select/{seq}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void select(@PathVariable("seq") Long seq) {
+
+        imageService.select(seq);
     }
 }

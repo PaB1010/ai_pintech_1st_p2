@@ -14,6 +14,7 @@ import org.koreait.board.entities.QBoardData;
 import org.koreait.board.exceptions.BoardDataNotFoundException;
 import org.koreait.board.repositories.BoardDataRepository;
 import org.koreait.board.services.configs.BoardConfigInfoService;
+import org.koreait.file.entities.FileInfo;
 import org.koreait.file.services.FileInfoService;
 import org.koreait.global.libs.Utils;
 import org.koreait.global.paging.ListData;
@@ -294,20 +295,30 @@ public class BoardInfoService {
      *
      * 주로 메인 페이지에서 사용
      *
+     * Base Method
+     *
      * @param bid
      * @param limit
      * @return
      */
-    public List<BoardData> getLatest(String bid, int limit) {
+    public List<BoardData> getLatest(String bid, String category, int limit) {
 
         BoardSearch search = new BoardSearch();
 
         search.setLimit(limit);
         search.setBid(List.of(bid));
+        search.setCategory(category == null ? null : List.of(category));
 
         ListData<BoardData> data = getList(search);
 
-        return data.getItems();
+        List<BoardData> items = data.getItems();
+
+        return items == null ? List.of() : items;
+    }
+
+    public List<BoardData> getLatest(String bid, int limit) {
+
+        return getLatest(bid, null, limit);
     }
 
     /**
@@ -367,8 +378,19 @@ public class BoardInfoService {
         /* 게시판 파일 정보 S */
         String gid = item.getGid();
 
-        item.setEditorImages(fileInfoService.getList(gid, "editor"));
+        List<FileInfo> editorImages = fileInfoService.getList(gid, "editor");
+
+        item.setEditorImages(editorImages);
+
         item.setAttachFiles(fileInfoService.getList(gid, "attach"));
+
+        if (editorImages != null && !editorImages.isEmpty()) {
+
+            // 선택 목록 노출 이미지가 없을 경우 이미지중 가장 첫번째로 대체
+            FileInfo selectedImage = editorImages.stream().filter(FileInfo::isSelected).findFirst().orElseGet(() -> editorImages.get(0));
+
+            item.setSelectedImage(selectedImage);
+        }
         /* 게시판 파일 정보 E */
 
         /* 이전 & 다음 게시글 S */
@@ -428,5 +450,27 @@ public class BoardInfoService {
     private void addInfo(BoardData item) {
 
         addInfo(item, false);
+    }
+
+    /**
+     * 게시글 번호와 게시판 아이디로 현재 페이지 구하기
+     *
+     * @param seq
+     * @param limit
+     * @return
+     */
+    public int getPage(String bid, Long seq, int limit) {
+        QBoardData boardData = QBoardData.boardData;
+
+        BooleanBuilder builder = new BooleanBuilder();
+
+        builder.and(boardData.board.bid.eq(bid))
+                .and(boardData.seq.goe(seq));
+
+        long total = boardDataRepository.count(builder);
+
+        int page = (int)Math.ceil((double)total / limit);
+
+        return page;
     }
 }

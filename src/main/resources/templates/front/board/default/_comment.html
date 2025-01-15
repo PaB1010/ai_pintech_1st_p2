@@ -2,11 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
     <th:block th:fragment="comment">
 
-        <form id="commentForm" name="frmSave" method="POST" action="@{/board/comment}" autocomplete="off" target="ifrmProcess">
+        <form th:replace="~{front/board/default/_comment_form::form}"></form>
 
-            <div class="commenter">
+        <th:block th:replace="~{front/board/default/_comment_items::items}"></th:block>
 
-            </div>
-        </form>
     </th:block>
 </html>

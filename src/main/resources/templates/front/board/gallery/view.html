@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
     <th:block th:fragment="skin" th:object="${boardData}">
-        <div th:replace="~{front/board/default/_title::title}"></div>
+        <div th:replace="~{front/board/gallery/_title::title}"></div>
 
         <div class="view-content">
             <div class="subject">
@@ -62,11 +62,11 @@
         <!--// view-buttons -->
 
         <th:block th:if="${board.useComment}">
-            <th:block th:replace="~{front/board/default/_comment::comment}"></th:block>
+            <th:block th:replace="~{front/board/gallery/_comment::comment}"></th:block>
         </th:block>
 
         <th:block th:if="${board.listUnderView}">
-            <th:block th:replace="~{front/board/default/_items::items(items=${items})}"></th:block>
+            <th:block th:replace="~{front/board/gallery/_items::items(items=${items})}"></th:block>
 <!--            현재 게시글 seq가 있는 페이지-->
             <th:block th:replace="~{common/_pagination::pagination}"></th:block>
         </th:block>

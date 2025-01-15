@@ -10,6 +10,10 @@
         <th:block th:replace="~{front/board/default/write::skin}"></th:block>
     </th:block>
 
+    <th:block th:if="*{skin == 'gallery'}">
+        <th:block th:replace="~{front/board/gallery/write::skin}"></th:block>
+    </th:block>
+
 </main>
 
 </main>

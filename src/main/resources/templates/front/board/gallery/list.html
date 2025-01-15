@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="skin" th:object="${board}">
-    <div th:replace="~{front/board/default/_title::title}"></div>
+    <div th:replace="~{front/board/gallery/_title::title}"></div>
 
     <form id="frmSearch" name="frmSearch" method="GET" th:action="@{/board/list/{bid}(bid=*{bid})}" autocomplete="off" th:object="${boardSearch}">
         <input type="hidden" name="sort" th:field="*{sort}">
@@ -18,9 +18,9 @@
         <button type="submit" th:text="#{검색}"></button>
     </form>
 
-    <nav th:replace="~{front/board/default/_category::category}"></nav>
+    <nav th:replace="~{front/board/gallery/_category::category}"></nav>
 
-    <th:block th:replace="~{front/board/default/_items::items(items=${items})}"></th:block>
+    <th:block th:replace="~{front/board/gallery/_items::items(items=${items})}"></th:block>
     <th:block th:replace="~{common/_pagination::pagination}"></th:block>
 </th:block>
 </html>

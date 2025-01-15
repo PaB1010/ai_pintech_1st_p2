@@ -57,17 +57,14 @@ function callbackFileUpload(files) {
 
     const domParser = new DOMParser();
 
-    for (const { seq, location, fileName, fileUrl, thumbUrl } of files) {
-
+    for (const {seq, location, fileName, fileUrl, thumbUrl } of files) {
         let html = location === 'editor' ? tplFile : tplImage;
-
         html = html.replace(/\[seq\]/g, seq)
             .replace(/\[fileName\]/g, fileName)
             .replace(/\[fileUrl\]/g, fileUrl)
             .replace(/\[thumbUrl\]/g, `${thumbUrl}&width=200&height=100`);
 
-        const dom = domParser.parseFromString(html, "text/html");
-
+        const dom = domParser.parseFromString(html, 'text/html');
         const el = dom.querySelector(".file-item, .image-item");
 
         const insertEditor = el.querySelector(".insert-editor");
@@ -83,6 +80,11 @@ function callbackFileUpload(files) {
 
             fileManager.delete(seq, () => { // 파일 삭제 후 후속처리
 
+                if (!confirm('정말 처리하겠습니까?')) {
+                    return;
+                }
+
+                // 삭제 후속 처리
                 const el = document.getElementById(`file-${seq}`);
 
                 el.parentElement.removeChild(el);

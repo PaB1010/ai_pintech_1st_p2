@@ -7,7 +7,12 @@
             <li th:if="${items == null || items.isEmpty()}" class="no-data" th:text="#{조회된_게시글이_없습니다.}"></li>
 
             <li th:unless="${items == null || items.isEmpty()}" th:each="item : ${items}" th:object="${item}">
+
+<!--                목록 대표 이미지 없을경우 대체하기-->
+
                 <a th:href="@{/board/view/{seq}(seq=*{seq})}">
+
+                    <th:block th:utext="*{@utils.showBackground(selectedImage.seq, 290, 183, 'image show-image')}"></th:block>
 
                     <span class="badge" th:if="${boardData != null && boardData.seq == item.seq}" th:text="${열람중}"></span>
 
@@ -16,15 +21,16 @@
                     <span th:if="*{commentCount > 0L}" th:text="*{#strings.concat('(', commentCount, ')')}"></span>
                 </a>
                 <div class="post-info">
-                    <span class="view-count">
-                        <th:block th:text="#{조회수}"></th:block> :
-                        <th:block th:text="*{viewCount >= 1000 ? #numbers.formatInteger(viewCount, 3, 'COMMA') : viewCount}"></th:block>
+
+                    <span class="category">
+                        <th:block th:if="*{category != null && category != ''}" th:text="*{category}"></th:block>
+                        <th:block th:unless="*{category != null && category != ''}">
+                            <th:block th:text="*{poster}"></th:block>
+                            <div th:if="*{member != null}" th:text="*{member.email}"></div>
+                        </th:block>
                     </span>
-                    <span class="poster">
-                        <th:block th:text="*{poster}"></th:block>
-                        <div th:if="*{member != null}" th:text="*{member.email}"></div>
-                    </span>
-                    <span class="post-date" th:text="*{#temporals.format(createdAt, 'yyyy.MM.dd HH:mm')}"></span>
+
+                    <span class="post-date" th:text="*{#temporals.format(createdAt, 'yyyy년 MM월 dd월')}"></span>
 
                 </div>
             </li>
