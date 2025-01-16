@@ -90,7 +90,7 @@ public class Member extends BaseEntity implements Serializable {
     @Lob
     private String bio;
 
-    // 카카오 로그인 연동 상태 체
+    // 카카오 로그인 연동 상태 체크
     public boolean isKakaoConnected() {
 
         return socialChannel != null && socialChannel == socialChannel.KAKAO && StringUtils.hasText(socialToken);

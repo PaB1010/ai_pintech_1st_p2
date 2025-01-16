@@ -10,6 +10,14 @@ window.addEventListener("DOMContentLoaded", function () {
             nextEl: ".swiper-button-next",
             prevEl: ".swiper-button-prev",
         },
+
+        loop: true, // 무한 루프
+
+        autoplay: {
+            delay: 1000, // 1초
+        },
+
+        speed: 1000, // 1초
     });
     /* 메인 배너 S */
 });
