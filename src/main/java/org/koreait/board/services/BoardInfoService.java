@@ -383,7 +383,7 @@ public class BoardInfoService {
         item.setEditorImages(editorImages);
 
         item.setAttachFiles(fileInfoService.getList(gid, "attach"));
-
+        editorImages.forEach(System.out::println);
         if (editorImages != null && !editorImages.isEmpty()) {
 
             // 선택 목록 노출 이미지가 없을 경우 이미지중 가장 첫번째로 대체

@@ -168,7 +168,7 @@ public class Utils {
 
         try {
             String imageUrl = null;
-
+            System.out.println("seq:" + seq);
             // seq가 있는 경우
             if (seq != null && seq > 0L) {
 

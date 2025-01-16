@@ -11,7 +11,6 @@
 <!--                목록 대표 이미지 없을경우 대체하기-->
 
                 <a th:href="@{/board/view/{seq}(seq=*{seq})}">
-
                     <th:block th:utext="*{@utils.showBackground(selectedImage.seq, 290, 183, 'image show-image')}"></th:block>
 
                     <span class="badge" th:if="${boardData != null && boardData.seq == item.seq}" th:text="${열람중}"></span>
