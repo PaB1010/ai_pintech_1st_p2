@@ -187,7 +187,10 @@ public class Utils {
 
             }
 
-            if (!StringUtils.hasText(imageUrl)) return "";
+            if (!StringUtils.hasText(imageUrl)) {
+
+                imageUrl = String.format("%s/common/images/no_image.png", request.getContextPath());
+            };
 
             // mode default 값 image 설정
             mode = Objects.requireNonNullElse(mode, "image");
@@ -215,10 +218,25 @@ public class Utils {
     }
 
     public String showImage(Long seq, int width, int height, String className) {
+
+        if (seq == null) {
+            String url = getUrl("/common/images/no_image.png");
+            showImage(null, url, width, height, "image", className);
+        }
         return showImage(seq, null, width, height, "image", className);
     }
 
+    public String showBackgroundImage(Long seq, int width, int height, String className) {
+
+        if (seq == null) {
+            String url = getUrl("/common/images/no_image.png");
+            showImage(null, url, width, height, "background", className);
+        }
+        return showImage(seq, null, width, height, "background", className);
+    }
+
     public String showBackground(Long seq, int width, int height, String mode, String className) {
+
         return showImage(seq, null, width, height, "background", className);
     }
 
@@ -231,6 +249,7 @@ public class Utils {
     }
 
     public String showBackground(String url, int width, int height, String className) {
+
         return showImage(null, url, width, height, "background", className);
     }
 
