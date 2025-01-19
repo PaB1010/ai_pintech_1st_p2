@@ -89,8 +89,6 @@ public class MessageDeleteService {
          } else {
              // 발신자 || 수신자 한쪽만 삭제 처리한 경우 UPDATE
              repository.saveAndFlush(item);
-
          }
-
     }
 }

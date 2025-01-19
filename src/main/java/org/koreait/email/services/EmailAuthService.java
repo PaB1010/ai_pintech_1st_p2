@@ -41,7 +41,7 @@ public class EmailAuthService {
      * 3. 사용자의 입력을 검증하기 위해
      *    Session 에 인증 코드 & 만료 시간 기록
      *    개개인의 서비스를 위해 Session
-     *    요청 간에 Data 가 유지 되어야 함
+     *    요청 간의 Data 가 유지 되어야 함
      *
      * @param to : 수신 이메일 주소
      * @return
