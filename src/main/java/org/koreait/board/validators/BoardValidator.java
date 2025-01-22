@@ -47,6 +47,7 @@ public class BoardValidator implements Validator, PasswordValidator {
         // 비회원 비밀번호 검증
         if (!memberUtil.isLogin()) {
 
+            // 필수 항목 검증
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "guestPw", "NotBlank");
             
             // 대소문자 구분 없는 알파벳 1자 이상, 숫자 1자 이상 포함
