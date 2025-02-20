@@ -28,13 +28,9 @@ import java.util.List;
 public class BoardController implements SubMenus {
 
     private final Utils utils;
-
     private final BoardValidator boardValidator;
-
     private final BoardConfigUpdateService configUpdateService;
-
     private final BoardConfigInfoService configInfoService;
-
     private final HttpServletRequest request;
 
     @Override
@@ -51,7 +47,6 @@ public class BoardController implements SubMenus {
      */
     @GetMapping({"", "/list"})
     public String list(@ModelAttribute BoardConfigSearch search, Model model) {
-
         commonProcess("list", model);
 
         ListData<Board> data = configInfoService.getList(search);
@@ -59,37 +54,26 @@ public class BoardController implements SubMenus {
         model.addAttribute("items", data.getItems());
         model.addAttribute("pagination", data.getPagination());
 
-        // 간단한 설정은 여기서 변경되도록 하면 편리함
-
         return "admin/board/list";
     }
 
-    /**
-     * 수정 & 삭제 처리
-     *
-     * @return
-     */
-    @RequestMapping(path = "/list", method = {RequestMethod.PATCH, RequestMethod.DELETE})
-    public String listPs(@RequestParam(name = "chk", required = false) List<Integer> chks, Model model) {
+    @RequestMapping(path="/list", method={RequestMethod.PATCH, RequestMethod.DELETE})
+    public String listPs(@RequestParam(name="chk", required = false) List<Integer> chks, Model model) {
 
         configUpdateService.process(chks, request.getMethod().equalsIgnoreCase("DELETE") ? "delete" : "edit");
 
-        model.addAttribute("script", "parent.location.reload()");
-
+        model.addAttribute("script", "parent.location.reload();");
         return "common/_execute_script";
     }
 
     /**
      * 게시판 설정 등록
      *
-     * 게시판 설정 1 = 게시판 1
-     *
      * @param model
      * @return
      */
-    @GetMapping("add")
+    @GetMapping("/add")
     public String add(@ModelAttribute RequestBoard form, Model model) {
-
         commonProcess("add", model);
 
         form.setSkin("default");
@@ -99,48 +83,41 @@ public class BoardController implements SubMenus {
         form.setWriteAuthority(Authority.ALL);
         form.setCommentAuthority(Authority.ALL);
 
-        // 쇼핑몰처럼 save 양식을 edit 와 공유 예정
-
         return "admin/board/add";
     }
 
     /**
      * 게시판 설정 수정
-     * 
      * @param bid
      * @param model
      * @return
      */
     @GetMapping("/edit/{bid}")
     public String edit(@PathVariable("bid") String bid, Model model) {
-
         commonProcess("edit", model);
 
-        // 양식 처리가 많으니 커맨드 객체로
         RequestBoard form = configInfoService.getForm(bid);
-
         model.addAttribute("requestBoard", form);
 
         return "admin/board/edit";
     }
 
     /**
-     * 게시판 등록 & 수정 처리
+     * 게시판 등록, 수정 처리
      *
      * @return
      */
     @PostMapping("/save")
     public String save(@Valid RequestBoard form, Errors errors, Model model) {
-
         String mode = form.getMode();
-
         mode = StringUtils.hasText(mode) ? mode : "add";
-
         commonProcess(mode, model);
 
         boardValidator.validate(form, errors);
 
-        if (errors.hasErrors()) return "admin/board/" + mode;
+        if (errors.hasErrors()) {
+            return "admin/board/" + mode;
+        }
 
         configUpdateService.process(form);
 
@@ -150,11 +127,11 @@ public class BoardController implements SubMenus {
     /**
      * 게시글 관리
      *
+     * @param model
      * @return
      */
     @GetMapping("/posts")
     public String posts(Model model) {
-
         commonProcess("posts", model);
 
         return "admin/board/posts";
@@ -167,27 +144,22 @@ public class BoardController implements SubMenus {
      * @param model
      */
     private void commonProcess(String mode, Model model) {
-
         mode = StringUtils.hasText(mode) ? mode : "list";
 
         List<String> addCommonScript = new ArrayList<>();
 
+
         String pageTitle = "";
-
         if (mode.equals("list")) {
-
             pageTitle = "게시판 목록";
-
         } else if (mode.equals("add") || mode.equals("edit")) {
-
             pageTitle = mode.equals("edit") ? "게시판 수정" : "게시판 등록";
             addCommonScript.add("fileManager");
 
         } else if (mode.equals("posts")) {
-
             pageTitle = "게시글 관리";
         }
-
+        
         pageTitle += " - 게시판 관리";
 
         model.addAttribute("pageTitle", pageTitle);

@@ -7,66 +7,34 @@ import org.koreait.product.constants.DiscountType;
 
 import java.util.List;
 
-/**
- * 상품 커맨드 객체
- */
 @Data
 public class RequestProduct {
-    
     private String mode;
+    private Long seq; // 상품 번호, 수정시 필요
 
-    // 상품 번호 - 수정시 필수 필요
-    private Long seq;
-
-    // true : 소비자 페이지에도 상품 노출
-    // false : 관리자 페이지에만 상품 노출
-    // @NotNull
-    private boolean open;
+    private boolean open; // true : 소비자페이지 상품 노출
 
     @NotBlank
     private String gid;
 
-    // 상품명
     @NotBlank
-    private String name;
+    private String name; // 상품명
+    private String summary; // 상품 요약 설명 
+    private String description; // 상품 상세 설명
 
-    // 상품 요약 설명
-    private String summary;
+    private int consumerPrice; // 소비자가
+    private int salePrice; // 판매가
 
-    // 상품 상세 설명 - Editor 연동 작업 예정
-    private String description;
+    private DiscountType discountType; // 할인 종류
+    private double discount; // 정가할인 금액(1000), 할인율(10.5%)
+    private int maxDiscount; // 최대 할인 금액
 
-    // 소비자가 - 취소선 그려서 표기
-    private int consumerPrice;
+    private double pointRate; // 적립률 - 결제 금액의 상품의 판매가
+    private int maxPoint; // 최대 적립금
 
-    // 판매가
-    // @NotBlank 아닌 이유 = 배송비만 받고 파는 사은품이라던가 하는 경우에는 판매가가 없을 수 있음
-    private int salePrice;
-    
-    // 할인 종류
-    private DiscountType discountType;
+    private List<FileInfo> mainImages; // 상품 상세 메인이미지
 
-    // 정가 할인 금액(1000) || 할인율(10.5%)
-    private double discount;
-    
-    // 최대 할인 금액
-    private int maxDiscount;
+    private List<FileInfo> listImages; // 목록 이미지
 
-    // 적립률 - 결제 금액에서 할인률 적용된 상품의 판매가
-    private double pointRate;
-
-    // 최대 적립금
-    private int maxPoint;
-
-    // 상품 상세 메인 이미지
-    // gid = main
-    private List<FileInfo> mainImages;
-
-    // 상품 목록 이미지
-    // gid = list
-    private List<FileInfo> listImages;
-
-    // 상세 설명 이미지
-    // gid = editor
-    private List<FileInfo> editorImages;
+    private List<FileInfo> editorImages; // 상세설명 이미지
 }

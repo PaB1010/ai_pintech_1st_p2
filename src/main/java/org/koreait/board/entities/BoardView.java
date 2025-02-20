@@ -9,12 +9,9 @@ import lombok.Data;
 @Entity
 @IdClass(BoardViewId.class)
 public class BoardView {
-
-    // 게시글 번호
     @Id
-    private Long seq;
+    private Long seq; // 게시글 번호
 
-    // 회원번호 || IP + User-Agent 로 조합해서 생성
     @Id
-    private int hash;
+    private int hash; // 회원번호 또는 IP + User-Agent로 조합해서 생성
 }

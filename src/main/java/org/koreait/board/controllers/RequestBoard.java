@@ -9,48 +9,34 @@ import java.util.List;
 
 @Data
 public class RequestBoard {
-    
-    // 게시글 번호
-    private Long seq;
 
+    private Long seq; // 게시글 번호
     private String mode;
 
-    // 게시판 ID
     @NotBlank
-    private String bid;
+    private String bid; // 게시판 아이디
 
-    // 파일 첨부용
     @NotBlank
     private String gid;
 
-    // 작성자
     @NotBlank
-    private String poster;
+    private String poster; // 작성자
 
-    // 비회원 비밀번호
-    @Size(min = 4, max = 50)
-    private String guestPw;
-    
-    // 게시글 제목
+    @Size(min=4)
+    private String guestPw; // 비회원 비밀번호
+
     @NotBlank
-    private String subject;
-    
-    // 게시글 내용
+    private String subject; // 글 제목
+
     @NotBlank
-    private String content;
+    private String content; // 글 내용
+    private boolean notice; // 공지글 여부
 
-    // 공지글 여부
-    private boolean notice;
+    private String externalLink; // 외부링크
+    private String youtubeUrl; // Youtube 주소
 
-    // 외부 링크
-    private String externalLink;
-
-    private String youtubeUrl;
-    
-    // 게시글 분류
-    private String category;
+    private String category; // 게시글 분류
 
     private List<FileInfo> editorImages;
-
     private List<FileInfo> attachFiles;
 }

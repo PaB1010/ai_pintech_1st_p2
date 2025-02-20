@@ -20,154 +20,99 @@ import java.util.Objects;
 
 import static org.springframework.data.domain.Sort.Order.asc;
 
-/**
- * File 조회 기능(Service)
- *
- */
 @Lazy
 @Service
 @RequiredArgsConstructor
 @EnableConfigurationProperties(FileProperties.class)
-public class FileInfoService {
-
+public class FileInfoService  {
     private final FileInfoRepository infoRepository;
 
-    // application.yml_file.upload.* 접근용
     private final FileProperties properties;
 
-    // Context path 추가용
     private final HttpServletRequest request;
 
     public FileInfo get(Long seq) {
+        FileInfo item = infoRepository.findById(seq).orElseThrow(FileNotFoundException::new);
 
-        // file 단일조회 값 없을시 FileNotFond Exception
-        FileInfo item = infoRepository.findById(seq).orElseThrow(FileNotFoundException :: new);
-
-        // 추가 정보 2차 가공 처리
-        addInfo(item);
+        addInfo(item); // 추가 정보 처리
 
         return item;
     }
 
-    // 상세 조회, FileStatus.DONE 아닌 경우들 포함
     public List<FileInfo> getList(String gid, String location, FileStatus status) {
-        // Filestatus Null일 경우 ALL(DONE + UNDONE) 고정
         status = Objects.requireNonNullElse(status, FileStatus.ALL);
 
         QFileInfo fileInfo = QFileInfo.fileInfo;
-
-        // 추후 조건식 추가용
         BooleanBuilder andBuilder = new BooleanBuilder();
+        andBuilder.and(fileInfo.gid.eq(gid)); // 필수
 
-        // 필수, gid 검색
-        andBuilder.and(fileInfo.gid.eq(gid));
-
-        // 선택, location 값이 있을 경우 상세조회
-        if (StringUtils.hasText(location)) {
-
+        if (StringUtils.hasText(location)) { // 선택
             andBuilder.and(fileInfo.location.eq(location));
         }
 
-        // File 작업 완료 상태 여부(DONE || UNDONE)로 조회
+        // 파일 작업 완료 상태
         if (status != FileStatus.ALL) {
-
-            // DONE 일 경우 true, UNDONE 일 경우 false
             andBuilder.and(fileInfo.done.eq(status == FileStatus.DONE));
         }
 
-        // 1차 정렬 listOrder 기준 오름차순 정렬, 2차 정렬 생성일자 오름차순 정렬해서 반환
-        List<FileInfo> items =  (List<FileInfo>)infoRepository.findAll(andBuilder, Sort.by(asc("listOrder"), asc("createdAt")));
-        System.out.println(items);
+        List<FileInfo> items = (List<FileInfo>)infoRepository.findAll(andBuilder, Sort.by(asc("listOrder"), asc("createdAt")));
 
-        // List 추가 정보 2차 가공 처리
+        // 추가 정보 처리
         items.forEach(this::addInfo);
 
         return items;
     }
 
-    // 메서드 오버로드 : gid, location 으로 검색하는 경우
-    // File Group 작업 완료(done = true) 된 파일 조회용 (default)
     public List<FileInfo> getList(String gid, String location) {
-
         return getList(gid, location, FileStatus.DONE);
     }
 
-    // 메서드 오버로드 : gid 로만 검색하는 경우
-    // File Group 작업 완료(done = true) 된 파일 조회용 (default)
-    public List<FileInfo> getList(String gid) {
-
+    public List<FileInfo> getList(String gid) { // 파일 그룹작업 완료된 파일
         return getList(gid, null);
     }
 
     /**
-     * 추가 정보 처리 (2차 가공)
-     *
-     * @Transient
-     * FileInfo.fileURL & FileInfo.filePath
-     * 2차 가공해 완성할 목적
-     *
-     * File Upload 쪽에서도 사용? 외부에서도 쓸 것이라서 public
+     * 추가 정보 처리
      *
      * @param item
      */
     public void addInfo(FileInfo item) {
-
-        // filePath - Server에 올라간 실제 경로 (Download & Delete 등등 활용)
+        // filePath - 서버에 올라간 실제 경로(다운로드, 삭제시 활용...)
         item.setFilePath(getFilePath(item));
 
-
-        // fileUrl - Browser에서 접근할 수 있는 File 주소
+        // fileUrl - 접근할 수 있는 주소(브라우저)
         item.setFileUrl(getFileUrl(item));
 
-        // thumbUrl - IMG 형식인 경우
+        // thumbUrl - 이미지 형식인 경우
         if (item.getContentType().contains("image/")) {
-
             item.setThumbUrl(String.format("%s/api/file/thumb?seq=%d", request.getContextPath(), item.getSeq()));
         }
     }
 
-    // 자주 사용되는 메서드라서 따로 정의
     public String getFilePath(FileInfo item) {
-
         Long seq = item.getSeq();
-
-        // 확장자 없는 File 일 경우 빈 문자열로 NPE 예방 처리
         String extension = Objects.requireNonNullElse(item.getExtension(), "");
-
-        // getFolder(seq)은 long 임에도 %s 가능
         return String.format("%s%s/%s", properties.getPath(), getFolder(seq), seq + extension);
-
     }
 
-    // StackOverFlow 방지용 단일 조회 분리
     public String getFilePath(Long seq) {
-
-        // file 단일조회 값 없을시 FileNotFond Exception
-        FileInfo item = infoRepository.findById(seq).orElseThrow(FileNotFoundException :: new);
-
+        FileInfo item = infoRepository.findById(seq).orElseThrow(FileNotFoundException::new);
         return getFilePath(item);
     }
 
-
-    // 자주 사용되는 메서드라서 따로 정의
     public String getFileUrl(FileInfo item) {
-
         Long seq = item.getSeq();
         String extension = Objects.requireNonNullElse(item.getExtension(), "");
         return String.format("%s%s%s/%s", request.getContextPath(), properties.getUrl(), getFolder(seq), seq + extension);
     }
 
-    // StackOverFlow 방지용 단일 조회 분리
     public String getFileUrl(Long seq) {
-
-        // file 단일조회 값 없을시 FileNotFond Exception
-        FileInfo item = infoRepository.findById(seq).orElseThrow(FileNotFoundException :: new);
-
+        FileInfo item = infoRepository.findById(seq).orElseThrow(FileNotFoundException::new);
         return getFileUrl(item);
     }
 
-    public long getFolder(long seq) {
-
+    private long getFolder(long seq) {
         return seq % 10L;
     }
+
 }

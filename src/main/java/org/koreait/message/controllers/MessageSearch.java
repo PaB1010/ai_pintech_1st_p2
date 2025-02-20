@@ -7,14 +7,6 @@ import java.util.List;
 
 @Data
 public class MessageSearch extends CommonSearch {
-
-    // 발신 쪽 이메일로 일괄 조회
-    private List<String> sender;
-
-    /**
-     * mode 값, null 일 경우 send 삼항 예정
-     * receiver : 수신 쪽지
-     * send : 발신 쪽지
-     */
-    private String mode;
+    private List<String> sender; // 보낸쪽 이메일
+    private String mode; // receive이거나 값이 없으면 받은 쪽지, send : 보낸 쪽지
 }

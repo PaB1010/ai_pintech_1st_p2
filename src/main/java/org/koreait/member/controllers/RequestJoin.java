@@ -15,46 +15,40 @@ import java.time.LocalDate;
 @Data
 public class RequestJoin extends RequestAgree {
 
-    @NotBlank
     @Email
-    private String email;
+    @NotBlank
+    private String email; // 이메일
 
     @NotBlank
     private String name; // 회원명
 
-    @Size(min=8, max=40)
-    private String password;
+    @Size(min=8)
+    private String password; // 비밀번호
 
-    private String confirmPassword;
+    private String confirmPassword; // 비밀번호 확인
 
     @NotBlank
-    @Size
-    private String nickName;
+    private String nickName; // 닉네임
 
     @NotNull
-    // @PastOrPresent // 현재 날짜 포함
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate birthDt;
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    private LocalDate birthDt;  // 생년월일
 
     @NotNull
-    private Gender gender; // Enum class - 성별 (member.constants.Gender)
+    private Gender gender; // 성별
 
     @NotBlank
-    private String zipCode; // 우편 번호
+    private String zipCode; // 우편번호
 
     @NotBlank
-    private String address;
+    private String address; // 주소
+    private String addressSub; // 나머지 주소
 
-    private String addressSub;
-
-    // 소셜 로그인시 hidden 값으로 실어 요청할 예정
     private SocialChannel socialChannel;
     private String socialToken;
-    
-    // socialChannel & socialToken 있을 경우
-    // 소셜 로그인으로 가입하는 것인지 체크
+
+    // 소셜 로그인으로 가입하는 건지 체크
     public boolean isSocial() {
-        
         return socialChannel != null && socialChannel != SocialChannel.NONE && StringUtils.hasText(socialToken);
     }
 }

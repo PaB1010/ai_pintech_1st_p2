@@ -21,6 +21,6 @@ public class MemberAuthenticationExceptionHandler implements AuthenticationEntry
         } else {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED); // 그외 401
         }
-
+        
     }
 }

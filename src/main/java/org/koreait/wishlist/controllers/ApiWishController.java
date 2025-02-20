@@ -7,23 +7,17 @@ import org.koreait.wishlist.services.WishService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * JavaScript 로 연산 처리 될 예정이라 Rest
- *
- */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/wish")
 public class ApiWishController {
 
     private final HttpServletRequest request;
-
     private final WishService service;
 
     @GetMapping({"/add", "/remove"})
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void process(@RequestParam("seq") Long seq,@RequestParam("type") WishType type) {
-        
+    public void process(@RequestParam("seq") Long seq, @RequestParam("type") WishType type) {
         String mode = request.getRequestURI().contains("/remove") ? "remove" : "add";
 
         service.process(mode, seq, type);

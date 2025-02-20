@@ -8,27 +8,16 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-/**
- * Redis 설정
- *
- * Redis - NoSQL, Key & Value 로 저장하는 DB
- *
- */
 @Configuration
 public class RedisConfig {
-
-    // @Value(설정 파일(yml) 항목명으로 가져옴)
     @Value("${spring.data.redis.host}")
     private String host;
 
     @Value("${spring.data.redis.port}")
     private int port;
 
-    // ★ Redis 핵심 Interface ★
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
-        
-        // 구현체
         return new LettuceConnectionFactory(host, port);
     }
 
@@ -38,7 +27,6 @@ public class RedisConfig {
         redisTemplate.setConnectionFactory(redisConnectionFactory());
         redisTemplate.setEnableTransactionSupport(true);
 
-        // Key & Value 문자열로 직렬화
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());
 

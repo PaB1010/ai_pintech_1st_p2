@@ -11,13 +11,10 @@ import java.util.List;
 public class RequestMessage {
 
     private boolean notice;
-
     /**
-     * 수신 쪽 이메일
-     *
-     * 필수가 되는 조건 : 회원 -> 회원일 경우
-     * 필수가 아닌 조건 : 관리자 -> 전체 공지(notice)일 경우
-     *
+     * 메일을 받는 쪽 이메일
+     *    필수가 되는 조건 : 회원이 다른 회원에게 쪽지를 보내는 경우
+     *    필수가 아닌 조건 : 관리자가 공지사항(notice)으로 쪽지를 보내는 경우
      */
     @Email
     private String email;
@@ -32,6 +29,5 @@ public class RequestMessage {
     private String content;
 
     private List<FileInfo> editorImages;
-
     private List<FileInfo> attachFiles;
 }

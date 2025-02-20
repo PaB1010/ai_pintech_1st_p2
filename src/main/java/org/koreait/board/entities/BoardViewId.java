@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BoardViewId {
-
     private Long seq;
-
     private int hash;
 }

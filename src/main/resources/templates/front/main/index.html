@@ -1,60 +1,58 @@
 <!DOCTYPE html>
-<html
-  xmlns:th="http://www.thymeleaf.org"
-  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-  layout:decorate="~{front/layouts/main}">
+<html xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{front/layouts/main}">
+    <th:block layout:fragment="addCommonCss">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    </th:block>
+    <th:block layout:fragment="addCommonScript">
+        <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    </th:block>
 
-  <th:block layout:fragment="addCommonCss">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-  </th:block>
-  <th:block layout:fragment="addCommonScript">
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-  </th:block>
+    <main layout:fragment="content">
+        <section class="main-banner">
+            <div class="swiper banners">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <a href="#">
+                            <div class="banner banner1"></div>
+                            <div class='more-button'>
+                                <span th:text="#{더보기}"></span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="swiper-slide">
+                        <a href="#">
+                            <div class="banner banner2"></div>
+                            <div class='more-button'>
+                                <span th:text="#{더보기}"></span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="swiper-slide">
+                        <a href="#">
+                            <div class="banner banner3"></div>
+                            <div class='more-button'>
+                                <span th:text="#{더보기}"></span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+            </div>
+        </section>
+        <!--// main-banner -->
 
-  <main layout:fragment="content">
+        <section class="latest-news">
+            <h1 class='main-tit' th:text="#{새로운_소식}"></h1>
+            <th:block th:replace="~{front/board/gallery/_items::items(items=${@boardInfoService.getLatest('news', 12)})}"></th:block>
 
-    <section class="main-banner">
-
-      <div class="swiper banners">
-        <div class="swiper-wrapper">
-          <div class="swiper-slide">
-            <a href="#">
-              <div class="banner banner1"></div>
-              <div class="more-button">
-                <span th:text="#{더보기}"></span>
-              </div>
-            </a>
-          </div>
-          <div class="swiper-slide">
-            <a href="#">
-              <div class="banner banner2"></div>
-              <div class="more-button">
-                <span th:text="#{더보기}"></span>
-              </div>
-            </a>
-          </div>
-          <div class="swiper-slide">
-            <a href="#">
-              <div class="banner banner3"></div>
-              <div class="more-button">
-                <span th:text="#{더보기}"></span>
-              </div>
-            </a>
-          </div>
-        </div>
-        <div class="swiper-button-next"></div>
-        <div class="swiper-button-prev"></div>
-      </div>
-
-    </section>
-    <!-- // main-banner -->
-
-    <section class="latest-news">
-      <h1 th:text="#{새로운_소식}"></h1>
-
-      <th:block th:replace="~{front/board/gallery/_items::items(items=${@boardInfoService.getLatest('news', 12)})}"></th:block>
-
-      <a th:href="@{/board/list/news}" th:text="#{더보기}"></a>
-    </section>
-  </main>
+            <div class="more-btn-wrap">
+                <a th:href="@{/board/list/news}" class="more-btn">
+                    <p th:text="#{더보기}"></p>
+                </a>
+            </div>
+        </section>
+    </main>
 </html>

@@ -12,21 +12,17 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 public class WebSocketConfig implements WebSocketConfigurer {
 
     @Autowired
-    private MessageHandler messageHandler; // 직접 정의한 Handler Class
+    private MessageHandler messageHandler;
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+        // ws://localhost:3000/message
+        String profile = System.getenv("spring.profiles.active");
 
-        // prod 환경 변수에서 가져와 도메인 설정
-       // String profile = System.getenv("spring.profiles.active");
 
-        // ws://(도메인)localhost:3000/message
-        registry.addHandler(messageHandler, "/msg")
-                .setAllowedOrigins("*");
-                // 허용할 도메인, 여러개 가능
-                // .setAllowedOrigins("http://joinfar.xzy:3000", "https://joinfar.xzy:4000");
-                // 개발시 : localhost
-                // 실제 배포시 : 지정한 도메인 허용
-                //.setAllowedOrigins(profile.contains("prod") ? "" : "http://localhost:3000");
+        registry.addHandler(messageHandler, "msg")
+                .setAllowedOrigins(profile.contains("prod") ? "" : "http://localhost:3000");
+
+
     }
 }

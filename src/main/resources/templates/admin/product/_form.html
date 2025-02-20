@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
     <th:block th:fragment="common" th:object="${requestProduct}">
-        <input type="hidden" name="gid" th:field="*{gid}">
+        <input type="hidden"  name="gid" th:field="*{gid}">
         <div class="error global" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
 
         <h2>분류 설정</h2>
@@ -18,7 +18,7 @@
             <tr>
                 <th>소비자가</th>
                 <td>
-                    <input type="number" name="consumerPRice" th:field="*{consumerPrice}">
+                    <input type="number" name="consumerPrice" th:field="*{consumerPrice}">
                 </td>
             </tr>
             <tr>
@@ -28,7 +28,7 @@
                 </td>
             </tr>
             <tr>
-                <th>요약 설명</th>
+                <th>요약설명</th>
                 <td>
                     <textarea name="summary" th:field="*{summary}"></textarea>
                 </td>
@@ -52,7 +52,7 @@
         <h2>상품 이미지</h2>
         <table class="table-cols mb30">
             <tr>
-                <th width="180">메인 이미지</th>
+                <th width="180">메인이미지</th>
                 <td>
                     <button type="button" class="file-upload sbtn" th:data-gid="*{gid}" data-location="main" data-image-only="true">이미지 업로드</button>
                     <div class="uploaded-files" id="main-images">
@@ -64,7 +64,7 @@
                 </td>
             </tr>
             <tr>
-                <th>목록 이미지</th>
+                <th>목록이미지</th>
                 <td>
                     <button type="button" class="file-upload sbtn" th:data-gid="*{gid}" data-location="list" data-image-only="true">이미지 업로드</button>
                     <div class="uploaded-files" id="list-images">
@@ -84,11 +84,11 @@
                 <td colspan="3">
                     <span class="radio">
                         <input type="radio" name="discountType" value="NONE" id="discountType-NONE" th:field="*{discountType}">
-                        <label for="discountType-NONE">할인 없음</label>
+                        <label for="discountType-NONE">할인없음</label>
                     </span>
                     <span class="radio">
                         <input type="radio" name="discountType" value="FIXED" id="discountType-FIXED" th:field="*{discountType}">
-                        <label for="discountType-FIXED">고정 할인</label>
+                        <label for="discountType-FIXED">고정할인</label>
                     </span>
                     <span class="radio">
                         <input type="radio" name="discountType" value="RATE" id="discountType-RATE" th:field="*{discountType}">
@@ -97,11 +97,11 @@
                 </td>
             </tr>
             <tr>
-                <th>할인 금액/할인율</th>
+                <th>할인금액/할인율</th>
                 <td width="250">
                     <input type="text" name="discount" th:field="*{discount}">
                 </td>
-                <th width="180">최대 할인 금액</th>
+                <th width="180">최대할인금액</th>
                 <td>
                     <input type="number" name="maxDiscount" th:field="*{maxDiscount}">
                 </td>

@@ -24,93 +24,63 @@ import java.util.Objects;
 public class CommentUpdateService {
 
     private final CommentDataRepository commentDataRepository;
-
     private final BoardDataRepository boardDataRepository;
-
     private final BoardInfoService boardInfoService;
-
+    private final MemberUtil memberUtil;
+    private final HttpServletRequest request;
     private final PasswordEncoder passwordEncoder;
 
-    private final HttpServletRequest request;
-
-    private final MemberUtil memberUtil;
-
     /**
-     * 댓글 등록 & 수정
-     *
+     * 댓글 등록, 수정
      * @param form
      * @return
      */
     public CommentData save(RequestComment form) {
-
         String mode = Objects.requireNonNullElse(form.getMode(), "write");
-
         Long seq = form.getSeq();
+        Long boardDataSeq = form.getBoardDataSeq(); // 게시글 번호
 
-        // 게시글 번호
-        Long boardDataSeq = form.getBoardDataSeq();
 
         CommentData item = null;
-
-        // 댓글 수정
-        if (mode.equals("edit") && seq != null & seq > 0L) {
-
+        if (mode.equals("edit") && seq != null && seq > 0L) { // 댓글 수정 
             item = commentDataRepository.findById(seq).orElseThrow(CommentNotFoundException::new);
 
         } else { // 댓글 등록
-            // 바뀌지 않는 데이터들은 최초 등록시에만 Set
-
-            // 게시글 데이터
-            BoardData data = boardInfoService.get(boardDataSeq);
-
+            BoardData data = boardInfoService.get(boardDataSeq); // 게시글 데이터
             item = new CommentData();
-
             item.setMember(memberUtil.getMember());
-
             item.setData(data);
-
             item.setIpAddr(request.getRemoteAddr());
-
             item.setUserAgent(request.getHeader("User-Agent"));
         }
 
         item.setCommenter(form.getCommenter());
-
         item.setContent(form.getContent());
 
         String guestPw = form.getGuestPw();
-
         if (StringUtils.hasText(guestPw)) {
-
             item.setGuestPw(passwordEncoder.encode(guestPw));
         }
 
         commentDataRepository.saveAndFlush(item);
 
-        // 댓글 개수 업데이트
+        // 댓글 갯수 업데이트
         updateCount(boardDataSeq);
 
         return item;
     }
 
     /**
-     * 게시글 번호로 총 댓글 개수 반영
+     * 게시글 번호로 총 댓글 갯수 반영
      *
-     * @param seq
+     * @param seq : 게시글 번호
      */
     public void updateCount(Long seq) {
-
         QCommentData commentData = QCommentData.commentData;
-
-        // 게시글별 댓글 개수
-        long total = commentDataRepository.count(commentData.data.seq.eq(seq));
-
+        long total = commentDataRepository.count(commentData.data.seq.eq(seq)); // 게시글별 댓글 갯수
         BoardData item = boardDataRepository.findById(seq).orElse(null);
-
         if (item != null) {
-
             item.setCommentCount(total);
-
             boardDataRepository.saveAndFlush(item);
         }
     }

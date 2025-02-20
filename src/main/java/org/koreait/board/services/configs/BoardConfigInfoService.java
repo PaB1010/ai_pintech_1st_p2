@@ -34,99 +34,74 @@ import static org.springframework.data.domain.Sort.Order.desc;
 public class BoardConfigInfoService {
 
     private final BoardRepository boardRepository;
-
     private final HttpServletRequest request;
-
+    private final ModelMapper modelMapper;
     private final MemberUtil memberUtil;
 
-    private final ModelMapper modelMapper;
-
     /**
-     * 게시판 설정 단일 조회
+     * 게시판 설정 하나 조회
      *
      * @param bid
      * @return
      */
     public Board get(String bid) {
-
         Board item = boardRepository.findById(bid).orElseThrow(BoardNotFoundException::new);
 
-        addInfo(item);
+        addInfo(item); // 추가 정보 처리
 
         return item;
     }
 
-    /**
-     * 수정시에만 사용되는
-     *
-     * 커맨드 객체로 치환해 반환하는 편의 기능
-     *
-     * @param bid
-     * @return
-     */
     public RequestBoard getForm(String bid) {
-
         Board item = get(bid);
 
         RequestBoard form = modelMapper.map(item, RequestBoard.class);
-
         form.setMode("edit");
 
         return form;
     }
 
     /**
-     * 게시판 설정 목록 조회
-     *
+     * 게시판 설정 목록
+     * 
      * @param search
      * @return
      */
     public ListData<Board> getList(BoardConfigSearch search) {
-
         int page = Math.max(search.getPage(), 1);
         int limit = search.getLimit();
-
         limit = limit < 1 ? 20 : limit;
 
         BooleanBuilder andBuilder = new BooleanBuilder();
-
         QBoard board = QBoard.board;
 
         /* 검색 처리 S */
-
         String sopt = search.getSopt();
-
         String skey = search.getSkey();
-
         sopt = StringUtils.hasText(sopt) ? sopt : "ALL";
-
         if (StringUtils.hasText(skey)) {
             StringExpression condition;
-
-            // 게시판 아이디 검색
-            if (sopt.equals("BID")) condition = board.bid;
-
-            // 게시판명 검색
-            else if (sopt.equals("NAME")) condition = board.name;
-
-            // 통합 검색 (게시판 아이디 + 게시판명)
-            else condition = board.bid.concat(board.name);
+            if (sopt.equals("BID")) { // 게시판 아이디
+                condition = board.bid;
+            } else if (sopt.equals("NAME")) { // 게시판명
+                condition = board.name;
+            } else { // 통합 검색 - 게시판 아이디 + 게시판명
+                condition = board.bid.concat(board.name);
+            }
 
             andBuilder.and(condition.contains(skey.trim()));
         }
 
         List<String> bids = search.getBid();
-
-        if (bids != null && !bids.isEmpty()) andBuilder.and(board.bid.in(bids));
-
+        if (bids != null && !bids.isEmpty()) {
+            andBuilder.and(board.bid.in(bids));
+        }
         /* 검색 처리 E */
 
         Pageable pageable = PageRequest.of(page - 1, limit, Sort.by(desc("createdAt")));
-
         Page<Board> data = boardRepository.findAll(andBuilder, pageable);
 
         List<Board> items = data.getContent();
-
         items.forEach(this::addInfo);
 
         Pagination pagination = new Pagination(page, (int)data.getTotalElements(), 10, limit, request);
@@ -134,12 +109,10 @@ public class BoardConfigInfoService {
         return new ListData<>(items, pagination);
     }
 
+    // 추가 정보처리
     public void addInfo(Board item) {
-
         String category = item.getCategory();
-
         if (StringUtils.hasText(category)) {
-
             List<String> categories = Arrays.stream(category.split("\\n"))
                     .map(s -> s.replaceAll("\\r", ""))
                     .filter(s -> !s.isBlank())
@@ -149,17 +122,15 @@ public class BoardConfigInfoService {
             item.setCategories(categories);
         }
 
-        /* listable, writable S */
+        // listable, writable S
         Authority listAuthority = item.getListAuthority();
-
         boolean listable = listAuthority == Authority.ALL || (listAuthority == Authority.USER && memberUtil.isLogin()) || (listAuthority == Authority.ADMIN && memberUtil.isAdmin());
 
         Authority writeAuthority = item.getWriteAuthority();
-
-        boolean writeable = writeAuthority == Authority.ALL ||  (writeAuthority == Authority.USER && memberUtil.isLogin()) || (writeAuthority == Authority.ADMIN && memberUtil.isAdmin());
+        boolean writable = writeAuthority == Authority.ALL || (writeAuthority == Authority.USER && memberUtil.isLogin()) || (writeAuthority == Authority.ADMIN && memberUtil.isAdmin());
 
         item.setListable(listable);
-        item.setWritable(writeable);
-        /* listable, writable E */
+        item.setWritable(writable);
+        // listable, writable E
     }
 }

@@ -13,9 +13,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class FileImageService {
-
     private final FileInfoService infoService;
-
     private final FileInfoRepository repository;
 
     /**
@@ -24,18 +22,13 @@ public class FileImageService {
      * @param seq
      */
     public void select(Long seq) {
-
         FileInfo item = infoService.get(seq);
-
         String gid = item.getGid();
-
         String location = item.getLocation();
-        
+
         List<FileInfo> items = infoService.getList(gid, location, FileStatus.ALL);
-        
-        // 같은 Gid 내에서 목록 노출 선택 이미지만 변환
-        items.forEach(i -> i.setSelected(item.getSeq().equals(seq)));
-        
+        items.forEach(i -> i.setSelected(i.getSeq().equals(seq)));
+
         repository.saveAllAndFlush(items);
     }
 }

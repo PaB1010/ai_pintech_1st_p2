@@ -25,70 +25,40 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 회원 가입 & 정보 수정 기능
- *
- */
-// @Lazy = 지연 로딩 - 최초로 해당 Bean 사용할 때 생성
-@Lazy
+@Lazy // 지연로딩 - 최초로 빈을 사용할때 생성
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class MemberUpdateService {
 
     private final MemberRepository memberRepository;
-
     private final AuthoritiesRepository authoritiesRepository;
-
     private final PasswordEncoder passwordEncoder;
-
-    // ModelMapper
-    // 같은 getter setter 처리시 일괄 처리해주는 Reflection API 편의 기능
     private final ModelMapper modelMapper;
-
     private final MemberUtil memberUtil;
-
     private final MemberInfoService infoService;
-
     private final HttpSession session;
-
     private final Utils utils;
-    
+
     /**
-     * 메서드 오버로드 - 커맨드 객체의 타입에 따라서
-     *
-     * RequestJoin 이면 회원 가입 처리
-     * RequestProfile 이면 회원 정보 수정 처리
-     *
+     * 커맨드 객체의 타입에 따라서 RequestJoin이면 회원 가입 처리
+     *                      RequestProfile이면 회원정보 수정 처리
      * @param form
      */
     public void process(RequestJoin form) {
-
-        // 커맨드 객체 -> Entity 객체로 Data 옮기기
-        /*
-        Member member = new Member();
-        member.setEmail(form.getEmail());
-        member.setName(form.getName());
-        ..
-        ...
-
-         */
+        // 커맨드 객체 -> 엔티티 객체 데이터 옮기기
         Member member = modelMapper.map(form, Member.class);
 
-        // 선택 약관 처리
+        // 선택 약관 -> 약관 항목1||약관 항목2||...
         List<String> optionalTerms = form.getOptionalTerms();
-
-        // 선택 약관 값이 있을때에만 -> 약관 항목1||약관 항목2||... 형태로 가공 처리
         if (optionalTerms != null) {
-
             member.setOptionalTerms(String.join("||", optionalTerms));
         }
 
+        // 비밀번호 해시화 - BCrypt
         if (!form.isSocial()) {
-            // 비밀번호 해시화 - BCrypt (단방성, 유동 해시)
             String hash = passwordEncoder.encode(form.getPassword());
             member.setPassword(hash);
-            // ★ 비밀번호 변경 일자 Null 이 아닌 오늘로 설정 ★
             member.setCredentialChangedAt(LocalDateTime.now());
         }
 
@@ -96,58 +66,25 @@ public class MemberUpdateService {
         member.setSocialChannel(form.getSocialChannel());
         member.setSocialToken(form.getSocialToken());
 
-        // 회원 권한 부여
+        // 회원 권한
         Authorities auth = new Authorities();
         auth.setMember(member);
-        // 처음 가입시 일반 회원(USER)
-        auth.setAuthority(Authority.USER);
+        auth.setAuthority(Authority.USER);  // 회원 권한이 없는 경우 - 회원 가입시, 기본 권한 USER
 
         save(member, List.of(auth)); // 회원 저장 처리
     }
 
     /**
-     * 회원 정보 수정
-     *
-     */
-    /*
-    // 집에서 작업한 코드
-
-    public void process(RequestProfile form) {
-
-        Member member = modelMapper.map(form, Member.class);
-
-//        member.setName(form.getName());
-//        member.setNickName(form.getNickName());
-//        member.setPassword(form.getPassword());
-//
-//        System.out.println(member);
-
-        save(member, null);
-    }
-     */
-
-
-    /**
-     * 회원 정보 수정
+     * 회원정보 수정
      * @param form
      */
     public void process(RequestProfile form) {
-
         process(form, null);
     }
 
-    /**
-     * 회원 정보 수정 (+권한수정)
-     * @param form
-     * @param authorities
-     */
     public void process(RequestProfile form, List<Authority> authorities) {
-
         String email = form.getEmail();
-
-        // 로그인한 사용자의 정보
-        // 관리자가 정보 수정할때는 수정할 회원의 email로 조회해서 가져오고, 본인 수정할 경우에는 memberUtil.getMember 본인 정보 조회
-        Member member = memberUtil.isAdmin() && StringUtils.hasText(email) ? memberRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email)) : memberUtil.getMember();
+        Member member = memberUtil.isAdmin() && StringUtils.hasText(email) ? memberRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email)) : memberUtil.getMember(); // 로그인한 사용자의 정보
 
         member.setName(form.getName());
         member.setNickName(form.getNickName());
@@ -156,81 +93,73 @@ public class MemberUpdateService {
         member.setZipCode(form.getZipCode());
         member.setAddress(form.getAddress());
         member.setAddressSub(form.getAddressSub());
-        member.setBio(form.getBio());
 
         List<String> optionalTerms = form.getOptionalTerms();
-
         if (optionalTerms != null) {
-
             member.setOptionalTerms(String.join("||", optionalTerms));
         }
 
-        // 회원정보 수정일때는 비밀번호가 입력 된 경우에만 값 저장
+        // 회원정보 수정일때는 비밀번호가 입력 된 경우만 저장
         String password = form.getPassword();
-
         if (StringUtils.hasText(password)) {
-
             String hash = passwordEncoder.encode(password);
             member.setPassword(hash);
             member.setCredentialChangedAt(LocalDateTime.now());
         }
 
         /**
-         * 회원 권한은 관리자만 수정 가능 하도록
+         * 회원 권한은 관리자만 수정 가능!
          *
          */
         List<Authorities> _authorities = null;
-
         if (authorities != null && memberUtil.isAdmin()) {
-
-            _authorities = authorities.stream().map(a -> Authorities.builder().authority(a).member(member).build()).toList();
+            _authorities = authorities.stream().map(a -> {
+               Authorities auth = new Authorities();
+               auth.setAuthority(a);
+               auth.setMember(member);
+               return auth;
+            }).toList();
         }
 
         save(member, _authorities);
 
+        // 로그인 회원 정보 업데이트
         if (!StringUtils.hasText(email)) {
             Member _member = memberRepository.findByEmail(member.getEmail()).orElse(null);
-
             if (_member != null) {
-
-                // 로그인 회원 정보 업데이트
                 infoService.addInfo(_member);
-
                 session.setAttribute("member", _member);
             }
         }
     }
 
     /**
-     * 회원 정보 추가 OR 수정 완료 처리
+     * 회원정보 추가 또는 수정 처리
      *
      */
-    public void save(Member member, List<Authorities> authorities) {
+    private void save(Member member, List<Authorities> authorities) {
 
         memberRepository.saveAndFlush(member);
 
-        /* 회원 권한 업데이트 처리 S */
-        // 추후 Builder 로 변경
+        // 회원 권한 업데이트 처리 S
 
         if (authorities != null) {
-            /*
+            /**
              * 기존 권한을 삭제하고 다시 등록
              */
 
             QAuthorities qAuthorities = QAuthorities.authorities;
-
             List<Authorities> items = (List<Authorities>) authoritiesRepository.findAll(qAuthorities.member.eq(member));
-
             if (items != null) {
-
-                authoritiesRepository.deleteAll(items);
-
-                authoritiesRepository.flush();
+               authoritiesRepository.deleteAll(items);
+               authoritiesRepository.flush();
             }
+
 
             authoritiesRepository.saveAllAndFlush(authorities);
         }
-        /* 회원 권한 업데이트 처리 E */
+
+        // 회원 권한 업데이트 처리 E
     }
 
     /**
@@ -239,30 +168,24 @@ public class MemberUpdateService {
      * @param chks
      */
     public void updateList(List<Integer> chks) {
-
-        if (chks == null || chks.isEmpty()) throw new AlertException("수정할 회원을 선택하세요.");
+        if (chks == null || chks.isEmpty()) {
+            throw new AlertException("수정할 회원을 선택하세요.");
+        }
 
         List<Member> members = new ArrayList<>();
-
         for (int chk : chks) {
-
-            Long seq = Long.valueOf(utils.getParam("seq" + chk));
-
+            Long seq = Long.valueOf(utils.getParam("seq_" + chk));
             Member member = memberRepository.findById(seq).orElse(null);
-
             if (member == null) continue;
 
-            // 비밀번호 변경일시 Update
+            // 비밀번호 변경일시 업데이트
             if (utils.getParam("updateCredentialChangedAt_" + chk) != null) {
-
                 member.setCredentialChangedAt(LocalDateTime.now());
             }
 
-            // 탈퇴(+취소) 처리
+            // 탈퇴 취소 또는 탈퇴 처리
             String deletedAt = utils.getParam("deletedAt_" + chk);
-
             if (deletedAt != null) {
-
                 member.setDeletedAt(deletedAt.equals("CANCEL") ? null : LocalDateTime.now());
             }
 

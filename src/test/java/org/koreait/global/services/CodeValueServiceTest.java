@@ -14,18 +14,16 @@ public class CodeValueServiceTest {
     private CodeValueService service;
 
     @Test
-    void test1() {
-
+    void saveTest() {
         SiteConfig item = new SiteConfig();
-
         item.setSiteTitle("제목");
         item.setDescription("설명");
-        item.setKeywords("키워드1, 키워드2");
+        item.setKeywords("키워드1,키워드2");
 
         service.save("siteConfig", item);
 
-        SiteConfig item2 = service.get("siteConfig", SiteConfig.class);
 
+        SiteConfig item2 = service.get("siteConfig", SiteConfig.class);
         System.out.println(item2);
     }
 }

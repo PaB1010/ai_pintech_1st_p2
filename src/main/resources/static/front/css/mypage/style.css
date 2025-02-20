@@ -1,12 +1,17 @@
-/* MyPage Layout S */
-
+/* 마이페이지 레이아웃 S */
 main {
     display: flex;
     padding: 40px 0 100px;
 }
 
+
 main > aside {
     width: 200px;
+}
+
+main > section {
+    flex-grow: 1;
+    padding: 30px;
 }
 
 main > aside > a {
@@ -16,18 +21,13 @@ main > aside > a {
 }
 
 main > aside > a + a {
-    border-top: 1px solid lightsteelblue;
+    border-top: 1px solid #ccc;
 }
 
-main > section {
-    flex-grow: 1;
-    padding: 30px;
-}
-/* MyPage Layout E */
+/* 마이페이지 레이아웃 E */
 
 .profile-image {
-
-    width : 250px;
-    height : 300px;
-    border : 2px solid #000;
+    width: 250px;
+    height: 300px;
+    border: 2px solid #000;
 }

@@ -19,10 +19,8 @@
                      data-done="true"
                      th:data-seq="*{profileImage != null ? profileImage.seq : ''}"
                 >
-
                     <th:block th:if="*{profileImage != null}"
                               th:utext="*{@utils.showImage(profileImage.seq, 250, 350, 'image')}"></th:block>
-
                 </div>
                 <button type="button" class='file-upload'
                         data-image-only="true"
@@ -41,17 +39,18 @@
                 <div class="error" th:each="err : ${#fields.errors('email')}" th:text="${err}"></div>
             </td>
         </tr>
-        <tr>
-            <th>회원 권한</th>
-            <td>
-                <input type="hidden" name="authorities" value="USER">
-                일반 회원
-                <span class="checkbox" th:each="authority, status : ${authorities}" th:if="${authority.name != 'USER'}">
-                    <input type="checkbox" name="authorities" th:value="${authority.name}" th:id="${'authorities-' + status.index}" th:field="*{authorities}">
-                    <label th:for="${'authorities-' + status.index}" th:text="${#messages.msg(authority.name)}"></label>
-                </span>
-            </td>
-        </tr>
+
+            <tr>
+                <th>회원 권한</th>
+                <td>
+                    <input type="hidden" name="authorities" value="USER">
+                    일반 회원
+                    <span class="checkbox" th:each="authority, status : ${authorities}" th:if="${authority.name != 'USER'}">
+                        <input type="checkbox" name="authorities" th:value="${authority.name}" th:id="${'authorities-' + status.index}" th:field="*{authorities}">
+                        <label th:for="${'authorities-' + status.index}" th:text="${#messages.msg(authority.name)}"></label>
+                    </span>
+                </td>
+            </tr>
 
         <tr>
             <th th:text="#{회원명}"></th>
@@ -84,23 +83,14 @@
                 <div class="error" th:each="err : ${#fields.errors('nickName')}" th:text="${err}"></div>
             </td>
         </tr>
-
-        <tr>
-            <th th:text="#{자기_소개}"></th>
-            <td>
-                <textarea name="bio" th:field="*{bio}"></textarea>
-                <div class="error" th:each="err : ${#fields.errors('bio')}" th:text="${err}"></div>
-            </td>
-        </tr>
-
         <tr>
             <th th:text="#{성별}"></th>
             <td>
-                <input type="radio" name="gender" value="MALE" th:field="*{gender}" id="gender-male">
-                <label for="gender-male" th:text="#{남성}"></label>
-
                 <input type="radio" name="gender" value="FEMALE" th:field="*{gender}" id="gender-female">
                 <label for="gender-female" th:text="#{여성}"></label>
+
+                <input type="radio" name="gender" value="MALE" th:field="*{gender}" id="gender-male">
+                <label for="gender-male" th:text="#{남성}"></label>
 
                 <div class="error" th:each="err : ${#fields.errors('gender')}" th:text="${err}"></div>
             </td>
@@ -118,16 +108,19 @@
             <th th:text="#{주소}"></th>
             <td>
                 <div class="row">
-                    <button type="button" class="search-address" th:text="#{주소찾기}"></button>
+                    <button type='button' class='search-address' th:text="#{주소찾기}"></button>
                     <input type="text" name="zipCode" th:field="*{zipCode}" th:placeholder="#{우편번호를_입력해주세요.}" readonly>
+
                     <div class="error" th:each="err : ${#fields.errors('zipCode')}" th:text="${err}"></div>
                 </div>
                 <div class="row">
                     <input type="text" name="address" th:field="*{address}" th:placeholder="#{기존주소를_입력해주세요.}" readonly>
+
                     <div class="error" th:each="err : ${#fields.errors('address')}" th:text="${err}"></div>
                 </div>
                 <div class="row">
                     <input type="text" name="addressSub" th:field="*{addressSub}" th:placeholder="#{상세주소를_입력해주세요.}">
+
                     <div class="error" th:each="err : ${#fields.errors('addressSub')}" th:text="${err}"></div>
                 </div>
             </td>
@@ -143,7 +136,7 @@
         </tr>
         </table>
         <div class="button-group">
-            <button type="reset" class="btn">초기화</button>
+            <button type="reset" class="btn">다시입력</button>
             <button type="submit" class="btn black" th:text="#{수정하기}"></button>
         </div>
     </form>

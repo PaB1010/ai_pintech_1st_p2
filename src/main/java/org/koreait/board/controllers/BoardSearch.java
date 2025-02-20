@@ -7,18 +7,8 @@ import java.util.List;
 
 @Data
 public class BoardSearch extends CommonSearch {
-
-    // 게시판 단일 & 목록 조회용
     private List<String> bid;
-    
-    // 필드명_정렬 방향, 검색 처리시 분해해서 사용 예정
-    // EX) viewCount_DESC
-    private String sort;
-
-    // 회원 이메일별 조회용
-    // Mypage, 관리자쪽에서 사용
-    private List<String> email;
-
-    // 분류 조회용
-    private List<String> category;
+    private String sort; // 필드명_정렬방향  예) viewCount_DESC
+    private List<String> email; // 회원 이메일
+    private List<String> category; // 분류 조회
 }

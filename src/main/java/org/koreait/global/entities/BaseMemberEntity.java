@@ -8,13 +8,8 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-/**
- * 일부 Entity 의 공통 속성
- * FileInfo 에서 사용됨
- *
- */
 @Data
-@MappedSuperclass // ★ 상속을 통한 공통 설정 상위 클래스 ★
+@MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseMemberEntity extends BaseEntity {
 

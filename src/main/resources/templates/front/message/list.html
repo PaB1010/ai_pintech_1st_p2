@@ -1,36 +1,36 @@
 <!DOCTYPE html>
-<html
-        xmlns:th="http://www.thymeleaf.org"
-        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        layout:decorate="~{front/layouts/mypage}">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{front/layouts/mypage}">
 <section layout:fragment="content">
-
     <h1 th:text="#{쪽지함}"></h1>
 
-    <a th:href="@{/message}" th:text="#{쪽지_전송}"></a>
+    <a th:href="@{/message}" th:text="#{쪽지_보내기}"></a>
 
     <form name="frmSearch" method="GET" th:action="@{/message/list}" autocomplete="off" th:object="${messageSearch}">
 
         <div class="search-box">
             <select name="sopt" th:field="*{sopt}">
                 <option value="SUBJECT" th:text="#{제목}"></option>
-                <option value="ALL" th:text="#{제목_내용}"></option>
+                <option value="ALL" th:text="#{제목+내용}"></option>
             </select>
             <input type="text" name="skey" th:field="*{skey}" th:placeholder="#{검색어를_입력하세요.}">
-            <button type="submit" th:text="#{검색}"></button>
+            <button type="submit" th:text="#{조회하기}"></button>
         </div>
 
+
         <div class="tab-group">
-            <label class="tap">
+            <label class="tab">
                 <input type="radio" name="mode" value="receive" th:field="*{mode}" onclick="frmSearch.submit()">
-                <th:block th:text="#{수신_쪽지}"></th:block>
+                <th:block th:text="#{받은_쪽지}"></th:block>
             </label>
-            <label class="tap">
+            <label class="tab">
                 <input type="radio" name="mode" value="send" th:field="*{mode}" onclick="frmSearch.submit()">
-                <th:block th:text="#{발신_쪽지}"></th:block>
+                <th:block th:text="#{보낸_쪽지}"></th:block>
             </label>
         </div>
     </form>
+
     <ul class="items">
         <li th:if="${items != null && !items.isEmpty()}" class="item" th:each="item : ${items}" th:object="${item}">
             <a th:href="@{/message/view/{seq}(seq=*{seq})}" class="subject">
@@ -39,15 +39,11 @@
                 <th:block th:text="*{subject}"></th:block>
             </a>
             <div class="info">
-                <span class="sender" th:text="*{#strings.concat(sender.name, ' (', sender.email, ')')}"></span>
+                <span class="sender" th:text="*{#strings.concat(sender.name, '(', sender.email, ')')}"></span>
                 <span class="date" th:text="*{#temporals.format(createdAt, 'yy.MM.dd HH:mm')}"></span>
             </div>
-
         </li>
-
-        <li th:unless="${items != null && !items.isEmpty()}" class="no-data" th:text="#{조회된_쪽지가_없습니다.}">
-
-        </li>
+        <li th:unless="${items != null && !items.isEmpty()}" class="no-data" th:text="#{조회된_쪽지가_없습니다.}"></li>
     </ul>
 
     <th:block th:replace="~{common/_pagination::pagination}"></th:block>

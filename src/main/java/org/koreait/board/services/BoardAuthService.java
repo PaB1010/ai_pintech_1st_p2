@@ -25,165 +25,115 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class BoardAuthService {
-
-    private final BoardConfigInfoService configInfoService;
-
-    private final CommentInfoService commentInfoService;
-
-    private final BoardInfoService infoService;
-
-    private final MemberUtil memberUtil;
-
-    private final HttpSession session;
-
     private final Utils utils;
+    private final BoardConfigInfoService configInfoService;
+    private final BoardInfoService infoService;
+    private final CommentInfoService commentInfoService;
+    private final MemberUtil memberUtil;
+    private final HttpSession session;
 
     /**
      * 게시판 권한 체크
      *
-     * Base Method
-     *
-     * @param mode : 필수
-     * @param bid : 필수
-     * @param seq : 필수 X
+     * @param mode
+     * @param bid
+     * @param seq
      */
     public void check(String mode, String bid, Long seq) {
-
-        if (!StringUtils.hasText(mode) || !StringUtils.hasText(bid)
-
-                || (List.of("edit", "delete", "comment").contains(mode) && (seq == null || seq < 1L))) {
-
+        System.out.printf("mode=%s, bid=%s, seq=%d%n", mode, bid, seq);
+        if (!StringUtils.hasText(mode) || !StringUtils.hasText(bid) || (List.of("edit", "delete", "comment").contains(mode) && (seq == null || seq < 1L ))) {
             throw new AlertBackException(utils.getMessage("BadRequest"), HttpStatus.BAD_REQUEST);
         }
 
-        if (memberUtil.isAdmin()) return;
+        if (memberUtil.isAdmin()) { // 관리자는 모두 허용
+            return;
+        }
 
         Board board = null;
-
         CommentData comment = null;
-
-        if (mode.equals("comment")) { // 댓글 수정 & 삭제
-
+        if (mode.equals("comment")) { // 댓글 수정, 삭제
             comment = commentInfoService.get(seq);
-
             BoardData data = comment.getData();
-
             board = data.getBoard();
-
         } else {
-
             board = configInfoService.get(bid);
         }
 
         // 게시판 사용 여부 체크
         if (!board.isOpen()) {
-
             throw new BoardNotFoundException();
         }
 
         /**
-         * mode 값
-         *
-         * write & list / bid 체크
-         * edit & view / seq 체크
-         *
+         * mode - write, list  / bid
+         *      - edit, view  / seq
          */
-        // 게시글 작성 & 목록 & 조회 & 수정(삭제) 권한 체크
+        // 글쓰기, 글 목록 권한 체크
         Authority authority = null;
-
-        // false 일 경우 AlertBackException
         boolean isVerified = true;
-
-        Member member = memberUtil.getMember();
-
+        Member member = memberUtil.getMember(); // 현재 로그인한 회원 정보
         if (List.of("write", "list").contains(mode)) {
-
             authority = mode.equals("list") ? board.getListAuthority() : board.getWriteAuthority();
-
         } else if (mode.equals("view")) {
-
             authority = board.getViewAuthority();
 
-        } else if (List.of("edit", "delete").contains(mode)) {
+        } else if (List.of("edit", "delete").contains(mode)) { // 수정, 삭제
             /**
-             * 1. 회원 게시글인 경우
-             *      작성한 회원 본인만 수정 & 삭제 가능
+             * 1. 회원 게시글인 경우  / 직접 작성한 회원만 수정 가능
              *
-             * 2. 비회원 게시글인 경우
-             *      비회원 비밀번호 확인이 완료된 경우 수정 & 삭제 가능
+             * 2. 비회원 게시글인 경우 / 비회원 비밀번호 확인이 완료된 경우 삭제 가능
              */
             BoardData item = infoService.get(seq);
-
             Member poster = item.getMember();
 
             if (poster == null) { // 비회원 게시글
                 /**
-                 * 비회원 게시글이 인증된 경우 = Session Key(board_게시글번호)가 존재
-                 * 인증이 되지 않은 경우 GuestPasswordCheckException 발생 -> 비밀번호 확인 절차
+                 * 비회원 게시글이 인증된 경우 - 세션 키 - "board_게시글번호"가 존재
+                 * 인증이 되지 않은 경우 GuestPasswordCheckException을 발생 시킨다 -> 비번 확인 절차
                  */
                 if (session.getAttribute("board_" + seq) == null) {
-
                     session.setAttribute("seq", seq);
-
                     throw new GuestPasswordCheckException();
                 }
 
-                // 미로그인 상태 || 로그인 상태이지만 게시글 작성자가 아닐 경우
-            } else if (!memberUtil.isLogin() || !poster.getEmail().equals(member.getEmail())) { // 회원 게시글 - 작성한 회원 본인만 수정 & 삭제 가능 통제
-
+            } else if (!memberUtil.isLogin() || !poster.getEmail().equals(member.getEmail())) { // 회원 게시글  - 직접 작성한 회원만 수정 가능 통제 - 미로그인 상태 또는 로그인 상태이지만 작성자의 이메일과 일치하지 않는 경우
                 isVerified = false;
             }
-
-        } else if (mode.equals("comment")) { // 댓글 수정 & 삭제
-
+        } else if (mode.equals("comment")) { // 댓글 수정 삭제
             Member commenter = comment.getMember();
-
-            if (commenter == null) { // 비회원 작성 댓글
-
+            if (commenter == null) { // 비회원으로 작성한 댓글
                 if (session.getAttribute("comment_" + seq) == null) { // 댓글 비회원 인증 X
-
                     session.setAttribute("cSeq", seq);
-
                     throw new GuestPasswordCheckException();
                 }
-
-            } else if (!memberUtil.isLogin() || !commenter.getEmail().equals(member.getEmail())) { // 회원 작성 댓글
-
+            } else if (!memberUtil.isLogin() || !commenter.getEmail().equals(member.getEmail())) { // 회원이 작성한 댓글
                 isVerified = false;
             }
         }
 
-        // 회원 권한인데 미로그인이거나 || 관리자 권한인데 관리자가 아닐 경우
-        if ((authority == Authority.USER && !memberUtil.isLogin()) || (authority == Authority.ADMIN && !memberUtil.isAdmin())) {
-
+        if ((authority == Authority.USER && !memberUtil.isLogin()) || (authority == Authority.ADMIN && !memberUtil.isAdmin())) { // 회원 권한 + 로그인 X, 관리자 권한 + 관리자 X
             isVerified = false;
         }
 
-        if (!isVerified) throw new AlertBackException(utils.getMessage("UnAuthorized"), HttpStatus.UNAUTHORIZED);
+        if (!isVerified) {
+            throw new AlertBackException(utils.getMessage("UnAuthorized"), HttpStatus.UNAUTHORIZED);
+        }
     }
 
     public void check(String mode, String bid) {
-
         check(mode, bid, null);
     }
 
     public void check(String mode, Long seq) {
-
         BoardData item = null;
-
         if (mode.equals("comment")) {
-
             CommentData comment = commentInfoService.get(seq);
-
             item = comment.getData();
-
         } else {
-
             item = infoService.get(seq);
         }
 
         Board board = item.getBoard();
-
         check(mode, board.getBid(), seq);
     }
 }

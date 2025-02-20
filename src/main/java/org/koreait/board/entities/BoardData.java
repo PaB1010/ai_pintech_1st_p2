@@ -12,105 +12,79 @@ import java.util.List;
 @Data
 @Entity
 @Table(indexes = {
-        @Index(name = "idx_bd_created_at", columnList = "createdAt DESC"),
-        @Index(name = "idx_bd_notice_created_at", columnList = "notice DESC, createdAt DESC")
+        @Index(name="idx_bd_created_at", columnList = "createdAt DESC"),
+        @Index(name="idx_bd_notice_created_at", columnList = "notice DESC, createdAt DESC")
 })
 public class BoardData extends BaseEntity implements Serializable {
-
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue
     private Long seq;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "bid")
+    @JoinColumn(name="bid")
     private Board board;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
-    @Column(length = 45, nullable = false)
+    @Column(length=45, nullable = false)
     private String gid;
 
-    // 작성자명
-    @Column(length = 45, nullable = false)
-    private String poster;
+    @Column(length=45, nullable = false)
+    private String poster; // 작성자명
 
-    // 비회원 게시글 수정 & 삭제 비밀번호
-    @Column(length = 65)
-    private String guestPw;
+    @Column(length=65)
+    private String guestPw; // 글 수정, 삭제 비밀번호
 
-    // 공지사항 여부
-    private boolean notice;
+    private boolean notice; // 공지글 여부
 
-    // 게시글 제목
     @Column(nullable = false)
-    private String subject;
+    private String subject; // 글 제목
 
     @Lob
-    @Column(nullable = false)
     private String content;
 
-    // 조회수
-    private long viewCount;
-    
-    // 댓글수
-    private long commentCount;
+    private long viewCount; // 조회수
 
-    // 추천수
-    private long recommendCount;
+    private long commentCount; // 댓글수
 
-    // IP 주소 - 관리자 차단용
-    @Column(length = 20)
-    private String ipAddr;
+    @Column(length=20)
+    private String ipAddr; // ip 주소
 
-    // Browser 정보 - 접속 환경 (안드로이드 || 아이폰 등) 통계용
-    private String userAgent;
+    private String userAgent; // 브라우저 정보
 
-    // 외부 링크
-    // 게시글 링크를 외부링크로 변경, Youtube 재생 등
-    @Column(length = 150)
-    private String externalLink;
+    @Column(length=150)
+    private String externalLink; // 외부 링크 -> 게시글 링크를 외부 링크로 변경
 
-    @Column(length = 60)
-    private String youtubeUrl;
+    @Column(length=60)
+    private String youtubeUrl; // Youtube 영상 링크
 
-    // 게시글 분류
-    @Column(length = 60)
-    private String category;
+    @Column(length=60)
+    private String category; // 게시글 분류
 
-    // 이전 게시글
     @Transient
-    private BoardData prev;
+    private BoardData prev; // 이전 게시글
 
-    // 다음 게시글
     @Transient
-    private BoardData next;
-    
-    // 에디터 첨부 이미지
+    private BoardData next; // 다음 게시글
+
     @Transient
-    private List<FileInfo> editorImages;
-    
-    // 첨부 파일
+    private List<FileInfo> editorImages; // 에디터 첨부 이미지
+
     @Transient
-    private List<FileInfo> attachFiles;
-    
-    // 목록 노출 이미지
+    private List<FileInfo> attachFiles; // 다운로드용 첨부 파일
+
     @Transient
-    private FileInfo selectedImage;
-    
-    // 게시글 목록 버튼 노출 여부
+    private FileInfo selectedImage; // 목록 노출 이미지
+
     @Transient
-    private boolean listable;
-    
-    // 게시글 수정 & 삭제 버튼 노출 여부
+    private boolean listable; // 목록 버튼 노출 여부
+
     @Transient
-    private boolean editable;
-    
-    // 게시글 작성 버튼 노출 여부
+    private boolean editable; // 수정, 삭제 버튼 노출 여부
+
     @Transient
-    private boolean writable;
-    
-    // 내가 작성한 게시글 여부
+    private boolean writable; // 글쓰기 버튼 노출 여부
+
     @Transient
-    private boolean mine;
+    private boolean mine; // 내가 작성한 게시글 여부
 }

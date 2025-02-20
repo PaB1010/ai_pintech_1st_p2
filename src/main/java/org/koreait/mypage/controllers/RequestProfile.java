@@ -11,58 +11,43 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDate;
 import java.util.List;
 
-/**
- * Mypage Data Class
- *
- */
 @Data
 public class RequestProfile {
 
-    // 관리자쪽 접근 / 일반 회원쪽 접근 구분
     private String mode;
 
     private String email;
 
-    // 회원명
     @NotBlank
-    private String name;
+    private String name; // 회원명
 
     @NotBlank
     private String nickName;
 
-    // @Size(min=8, max=40)
+    //@Size(min=8)
     private String password;
-
     private String confirmPassword;
 
     @NotNull
-    private Gender gender;
+    private Gender gender; // 성별
 
     @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate birthDt;
+    private LocalDate birthDt; // 생년월일
 
     @NotBlank
     private String zipCode;
 
     @NotBlank
     private String address;
-
     private String addressSub;
 
-    // 추가 선택 약관
-    private List<String> optionalTerms;
+    private List<String> optionalTerms; // 추가 선택 약관
 
-    private String bio;
-
-    // 관리자만 수정 가능하게 할당
     private List<Authority> authorities;
 
     private FileInfo profileImage;
 
-    // 카카오 로그인 연결 URL
-    private String kakaoLoginConnectUrl;
-
-    // 카카오 로그인 연결 해제 URL
-    private String kakaoLoginDisconnectUrl;
+    private String kakaoLoginConnectUrl; // 카카오 로그인 연결 URL
+    private String kakaoLoginDisconnectUrl; // 카카오 로그인 연결 해제 URL
 }

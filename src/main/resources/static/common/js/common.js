@@ -1,151 +1,97 @@
-// 공통 기능
-
-// 중복되지 않을 일반적이지 않은 이름 NameSpace 할당
-// var 선언자는 재선언이 가능하기때문에 const 가 아닌 var 사용
 var commonLib = commonLib ?? {};
 
 /**
-*  Meta Tag 정보 조회
-*  Meta 태그 : 사이트의 정보성 데이터를 담은 태그
-*
-*  mode - rootUrl : <meta name="rootUrl" ... />
-*  layouts_main.html<meta name="rootUrl" th:content="@{/}">
-*
+* 메타 태그 정보 조회
+*   mode - rootUrl : <meta name="rootUrl" ... />
 */
 commonLib.getMeta = function(mode) {
-
     if (!mode) return;
 
-    // `` (역괄호) 사용시 변수를 ${} 안에 넣을 수 있음
-    const el = document.querySelector(`meta[name = '${mode}']`)
+    const el = document.querySelector(`meta[name='${mode}']`);
 
-    // el null일 경우 undefined
-    // Optional Chaining 연산자 문법
     return el?.content;
 };
 
 /**
- * JavaScript 에서 만든 주소에 Context 경로 추가한 형태로 가공
- *
- */
+* 자바스크립트에서 만든 주소에 컨택스트 경로 추가
+*
+*/
 commonLib.url = function(url) {
-
-    return `${commonLib.getMeta('rootUrl').replace("/","")}${url}`;
-}
+    return `${commonLib.getMeta('rootUrl').replace("/", "")}${url}`;
+};
 
 /**
- *  Ajax 요청 처리 함수
- *
- * @params url : (필수)요청 주소 / http[s] : 외부 URL - Context path 추가 X
- * @params method : 요청 방식 - GET / POST / DELETE / PATCH ...
- * @params callback : 응답 성공시 후속 처리 콜백 함수
- * @params data : Request(요청) Body Data(Body 있을때만 가능, POST / PUT / PATCH)
- * @params headers : 추가 Request(요청) Header
- * @param isText : true 면 text false 면 JSON
- * @returns {Promise<unknown>}
- */
+* Ajax 요청 처리
+*
+* @params url : 요청 주소, http[s] : 외부 URL - 컨텍스트 경로는 추가 X
+* @params method 요청방식 - GET, POST, DELETE, PATCH ...
+* @params callback 응답 완료 후 후속 처리 콜백 함수
+* @params data : 요청 데이터(POST, PATCH, PUT ...)
+* @params headers : 추가 요청 헤더
+*/
 commonLib.ajaxLoad = function(url, callback, method = 'GET', data, headers, isText = false) {
-
     if (!url) return;
 
     const { getMeta } = commonLib;
-    // Header Meta Tag 쪽 데이터 get
     const csrfHeader = getMeta("_csrf_header");
     const csrfToken = getMeta("_csrf");
-    // 외부 주소인 http || https 일 경우 : 아닐 경우
-    // 외부 주소면 url 그대로 사용, 서버쪽 주소면 url 가공
     url = /^http[s]?:/.test(url) ? url : commonLib.url(url);
 
     headers = headers ?? {};
     headers[csrfHeader] = csrfToken;
     method = method.toUpperCase();
 
-    // 토큰을 실어 보냄
     const options = {
-
         method,
         headers,
     }
 
-    // GET, DELETE 는 Body 없으므로 요청 method 보고 판단해 경우에 맞게 처리
-    if (data && ['POST', 'PUT', 'PATCH'].includes(method)) {
-        // body 쪽 Data 추가 가능
-
-        // FormDate 형태일 경우 그대로 넘기고, 객체 형태일 경우 JSON 문자열로 직렬화 가공 / JSON.stringify(변수명)
+    if (data && ['POST', 'PUT', 'PATCH'].includes(method)) { // body 쪽 데이터 추가 가능
         options.body = data instanceof FormData ? data : JSON.stringify(data);
     }
 
-    // 성공시 처리와 실패시 처리를 나누고, 순서를 유지하기 위해 Promise 로 감쌈
     return new Promise((resolve, reject) => {
-
-    /* Promise S */
-
-    fetch(url, options)
-        // .then 서버가 응답했을때
-        .then(res => {
-        // 204가 아닐때에만 JSON 형태로 변환
-        if (res.status !== 204)
-
-            return isText ? res.text() : res.json();
-
-        else {
-            // 204 = NoContent 즉 Body 없으므로 바로 반환
-                resolve();
-            }
-        })
-        .then(json => {
-
-            if (isText) {
-
-                resolve(json);
-
-                return;
-            }
-            // global_rests_JSONData.java
-            // 응답(처리) 성공시
-            // ?. = 없으면 JSON 그대로 resolve
-            if (json?.success) {
-
-                // callback 함수가 정의된 경우 열린 기능으로 각각 다르게 처리
-                if (typeof callback === 'function') {
-
-                    callback(json.data);
+        fetch(url, options)
+            .then(res => {
+                if (res.status !== 204)
+                    return isText ? res.text() : res.json();
+                else {
+                    resolve();
+                }
+            })
+            .then(json => {
+                if (isText) {
+                    resolve(json);
+                    return;
                 }
 
-                resolve(json);
+                if (json?.success) { // 응답 성공(처리 성공)
+                   if (typeof callback === 'function') { // 콜백 함수가 정의된 경우
+                        callback(json.data);
+                   }
 
-                return;
-            }
-            // 처리 실패
-            reject(json);
-        })
-        .catch (err => {
+                   resolve(json);
 
-            console.error(err);
+                   return;
+                }
 
-           // 응답 실패
-           reject(err);
-        });
-    }); /* Promise E */
+                reject(json); // 처리 실패
+            })
+            .catch(err => {
+                console.error(err);
+
+                reject(err); // 응답 실패
+            });
+    }); // Promise
 };
 
 /**
- * 레이어 팝업
- *
- * @param url
- * @param width
- * @param height
- * @param isAjax
- */
+* 레이어 팝업
+*
+*/
 commonLib.popup = function(url, width = 350, height = 350, isAjax = false, message) {
-
-    /* 레이어 팝업 요소 동적 추가 S */
-    // layer-dim : 배경
-    // layer-popup : 팝업
-
+    /* 레이어팝업 요소 동적 추가 S */
     const layerEls = document.querySelectorAll(".layer-dim, .layer-popup");
-
-    // 이미 있을 경우 대비해 호출되자마자 한번 제거해 비우고
     layerEls.forEach(el => el.parentElement.removeChild(el));
 
     const layerDim = document.createElement("div");
@@ -157,7 +103,6 @@ commonLib.popup = function(url, width = 350, height = 350, isAjax = false, messa
     /* 레이어 팝업 가운데 배치 S */
     const xpos = (innerWidth - width) / 2;
     const ypos = (innerHeight - height) / 2;
-
     layerPopup.style.left = xpos + "px";
     layerPopup.style.top = ypos + "px";
     layerPopup.style.width = width + "px";
@@ -165,239 +110,155 @@ commonLib.popup = function(url, width = 350, height = 350, isAjax = false, messa
     /* 레이어 팝업 가운데 배치 E */
 
     /* 레이어 팝업 컨텐츠 영역 추가 */
-
     const content = document.createElement("div");
-
-    content.className = "layer-content";
-
+    content.className="layer-content";
     layerPopup.append(content);
 
     /* 레이어 팝업 닫기 버튼 추가 S */
     const button = document.createElement("button");
     const icon = document.createElement("i");
-
     button.className = "layer-close";
     button.type = "button";
-
     icon.className = "xi-close";
-
     button.append(icon);
     layerPopup.prepend(button);
 
-    // 클릭시 제거되도록 Event-Binding
     button.addEventListener("click", commonLib.popupClose);
     /* 레이어 팝업 닫기 버튼 추가 E */
 
-    // Body 에 추가
-    document.body.append(layerDim);
     document.body.append(layerPopup);
-    /* 레이어 팝업 요소 동적 추가 E */
+    document.body.append(layerDim);
+
+
+    /* 레이어팝업 요소 동적 추가 E */
 
     /* 팝업 컨텐츠 로드 S */
-    if (isAjax) {
-        // 컨텐츠를 ajax 로 로드
+    if (isAjax) { // 컨텐트를 ajax로 로드
         const { ajaxLoad } = commonLib;
-
         ajaxLoad(url, null, 'GET', null, null, true)
-            .then((text) => content.innerHTML = text)
-
-    } else if (message) {
-        // 쪽지 팝업
-
-        content.innerHTML = `<div class="message">
-                            <i class="xi-info"></i>
-                            ${message}
-                            </div>`;
-
-    } else {
-        // 컨텐츠를 iframe 으로 동적 로드
+            .then((text) => content.innerHTML = text);
+    } else if (message) { // 메세지 팝업
+        content.innerHTML = `<div class='message'>
+                                <i class='xi-info'></i>
+                                ${message}
+                             </div>`;
+    } else { // iframe으로 로드
         const iframe = document.createElement("iframe");
-
         iframe.width = width - 80;
         iframe.height = height - 80;
-
         iframe.frameBorder = 0;
-
         iframe.src = commonLib.url(url);
-
         content.append(iframe);
     }
     /* 팝업 컨텐츠 로드 E */
 }
 
 /**
- * 메세지 출력 팝업 - 상단위 레이어 팝업 간소화
- *
- * @param message
- */
-commonLib.message = function (message, width = 350, height = 200) {
-
-    commonLib.popup(null, width = width, height = height, false, message)
-
-}
+* 메세지 출력 팝업
+*
+*/
+commonLib.message = function(message, width = 350, height = 200) {
+    commonLib.popup(null, width, height, false, message);
+};
 
 /**
- * 레이어 팝업 제거
- *
- */
+* 레이어팝업 제거
+*
+*/
 commonLib.popupClose = function() {
-
     const layerEls = document.querySelectorAll(".layer-dim, .layer-popup");
-
     layerEls.forEach(el => el.parentElement.removeChild(el));
-}
+};
 
 /**
- * checkBox 전체 토글
- *
- */
-window.addEventListener("DOMContentLoaded", function() {
-
-    // checkBox 전체 토글 기능 S
-    const checkAlls = document.getElementsByClassName("check-all");
-
-    for (const el of checkAlls) {
-
-        el.addEventListener("click", function() {
-
-            const { targetClass } = this.dataset;
-
-            if (!targetClass) { // 토글할 체크박스의 클래스가 설정되지 않은 경우는 진행 X
-                return;
-            }
-
-            const chks = document.getElementsByClassName(targetClass);
-
-            for (const chk of chks) {
-
-                chk.checked = this.checked;
-            }
-        });
-    }
-    // checkBox 전체 토글 기능 E
-
-    /* 팝업 버튼 클릭 처리 S */
-    const showPopups = document.getElementsByClassName("show-popup");
-
-    for( const el of showPopups) {
-
-        el.addEventListener("click", function() {
-
-            const { url, width, height } = this.dataset;
-
-            commonLib.popup(url, width, height);
-        });
-    }
-    /* 팝업 버튼 클릭 처리 E */
-
-
-
-});
-
-/**
- * WysWYG(CKEditor) 동적 로드 범용 기능
- *
- * CKEditor 가 로딩된 경우에만
- * 입력 받은 DOM 객체를 WysWYG 으로 변경
- *
- */
+* 위지윅 에디터 로드
+*
+*/
 commonLib.loadEditor = function(id, height = 350) {
 
-    // CKEditor 없거나 || (대상 DOM 객체의) id 없을 경우 return
-    // !ClassicEditor 쓰지 않은 이유, var 시 문제 유발 가능성
     if (typeof ClassicEditor === 'undefined' || !id) {
-
         return Promise.resolve();
     }
 
-    // CKEditor 안전하게 로드 됐을 시
     return new Promise((resolve, reject) => {
-
         (async() => {
-
             try {
-
-                // WysWYG API - create(매개변수 = 변경할 DOM 객체)
-                // Promise 반환
                 const editor = await ClassicEditor.create(document.getElementById(id));
-
                 resolve(editor);
-                
-                // editor 높이 스타일 고정
                 editor.editing.view.change((writer) => {
-
                     writer.setStyle(
-                        "height",
-                        `${height}px`,
-                        editor.editing.view.document.getRoot()
-                    );
+                           "height",
+                           `${height}px`,
+                           editor.editing.view.document.getRoot()
+                        );
                 });
-                /*
-                editor.ui.view.editable.element.style.height = `${height}px`;
-
-                const editorAreas = document.getElementsByClassName("ck-editor__editable");
-
-                for (const el of editorAreas) {
-
-                    el.style.height = `${height}px`;
-                }
-                */
 
             } catch (err) {
-
                 console.error(err);
 
-                reject(err)
+                reject(err);
             }
         })();
     });
-}
 
-/**
- * Editor 에 올라갈 IMG
- */
-commonLib.insertEditorImage = function(imageUrls ,editor) {
+};
 
-    // editor 없을 경우 전역변수에서 조회
+commonLib.insertEditorImage = function(imageUrls, editor) {
     editor = editor ?? window.editor;
-
     if (!editor) return;
 
-    // 배열이 아닌 문자열 일 경우 배열에 담아줌
     imageUrls = typeof imageUrls === 'string' ? [imageUrls] : imageUrls;
 
-    // execute = 이미 정해져있는 명령어
-    // Editor 에 IMG Upload
-    editor.execute('insertImage', { source : imageUrls })
-}
+    editor.execute('insertImage', { source: imageUrls });
+};
 
 /**
- * 목록 노출 메인 이미지 선택
- *
- * @param seq
- */
+* 목록 노출 메인이미지 선택
+*
+*/
 commonLib.selectImage = function(seq) {
-
     const { ajaxLoad } = commonLib;
-
     const items = document.querySelectorAll(".image-item");
-
-    // 일괄 on 클래스 제거
     items.forEach(i => i.classList.remove("on"));
 
     const el = document.getElementById(`file-${seq}`);
 
     (async () => {
-
         try {
-
-            await ajaxLoad(`/api/file/select/${seq}`);
-
-            el.classList.add("on");
+             await ajaxLoad(`/api/file/select/${seq}`);
+             el.classList.add("on");
 
         } catch (err) {
-
             console.error(err);
         }
     })();
-}
+};
+
+window.addEventListener("DOMContentLoaded", function() {
+    // 체크박스 전체 토글 기능 S
+    const checkAlls = document.getElementsByClassName("check-all");
+    for (const el of checkAlls) {
+        el.addEventListener("click", function() {
+            const { targetClass } = this.dataset;
+            if (!targetClass) { // 토클할 체크박스의 클래스가 설정되지 않은 경우는 진행 X
+                return;
+            }
+
+            const chks = document.getElementsByClassName(targetClass);
+            for (const chk of chks) {
+                chk.checked = this.checked;
+            }
+        });
+    }
+    // 체크박스 전체 토글 기능 E
+
+    // 팝업 버튼 클릭 처리 S
+    const showPopups = document.getElementsByClassName("show-popup");
+    for (const el of showPopups) {
+        el.addEventListener("click", function() {
+            const { url, width, height } = this.dataset;
+            commonLib.popup(url, width, height);
+        });
+    }
+    // 팝업 버튼 클릭 처리 E
+});

@@ -3,9 +3,6 @@ package org.koreait.mypage.controllers;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.koreait.board.controllers.BoardSearch;
-import org.koreait.board.entities.BoardData;
-import org.koreait.board.services.BoardInfoService;
 import org.koreait.global.annotations.ApplyErrorPage;
 import org.koreait.global.libs.Utils;
 import org.koreait.global.paging.CommonSearch;
@@ -16,7 +13,6 @@ import org.koreait.member.libs.MemberUtil;
 import org.koreait.member.services.MemberInfoService;
 import org.koreait.member.services.MemberUpdateService;
 import org.koreait.member.social.services.KakaoLoginService;
-import org.koreait.mypage.services.FollowService;
 import org.koreait.mypage.validators.ProfileValidator;
 import org.koreait.pokemon.controllers.PokemonSearch;
 import org.koreait.pokemon.entities.Pokemon;
@@ -36,43 +32,27 @@ import java.util.List;
 import java.util.Objects;
 
 @Controller
-@RequestMapping("/mypage")
-@SessionAttributes("profile")
-@RequiredArgsConstructor
 @ApplyErrorPage
+@RequestMapping("/mypage")
+@RequiredArgsConstructor
+@SessionAttributes("profile")
 public class MypageController {
-
     private final Utils utils;
-
     private final MemberUtil memberUtil;
-
     private final ModelMapper modelMapper;
-
     private final MemberUpdateService updateService;
-
     private final ProfileValidator profileValidator;
-
-    private final MemberInfoService memberInfoService;
-
+    private final MemberInfoService infoService;
     private final PokemonInfoService pokemonInfoService;
-
-    private final BoardInfoService boardInfoService;
-
-    private final FollowService followService;
-
     private final KakaoLoginService kakaoLoginService;
 
-    // profile 이라는 속성명을 가지고 template 에서 회원 조회를 바로
-    // ★ About 에서 이거 가져다 쓰기 ★
     @ModelAttribute("profile")
     public Member getMember() {
-
         return memberUtil.getMember();
     }
 
     @GetMapping
     public String index(Model model) {
-
         commonProcess("main", model);
 
         return utils.tpl("mypage/index");
@@ -80,24 +60,15 @@ public class MypageController {
 
     @GetMapping("/profile")
     public String profile(Model model) {
-
         commonProcess("profile", model);
 
         Member member = memberUtil.getMember();
-        // form.setName(member.getName());
-        // form.setName(member.getNickName());
-
         RequestProfile form = modelMapper.map(member, RequestProfile.class);
-
         String optionalTerms = member.getOptionalTerms();
-
-        // ★ 커맨드 객체 형태로 변환 ★
         if (StringUtils.hasText(optionalTerms)) {
-
             form.setOptionalTerms(Arrays.stream(optionalTerms.split("\\|\\|")).toList());
         }
 
-        // 회원 정보만 업데이트 해주는 방식
         form.setKakaoLoginConnectUrl(kakaoLoginService.getLoginUrl("connect"));
         form.setKakaoLoginDisconnectUrl(kakaoLoginService.getLoginUrl("disconnect"));
 
@@ -108,14 +79,11 @@ public class MypageController {
 
     @PatchMapping("/profile")
     public String updateProfile(@Valid RequestProfile form, Errors errors, Model model) {
-
         commonProcess("profile", model);
 
-        // ★ 추가 검증 ★
         profileValidator.validate(form, errors);
 
         if (errors.hasErrors()) {
-
             return utils.tpl("mypage/profile");
         }
 
@@ -124,198 +92,67 @@ public class MypageController {
         // 프로필 속성 변경
         model.addAttribute("profile", memberUtil.getMember());
 
-        // 회원 정보 수정 완료 후 Mypage Main 이동
-        return "redirect:/mypage";
+        return "redirect:/mypage"; // 회원 정보 수정 완료 후 마이페이지 메인 이동
     }
 
-    /**
-     * 회원 소개 (초기 테스트용)
-     */
-    @GetMapping("/about")
-    public String about(Model model) {
+    @ResponseBody
+    @GetMapping("/refresh")
+    public void refresh(Principal principal, Model model, HttpSession session) {
 
-        commonProcess("about", model);
+        MemberInfo memberInfo = (MemberInfo) infoService.loadUserByUsername(principal.getName());
+        session.setAttribute("member", memberInfo.getMember());
 
-        // model.addAttribute("useFollowButton", false);
-
-        return utils.tpl("mypage/about");
+        model.addAttribute("profile", memberInfo.getMember());
     }
-
 
     /**
      * 찜하기 목록
      *
-     * @param mode   : POKEMON (포켓몬 찜하기 목록), BOARD (게시글 찜하기 목록)
-     * @param search
-     * @param model
+     * @param mode : POKEMON : 포켓몬 찜하기 목록, BOARD : 게시글 찜하기 목록
      * @return
      */
     @GetMapping({"/wishlist", "/wishlist/{mode}"})
-    public String wishlist(@PathVariable(name = "mode", required = false) WishType mode, CommonSearch search, Model model) {
-
+    public String wishlist(@PathVariable(name="mode", required = false) WishType mode, CommonSearch search, Model model) {
         commonProcess("wishlist", model);
 
         mode = Objects.requireNonNullElse(mode, WishType.POKEMON);
+        if (mode == WishType.BOARD) { // 게시글 찜하기 목록
 
-        if (mode == WishType.BOARD) {
-            // 게시글 찜하기 목록
-
-        } else if (mode == WishType.POKEMON) {
-            // 포켓몬 찜하기 목록
-
+        } else { // 포켓몬 찜하기 목록
             PokemonSearch pSearch = modelMapper.map(search, PokemonSearch.class);
-
             ListData<Pokemon> data = pokemonInfoService.getMyPokemons(pSearch);
             model.addAttribute("items", data.getItems());
             model.addAttribute("pagination", data.getPagination());
         }
 
-        return utils.tpl("mypage/wishlist/main");
-    }
-
-    /*
-    @GetMapping({"/wishlist", "/wishlist/{mode}"})
-    public String wishlist (@PathVariable(name="mode", required = false) String mode, @ModelAttribute PokemonSearch search, Model model) {
-
-        commonProcess("wishlist", model);
-        mode = StringUtils.hasText(mode) ? mode : "pokemon";
-
-        if (mode.equals("pokemon")) {
-            ListData<Pokemon> data = pokemonInfoService.getMyPokemons(search);
-            model.addAttribute("items", data.getItems());
-            model.addAttribute("pagination", data.getPagination());
-        } else if (mode.equals("board")) {
-
-        }
-
-        model.addAttribute("mode", mode);
-
-        return utils.tpl("mypage/wishlist/main");
-    }
-     */
-
-    /**
-     * 회원 정보 갱신
-     */
-    @ResponseBody
-    @GetMapping("/refresh")
-    public void refresh(Principal principal, Model model, HttpSession session) {
-
-        MemberInfo memberInfo = (MemberInfo) memberInfoService.loadUserByUsername(principal.getName());
-
-        session.setAttribute("member", memberInfo.getMember());
-
-        // 프로필 속성 변경
-        model.addAttribute("profile", memberInfo.getMember());
+        return utils.tpl("mypage/wishlist");
     }
 
     /**
-     * Follow 목록
-     *
-     * @param paging
-     * @param model
-     * @return
-     */
-    @GetMapping("/follow")
-    public String followList(CommonSearch paging, Model model) {
-
-        commonProcess("follow", model);
-
-        List<Member> followers = followService.getList("follower", paging).getItems();
-        List<Member> followings = followService.getList("following", paging).getItems();
-
-        // List<Member> allFollows = newArrayList(followers, followings);
-
-        model.addAttribute("followers", followers);
-        model.addAttribute("followings", followings);
-
-        // model.addAttribute("items", allFollows);
-
-        return utils.tpl("mypage/follow/follow");
-    }
-
-    @GetMapping("/follow/board")
-    public String followBoard(CommonSearch paging, Model model) {
-
-        commonProcess("follow", model);
-
-        BoardSearch boardSearch = modelMapper.map(paging, BoardSearch.class);
-
-        ListData<BoardData> data = boardInfoService.getMyFollowingList(boardSearch);
-
-        model.addAttribute("boardData", data.getItems());
-        model.addAttribute("pagination", data.getPagination());
-
-        return utils.tpl("mypage/follow/followBoard");
-    }
-
-
-//    @GetMapping("/follow")
-//    public String followList(@RequestParam(name="mode", defaultValue = "follower") String mode, CommonSearch paging, Model model) {
-//
-//        commonProcess("follow", model);
-//
-//        ListData<Member> data = followService.getList(mode, paging);
-//
-//        model.addAttribute("items", data.getItems());
-//        model.addAttribute("pagination", data.getPagination());
-//        model.addAttribute("mode", mode);
-//
-//        return utils.tpl("mypage/follow/follow");
-//    }
-
-    /**
-     * Controller 공통 처리 영역
+     * 컨트롤러 공통 처리 영역
      *
      * @param mode
      * @param model
      */
     private void commonProcess(String mode, Model model) {
-
-        // mode 가 없을 경우 main 으로 기본 값
         mode = StringUtils.hasText(mode) ? mode : "main";
-
         String pageTitle = utils.getMessage("마이페이지");
 
-        // 공통 script
         List<String> addCommonScript = new ArrayList<>();
-
-        // Front script
         List<String> addScript = new ArrayList<>();
 
-        List<String> addCss = new ArrayList<>();
-
-        addCss.add("mypage/style");
-
-        // 회원 정보 수정
-        if (mode.equals("profile")) {
-
+        if (mode.equals("profile")) { // 회원정보 수정
             addCommonScript.add("fileManager");
             addCommonScript.add("address");
             addScript.add("mypage/profile");
             pageTitle = utils.getMessage("회원정보_수정");
-
-        } else if (mode.equals("about")) {
-
-            pageTitle = utils.getMessage("About_Me");
-            addCss.add("mypage/about");
-            addCss.add("pokemon/item");
-
-        } else if (mode.equals("wishlist")) {
-
+        } else if (mode.equals("wishlist")) { // 찜하기 목록
             addCommonScript.add("wish");
-            pageTitle = utils.getMessage("My_Wish");
-            // 추후 포켓몬 list 와 Css 공유할 경우 add
-        } else if (mode.equals("follow")) {
-
-            // addCommonScript.add("follow");
-            pageTitle = utils.getMessage("My_Follow");
-
+            pageTitle = utils.getMessage("나의_WISH");
         }
 
         model.addAttribute("addCommonScript", addCommonScript);
         model.addAttribute("addScript", addScript);
         model.addAttribute("pageTitle", pageTitle);
-        model.addAttribute("addCss", addCss);
     }
 }

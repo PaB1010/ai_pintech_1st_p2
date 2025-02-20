@@ -19,16 +19,13 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class BoardConfigUpdateService {
-
     private final BoardRepository boardRepository;
-
     private final Utils utils;
 
     public void process(RequestBoard form) {
 
         String bid = form.getBid();
 
-        // 존재하는 bid 일 경우 수정, 아닐 경우 새로 생성해 추가
         Board board = boardRepository.findById(bid).orElseGet(Board::new);
 
         board.setBid(bid);
@@ -37,7 +34,7 @@ public class BoardConfigUpdateService {
         board.setCategory(form.getCategory());
         board.setRowsPerPage(form.getRowsPerPage() < 1 ? 20 : form.getRowsPerPage());
         board.setPageRanges(form.getPageRanges() < 1 ? 10 : form.getPageRanges());
-        board.setPageRangesMobile(form.getPageRangesMobile() < 0 ? 5 : form.getPageRangesMobile());
+        board.setPageRangesMobile(form.getPageRangesMobile() < 1 ? 5 : form.getPageRangesMobile());
         board.setUseEditor(form.isUseEditor());
         board.setUseEditorImage(form.isUseEditorImage());
         board.setUseAttachFile(form.isUseAttachFile());
@@ -57,43 +54,38 @@ public class BoardConfigUpdateService {
     }
 
     /**
-     * 게시판 설정 목록
-     * 수정 & 삭제 처리
+     * 게시판 설정 목록 수정, 삭제 처리
      *
      * @param chks
      */
     public void process(List<Integer> chks, String mode) {
-
         mode = StringUtils.hasText(mode) ? mode : "edit";
-
-        if (chks == null || chks.isEmpty()) throw new AlertException("처리할 게시판을 선택하세요.");
+        if (chks == null || chks.isEmpty()) {
+            throw new AlertException("처리할 게시판을 선택하세요.");
+        }
 
         List<Board> items = new ArrayList<>();
-
         for (int chk : chks) {
-
             String bid = utils.getParam("bid_" + chk);
 
             if (mode.equals("delete")) {
-
                 boardRepository.deleteById(bid);
-
                 continue;
             }
 
-            Board item = boardRepository.findById(bid).orElseGet(null);
-
+            Board item = boardRepository.findById(bid).orElse(null);
             if (item == null) continue;
 
             item.setName(utils.getParam("name_" + chk));
-            // String -> Boolean 변환
             item.setOpen(Boolean.parseBoolean(utils.getParam("open_" + chk)));
             item.setSkin(utils.getParam("skin_" + chk));
             items.add(item);
-
-            if (!items.isEmpty()) boardRepository.saveAll(items);
-
-            boardRepository.flush();
         }
+
+        if (!items.isEmpty()) { // 수정 처리
+            boardRepository.saveAll(items);
+        }
+
+        boardRepository.flush();
     }
 }

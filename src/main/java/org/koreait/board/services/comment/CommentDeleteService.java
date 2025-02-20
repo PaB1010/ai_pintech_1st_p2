@@ -13,10 +13,8 @@ import org.springframework.stereotype.Service;
 public class CommentDeleteService {
 
     private final CommentDataRepository commentDataRepository;
-
-    private final CommentUpdateService updateService;
-
     private final CommentInfoService infoService;
+    private final CommentUpdateService updateService;
 
     /**
      * 댓글 삭제
@@ -25,17 +23,14 @@ public class CommentDeleteService {
      * @return
      */
     public BoardData delete(Long seq) {
-
         CommentData item = infoService.get(seq);
-
         BoardData data = item.getData();
 
         commentDataRepository.delete(item);
         commentDataRepository.flush();
 
-        // 댓글 개수 업데이트
+        // 댓글 갯수 업데이트
         updateService.updateCount(data.getSeq());
-
 
         return data;
     }

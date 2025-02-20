@@ -1,18 +1,7 @@
 package org.koreait.admin.global.menu;
 
-/**
- * 메뉴 Data Class
- * -> 변경 사항 없을 곳일듯 하여 Record Class 활용
- *
- */
 public record MenuDetail(
-
-        // sub menu code
-    String code,
-
-        // sub menu name
-    String name,
-
-        // sub menu URL
-    String url
+   String code, // 서브 메뉴 코드
+   String name, // 서브 메뉴 이름
+   String url // 서브 메뉴 이동 URL
 ) {}

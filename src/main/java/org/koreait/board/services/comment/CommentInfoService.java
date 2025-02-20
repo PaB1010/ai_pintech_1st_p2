@@ -16,50 +16,33 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * 단일 조회 & 목록 조회
- *
- */
 @Lazy
 @Service
 @RequiredArgsConstructor
 public class CommentInfoService {
-
     private final CommentDataRepository commentDataRepository;
-
-    private final JPAQueryFactory queryFactory;
-
     private final ModelMapper modelMapper;
-
+    private final JPAQueryFactory queryFactory;
     private final MemberUtil memberUtil;
 
     /**
-     * 댓글 단일 조회
+     * 댓글 한개 조회
      *
      * @param seq
      * @return
      */
     public CommentData get(Long seq) {
-
         CommentData item = commentDataRepository.findById(seq).orElseThrow(CommentNotFoundException::new);
+
+        addInfo(item); // 추가 데이터 처리
 
         return item;
     }
 
-    /**
-     * 수정시 사용할 커맨드 객체
-     *
-     * @param seq
-     * @return
-     */
     public RequestComment getForm(Long seq) {
-
         CommentData item = get(seq);
-
         BoardData data = item.getData();
-
         RequestComment form = modelMapper.map(item, RequestComment.class);
-
         form.setMode("edit");
         form.setBoardDataSeq(data.getSeq());
 
@@ -79,31 +62,21 @@ public class CommentInfoService {
         List<CommentData> items = queryFactory.selectFrom(commentData)
                 .leftJoin(commentData.member)
                 .fetchJoin()
-                // 댓글의 부모인 게시글의 등록번호(seq)로 조건
                 .where(commentData.data.seq.eq(seq))
                 .orderBy(commentData.createdAt.asc())
                 .fetch();
 
-        items.forEach(this::addInfo);
+        items.forEach(this::addInfo); // 추가 데이터 처리
 
         return items;
     }
 
-    /**
-     * 추가 데이터 처리
-     *
-     * @param item
-     */
+    // 추가 데이터 처리
     private void addInfo(CommentData item) {
-
         Member member = memberUtil.getMember();
-
         Member commentMember = item.getMember();
+        boolean editable = memberUtil.isAdmin() || item.getMember() == null || (commentMember != null && memberUtil.isLogin() && member.getEmail().equals(commentMember.getEmail()));
 
-        boolean editable = memberUtil.isAdmin() || commentMember == null || (commentMember != null && memberUtil.isLogin() && member.getEmail().equals(commentMember.getEmail()));
-
-        // 댓글 수정 & 삭제 가능
-        // 단 비회원은 비밀번호 검증 페이지로 넘어감
-        item.setEditable(editable);
+        item.setEditable(editable); // 댓글 수정, 삭제 가능, 다만 비회원은 비밀번호 검증 페이지로 넘어간다.
     }
 }

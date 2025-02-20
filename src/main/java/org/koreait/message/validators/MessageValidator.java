@@ -10,47 +10,34 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-/**
- * RequestMessage 커맨드 객체 검증
- *
- */
 @Lazy
 @Component
 @RequiredArgsConstructor
 public class MessageValidator implements Validator {
 
     private final MemberUtil memberUtil;
-    
     private final MemberRepository memberRepository;
 
     @Override
     public boolean supports(Class<?> clazz) {
-
         return clazz.isAssignableFrom(RequestMessage.class);
     }
 
     @Override
     public void validate(Object target, Errors errors) {
-
         RequestMessage form = (RequestMessage) target;
-
         String email = form.getEmail();
-
         boolean notice = form.isNotice();
-
-        // 관리자가 아니고 && 공지 쪽지일 경우
-        if (!memberUtil.isAdmin() && notice) form.setNotice(false);
-
-        // 관리자가 아니고 && 공지 쪽지 아니고 && 이메일이 없을 경우
-        if (!memberUtil.isAdmin() && !notice && !StringUtils.hasText(email)) {
-
-            errors.rejectValue("email", "NotBlank");
-            
+        if (!memberUtil.isAdmin() && notice) { // 관리자가 아니지만 공지 쪽지이면 X
+            notice = false;
+            form.setNotice(notice);
         }
 
-        // 공지 쪽지 아니고 & DB에 없는 수신자가 email 일 경우
-        if (!notice && !memberRepository.exists(email)) {
+        if (!memberUtil.isAdmin() && !notice && !StringUtils.hasText(email)) {
+            errors.rejectValue("email", "NotBlank");
+        }
 
+        if (!notice && !memberRepository.exists(email)) {
             errors.reject("NotFound.member");
         }
     }

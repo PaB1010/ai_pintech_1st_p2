@@ -1,104 +1,86 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">>
-<header th:fragment="common">
-    <div class="left">
-        <a th:href="@{/}" class="logo">
-            <img th:src="@{/front/images/main_logo.png}">
-        </a>
-        <ul class="main-menu">
-            <li>
-                <a href="#">
-                    <div>
-                    <i class="icon news"></i>
-                        <th:block th:text="#{소식}">
-                        </th:block>
-                    </div>
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    <div>
-                    <i class="icon game"></i>
-                        <th:block th:text="#{게임}">
-                        </th:block>
-                    </div>
-
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    <div>
-                    <i class="icon card-game"></i>
-                        <th:block th:text="#{카드_게임}">
-                        </th:block>
-                    </div>
-
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    <div>
-                    <i class="icon animation"></i>
-                        <th:block th:text="#{애니메이션}">
-
-                        </th:block>
-
-                    </div>
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    <div>
-                    <i class="icon products"></i>
-                        <th:block th:text="#{상품}">
-                        </th:block>
-                    </div>
-                </a>
-            </li>
-        </ul>
-    </div>
-    <div class="right">
-        <ul>
-            <li>
-                <a th:href="@{/pokemon/list}">
-                    <i class="icon catalog"></i>
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <header th:fragment="common">
+        <div class="left">
+            <a th:href="@{/}" class="logo">
+                <img th:src="@{/front/images/main_logo.png}">
+            </a>
+            <ul class="main-menu">
+                <li>
+                    <a href="#">
+                        <div>
+                            <i class="icon news"></i>
+                            <th:block th:text="#{소식}"></th:block>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <div>
+                            <i class="icon game"></i>
+                            <th:block th:text="#{게임}"></th:block>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <div>
+                            <i class="icon card-game"></i>
+                            <th:block th:text="#{카드_게임}"></th:block>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <div>
+                            <i class="icon animation"></i>
+                            <th:block th:text="#{애니메이션}"></th:block>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <div>
+                            <i class="icon products"></i>
+                            <th:block th:text="#{상품}"></th:block>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="right">
+            <ul>
+                <li>
+                    <a th:href="@{/pokemon/list}">
+                        <i class="icon catalog"></i>
                         <th:block th:text="#{포켓몬_도감}"></th:block>
-                </a>
-            </li>
-            <li>
-                <a th:unless="${@memberUtil.isLogin()}" th:href="@{/member/login}">
+                    </a>
+                </li>
+                <li>
+                    <a th:unless="${@memberUtil.isLogin()}" th:href="@{/member/login}">
                         <i class="icon login"></i>
                         <th:block th:text="#{로그인}"></th:block>
-                </a>
-<!--                <a th:if="${@memberUtil.isLogin() && !@memberUtil.isAdmin()}" th:href="@{/mypage}">-->
-                <a th:if="${@memberUtil.isLogin()}" th:href="@{/mypage}" class="link-mypage">
-                    <span class="badge" th:text="${totalUnRead}" th:classappend="${totalUnRead == 0L} ? 'dn'"></span>
-                    <i class="icon login"></i>
-                    <th:block th:text="#{MYPAGE}"></th:block>
-                </a>
-            </li>
-            <li th:if="${@memberUtil.isAdmin()}" >
-                <a th:href="@{/admin}" target="_blank">
-                    <i class="icon login"></i>
-                    <th:block th:text="#{사이트관리}"></th:block>
-                </a>
-            </li>
-<!--            <li th:if="${@memberUtil.isLogin() && !@memberUtil.isAdmin()}" >-->
-            <li th:if="${@memberUtil.isLogin()}" >
-                <a th:href="@{/member/logout}">
-                    <i class="icon logout"></i>
-                    <th:block th:text="#{로그아웃}"></th:block>
-                </a>
-            </li>
-            <li>
-                <a href="#">
+                    </a>
+
+                    <a th:if="${@memberUtil.isLogin() && !@memberUtil.isAdmin()}" th:href="@{/mypage}" class="link-mypage">
+                        <span class="badge" th:text="${totalUnRead}" th:classappend="${totalUnRead == 0L} ? 'dn'"></span>
+                        <i class="icon login"></i>
+                        <th:block th:text="#{MYPAGE}"></th:block>
+                    </a>
+                    <a th:if="${@memberUtil.isAdmin()}" th:href="@{/admin}" target="_blank">
+                        <i class="icon login"></i>
+                        <th:block th:text="#{사이트관리}"></th:block>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
                         <i class="icon search"></i>
                         <th:block th:text="#{통합검색}"></th:block>
-                </a>
-            </li>
-        </ul>
-        <a href="#" class="move-to-store"></a>
-    </div>
-</header>
+                    </a>
+                </li>
+            </ul>
+            <a href="#" class="move-to-store"></a>
+        </div>
+    </header>
 </html>

@@ -14,9 +14,7 @@ public class EmailAuthServiceTest {
 
     @Test
     void test1() {
-
-        boolean result = service.sendCode("ksw2662@gmail.com");
-
+        boolean result = service.sendCode("yonggyo00@kakao.com");
         System.out.println(result);
     }
 }

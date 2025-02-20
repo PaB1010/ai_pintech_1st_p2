@@ -21,10 +21,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 관리자 회원 관리
- *
- */
 @ApplyErrorPage
 @RequiredArgsConstructor
 @RequestMapping("/admin/member")
@@ -32,35 +28,27 @@ import java.util.List;
 public class MemberController implements SubMenus {
 
     private final Utils utils;
-
     private final MemberInfoService memberInfoService;
-
     private final MemberUpdateService memberUpdateService;
-
     private final ProfileValidator profileValidator;
 
-    // @Override
     @ModelAttribute("menuCode")
     public String menuCode() {
-
         return "member";
     }
 
     @ModelAttribute("authorities")
     public Authority[] authorities() {
-
         return Authority.values();
     }
 
     /**
-     * 회원 목록
-     *
+     * 회원목록
      * @param model
      * @return
      */
     @GetMapping({"", "/list"})
     public String list(@ModelAttribute MemberSearch search, Model model) {
-
         commonProcess("list", model);
 
         ListData<Member> data = memberInfoService.getList(search);
@@ -72,37 +60,31 @@ public class MemberController implements SubMenus {
     }
 
     /**
-     * 회원 목록 수정 처리
-     *
+     * 회원목록 수정 처리
      * @param model
      * @return
      */
     @PatchMapping("/list")
-    private String listPs(@RequestParam(name = "chk", required = false)List<Integer> chks, Model model) {
+    public String listPs(@RequestParam(name="chk", required = false) List<Integer> chks, Model model) {
 
         memberUpdateService.updateList(chks);
 
-        utils.showSessionMessage("적용되었습니다.");
-
+        utils.showSessionMessage("수정하였습니다.");
         model.addAttribute("script", "parent.location.reload();");
-
         return "common/_execute_script";
     }
 
     /**
-     * 개별 회원 정보 수정 양식
-     *
+     * 회원정보 수정
      * @param email
      * @param model
      * @return
      */
     @GetMapping("/info/{email}")
     public String info(@PathVariable("email") String email, Model model) {
-
         commonProcess("info", model);
 
         RequestProfile form = memberInfoService.getProfile(email);
-
         model.addAttribute("requestProfile", form);
 
         return "admin/member/info";
@@ -110,7 +92,6 @@ public class MemberController implements SubMenus {
 
     @PatchMapping("/info")
     public String infoPs(@Valid RequestProfile form, Errors errors, Model model) {
-
         commonProcess("info", model);
 
         profileValidator.validate(form, errors);
@@ -122,16 +103,13 @@ public class MemberController implements SubMenus {
         memberUpdateService.process(form, form.getAuthorities());
 
         model.addAttribute("script", "parent.location.reload();");
-
         return "common/_execute_script";
     }
 
     @GetMapping("/message")
     public String messageList(Model model) {
-        
         commonProcess("message", model);
-        
-        
+
         return "admin/member/message";
     }
 
@@ -142,33 +120,26 @@ public class MemberController implements SubMenus {
      * @param model
      */
     private void commonProcess(String mode, Model model) {
-
         mode = StringUtils.hasText(mode) ? mode : "list";
 
         List<String> addCommonScript = new ArrayList<>();
         List<String> addScript = new ArrayList<>();
 
-
         String pageTitle = "";
-
         if (mode.equals("list")) {
-
-            pageTitle = "회원 목록";
+            pageTitle = "회원목록";
 
         } else if (mode.equals("info")) {
-
-            pageTitle = "회원 정보 수정";
+            pageTitle = "회원정보 수정";
 
             addCommonScript.add("address");
             addCommonScript.add("fileManager");
             addScript.add("member/info");
-            
         } else if (mode.equals("message")) {
-            
-            pageTitle = "쪽지 관리";
+            pageTitle = "쪽지관리";
         }
-
-        pageTitle += " - 회원 관리";
+        
+        pageTitle += " - 회원관리";
 
         model.addAttribute("pageTitle", pageTitle);
         model.addAttribute("subMenuCode", mode);

@@ -12,13 +12,9 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
-/**
- * @ PostMapping("/sentiment") Test
- *
- */
 @SpringBootTest
 @ActiveProfiles({"default", "dl"})
-@AutoConfigureMockMvc // 통합 Test
+@AutoConfigureMockMvc
 public class ApiDlControllerTest {
 
     @Autowired

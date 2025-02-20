@@ -17,20 +17,14 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class MessageSendService {
-
-    private final MessageRepository repository;
-
     private final MemberUtil memberUtil;
-
     private final MemberRepository memberRepository;
-
+    private final MessageRepository repository;
     private final FileDoneService fileDoneService;
 
     public Message process(RequestMessage form) {
 
         String email = form.getEmail();
-
-        // 공지가 아닐때에는 이메일로 조회, 아닐 경우 null (공지일 경우에는 이미 관리자 검증이 끝남)
         Member receiver = !form.isNotice() ? memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new) : null;
 
         Message message = Message.builder()
@@ -44,9 +38,7 @@ public class MessageSendService {
                 .build();
 
         repository.saveAndFlush(message);
-
-        // 파일 업로드 완료 처리
-        fileDoneService.process(form.getGid());
+        fileDoneService.process(form.getGid()); // 파일 업로드 완료 처리
 
         return message;
     }

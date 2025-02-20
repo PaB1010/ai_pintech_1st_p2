@@ -23,39 +23,25 @@ repositories {
 	mavenCentral()
 }
 
-// Spring Cloud Version 전역 변수
 ext {
 	set('springCloudVersion', "2023.0.3")
 }
 
 dependencies {
-
-	// Spring Cloud 관련 의존 2개
 	implementation 'org.springframework.cloud:spring-cloud-starter-config'
 	implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
-
-	// Spring Cloud Eureka Client
-	// implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
-
-	implementation 'org.hibernate.validator:hibernate-validator'
-
-	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-
 	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
-
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.session:spring-session-data-redis'
-
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
-
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 
+
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
 	implementation 'org.modelmapper:modelmapper:3.2.1'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
 	implementation 'net.coobird:thumbnailator:0.4.20'
@@ -64,11 +50,13 @@ dependencies {
 	annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
 
 	runtimeOnly 'com.oracle.database.jdbc:ojdbc11'
-//	implementation 'com.oracle.database.jdbc:ojdbc11'
 
+
+	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+	implementation 'jakarta.validation:jakarta.validation-api'
+	implementation 'org.hibernate.validator:hibernate-validator'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
-
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.projectlombok:lombok'
 
@@ -76,18 +64,13 @@ dependencies {
 	annotationProcessor'com.querydsl:querydsl-apt:5.1.0:jakarta'
 
 	testImplementation ('com.github.javafaker:javafaker:1.0.2') { exclude module: 'snakeyaml' }
-	testImplementation 'org.yaml:snakeyaml:2.2'
-
+	testImplementation group: 'org.yaml', name: 'snakeyaml', version: '2.2'
 	testImplementation 'com.h2database:h2'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
 	testImplementation 'org.springframework.security:spring-security-test'
-
-	// 문제 있을 시 제거
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
-// Spring Cloud dependency
 dependencyManagement {
 	imports {
 		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
@@ -98,26 +81,16 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-
-tasks.named('test') {
-	useJUnitPlatform()
-}
-
-// 자동생성될 Querydsl Code 경로 설정
-// 지역변수
 def querydslDir = layout.buildDirectory.dir("generated/querydsl").get().asFile
 
-// Java 코드에서 접근 가능하게 설정
 sourceSets {
 	main.java.srcDirs += [ querydslDir ]
 }
 
-// 설정 연결
 tasks.withType(JavaCompile) {
 	options.getGeneratedSourceOutputDirectory().set(file(querydslDir))
 }
 
-// clean 시 Generate 도 같이 삭제되도록
 clean.doLast {
 	file(querydslDir).deleteDir()
 }

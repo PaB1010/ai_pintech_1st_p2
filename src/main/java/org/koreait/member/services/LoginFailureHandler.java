@@ -17,22 +17,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * 로그인 실패시 상세 처리
- *
- */
 public class LoginFailureHandler implements AuthenticationFailureHandler {
-
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
 
-        // requestLogin 이 MemberController 에서 @SessionAttributes({"requestAgree", "requestLogin"})라서 Session 가져옴
         HttpSession session = request.getSession();
-
-        // 값이 없을 경우도 대비해 Objects.requireNonNullElse
-        RequestLogin form = Objects.requireNonNullElse((RequestLogin)session.getAttribute("RequestLogin"), new RequestLogin());
-
-        // ★ Session 범위라 Data 가 남아있기때문에 한번 비워 초기화 후 사용 ★
+        RequestLogin form = Objects.requireNonNullElse((RequestLogin)session.getAttribute("requestLogin"), new RequestLogin());
         form.setErrorCodes(null);
 
         String email = request.getParameter("email");
@@ -43,45 +33,34 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
 
         String redirectUrl = request.getContextPath() + "/member/login";
 
-        // ID | PW를 입력하지 않은 경우
-        // ID 조회 X, PW 일치 X -> 둘중 뭐가 X인지 모르게 애매한 메세지
+        // 아이디 또는 비밀번호를 입력하지 않은 경우, 아이디로 조회 X, 비번이 일치하지 않는 경우
         if (exception instanceof BadCredentialsException) {
-
-            // form.getErrorCodes가 null 일경우 새로운 ArrayList 객체 생성
             List<String> errorCodes = Objects.requireNonNullElse(form.getErrorCodes(), new ArrayList<>());
 
-            // email이 비어있을 경우
             if (!StringUtils.hasText(email)) {
-
                 errorCodes.add("NotBlank_email");
             }
 
-            // PW가 비어있을 경우
             if (!StringUtils.hasText(password)) {
-
                 errorCodes.add("NotBlank_password");
             }
 
-            // 둘다 NotBlank 아닐 경우 무조건 ID 혹은 PW 불일치
+
             if (errorCodes.isEmpty()) {
                 errorCodes.add("Failure.validate.login");
             }
 
-            // 원래 있던 객체라면 set 안해도 되지만 NonNullElse 로 새로운 ArrayList 객체가 생성될 수도 있으므로 set
             form.setErrorCodes(errorCodes);
-
         } else if (exception instanceof CredentialsExpiredException) { //  비밀번호가 만료된 경우
-
             redirectUrl = request.getContextPath() + "/member/password/change";
-
         } else if (exception instanceof DisabledException) { // 탈퇴한 회원
-
             form.setErrorCodes(List.of("Failure.disabled.login"));
         }
 
+
         session.setAttribute("requestLogin", form);
 
-        // 로그인 실패시 다시 로그인 페이지로 이동
+        // 로그인 실패시에는 로그인 페이지로 이동
         response.sendRedirect(redirectUrl);
     }
 }

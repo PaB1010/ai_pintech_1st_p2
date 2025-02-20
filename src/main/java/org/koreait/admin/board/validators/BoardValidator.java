@@ -17,23 +17,20 @@ public class BoardValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> clazz) {
-
         return clazz.isAssignableFrom(RequestBoard.class);
     }
 
     @Override
     public void validate(Object target, Errors errors) {
+        if (errors.hasErrors()) {
+            return;
+        }
 
-        // 이미 커맨드 객체에서 Err 있을경우
-        if (errors.hasErrors()) return;
-
-        RequestBoard form = (RequestBoard) target;
+        RequestBoard form = (RequestBoard)target;
+        
+        // 게시판 등록일때만 게시판 아이디의 중복 여부 체크
         String bid = form.getBid();
-
-        // 게시판 등록 모드 && 게시판 아이디 중복
-        // 게시판 수정 모드일 경우에는 항상 중복이므로 등록 모드일 경우만
-        if (form.getMode().equals("add") && boardRepository.existsById(bid)) {
-
+        if (form.getMode().equals("add") && boardRepository.exists(bid)) {
             errors.rejectValue("bid", "Duplicated");
         }
     }

@@ -10,12 +10,7 @@ import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 
-/**
- * 로그인 성공시 상세 처리
- *
- */
 public class LoginSuccessHandler implements AuthenticationSuccessHandler {
-
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         HttpSession session = request.getSession();
@@ -32,14 +27,12 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
          * 로그인 성공시 페이지 이동
          * 1) redirectUrl에 지정된 주소
          * 2) redirectUrl이 없는 경우는 메인 페이지 이동
-         *
-         * login.html 의 hidden tag
-         *
-         * <input th:if="*{redirectUrl != null}" type="hidden" name="redirectUrl" th:value="*{redirectUrl}">
          */
+
         String redirectUrl = request.getParameter("redirectUrl");
         redirectUrl = StringUtils.hasText(redirectUrl) ? redirectUrl : "/";
 
         response.sendRedirect(request.getContextPath() + redirectUrl);
+
     }
 }

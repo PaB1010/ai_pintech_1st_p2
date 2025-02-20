@@ -1,30 +1,28 @@
 <!DOCTYPE html>
-<html
-        xmlns:th="http://www.thymeleaf.org"
-        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        layout:decorate="~{front/layouts/mypage}">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{front/layouts/mypage}">
 <section layout:fragment="content" th:object="${item}">
-
     <div class="subject" th:text="*{subject}"></div>
     <div class="info">
         <div class="sender">
-<!--            space between-->
-            <th:block th:text="#{발신인}"></th:block>
-            <th:block th:text="*{#strings.concat(sender.name, ' (', sender.email, ')')}"></th:block>
+            <th:block th:text="#{보낸사람}"></th:block>:
+            <th:block th:text="*{#strings.concat(sender.name, '(', sender.email + ')')}"></th:block>
         </div>
-        <div class="date" th:text="*{#temporals.format(createdAt, 'yyyy-MM-dd HH:mm:ss')}"></div>
+        <div class="date" th:text="*{#temporals.format(createdAt, 'yyyy.MM.dd HH:mm:ss')}"></div>
     </div>
-<!--    // info -->
+    <!--// info -->
+
     <div class="content" th:utext="*{content}"></div>
     <ul th:if="*{attachFiles != null && !attachFiles.isEmpty()}">
         <li th:each="file, status : *{attachFiles}" th:object="${file}">
-            <span>#<th:block th:text="${status.count}"></th:block></span>
+            <span class="badge">#<th:block th:text="${status.count}"></th:block></span>
             <a th:href="@{/api/file/download/{seq}(seq=*{seq})}" th:text="*{fileName}"></a>
         </li>
     </ul>
     <div class="links">
-        <a th:href="@{/message}" th:text="#{쪽지_전송}"></a>
-        <a th:if="*{deletable}" th:href="@{/message/delete/{seq}?mode={mode}(seq=*{seq}, mode=${mode})}" th:text="#{쪽지_삭제}" onclick="return confirm('정말 삭제하겠습니까?';)"></a>
+        <a th:href="@{/message}" th:text="#{쪽지_보내기}"></a>
+        <a th:if="*{deletable}" th:href="@{/message/delete/{seq}?mode={mode}(seq=*{seq}, mode=${mode})}" th:text="#{삭제하기}" onclick="return confirm('정말 삭제하겠습니까?');"></a>
         <a th:href="@{/message/list}" th:text="#{쪽지함}"></a>
     </div>
 </section>

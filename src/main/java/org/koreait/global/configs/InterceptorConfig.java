@@ -6,10 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-/**
- * 사용자 정의 Interceptor 설정
- *
- */
 @Configuration
 @RequiredArgsConstructor
 public class InterceptorConfig implements WebMvcConfigurer {
@@ -18,8 +14,6 @@ public class InterceptorConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-
-        // 공통 Interceptor, 범위 = 모든 주소 "/**"
-        registry.addInterceptor(commonInterceptor);
+        registry.addInterceptor(commonInterceptor); // 공통 인터셉터, 모든 주소에 적용
     }
 }

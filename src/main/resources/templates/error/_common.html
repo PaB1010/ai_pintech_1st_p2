@@ -4,10 +4,10 @@
         <img th:src="@{/front/images/errors/{status}.png(status=${status})}">
         <h1 th:text="${message}"></h1>
         <h2>
-            <th:block th:if="${status}"></th:block>
+            <th:block th:text="${status}"></th:block>
             <th:block th:if="${method != null}" th:text="${method}"></th:block>
-            <th:block th:if="${path}"></th:block>
-            <th:block th:if="${querystring != null}" th:text="${#strings.concat('?',querystring)}"></th:block>
+            <th:block th:text="${path}"></th:block>
+            <th:block th:if="${querystring != null}" th:text="${#strings.concat('?', querystring)}"></th:block>
         </h2>
     </th:block>
 </html>

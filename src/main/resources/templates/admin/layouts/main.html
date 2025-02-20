@@ -11,19 +11,19 @@
 
         <title th:if="${pageTitle != null}" th:text="${pageTitle}"></title>
 
-        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/xeicon@2.3.3/xeicon.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/xeicon/2/xeicon.min.css">
         <link rel="stylesheet" type="text/css" th:href="@{/common/css/style.css}">
 
         <th:block th:if="${addCommonCss != null}">
             <link rel="stylesheet" type="text/css"
-                  th:each="cssPath:${addCommonCss}" th:href="@{/common/css/{path}.css(path=${cssPath})}">
+                  th:each="cssPath : ${addCommonCss}" th:href="@{/common/css/{path}.css(path=${cssPath})}">
         </th:block>
 
         <link rel="stylesheet" type="text/css" th:href="@{/admin/css/style.css}">
 
         <th:block th:if="${addCss != null}">
-            <link rel="styleshhet" type="text/css" th:each="cssPath : ${addCss}"
-                  th:href="@{/admin/css/{path}.css(path=${cssPath})}">
+        <link rel="stylesheet" type="text/css" th:each="cssPath : ${addCss}"
+              th:href="@{/admin/css/{path}.css(path=${cssPath})}">
         </th:block>
 
         <script th:src="@{/common/js/common.js}"></script>
@@ -36,20 +36,22 @@
         <script th:src="@{/admin/js/common.js}"></script>
 
         <th:block th:if="${addScript != null}">
-            <script th:each="jsPath : ${addScript}" th:src="@{/admin/js/{path}.js(path=${jsPath})}"></script>
+            <script th:each="jsPath : ${addScript}"
+                    th:src="@{/admin/js/{path}.js(path=${jsPath})}"></script>
         </th:block>
+
     </head>
     <body>
         <header th:replace="~{admin/outlines/_header::common}"></header>
-            <main>
-                <aside th:replace="~{admin/outlines/_menu::main}"></aside>
-                <section>
-                    <nav th:replace="~{admin/outlines/_submenu::sub}"></nav>
-                    <div layout:fragment="content" class="main-content"></div>
-                </section>
-            </main>
+
+        <main>
+            <aside th:replace="~{admin/outlines/_menu::main}"></aside>
+            <section>
+                <nav th:replace="~{admin/outlines/_submenu::sub}"></nav>
+                <div layout:fragment="content" class="main-content"></div>
+            </section>
+        </main>
         <th:block th:replace="~{common/_session_message::message}"></th:block>
         <iframe name="ifrmProcess" class="dn"></iframe>
-<!--        <footer th:replace="~{admin/outlines/_footer::common}"></footer>-->
     </body>
 </html>

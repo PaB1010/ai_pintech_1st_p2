@@ -6,20 +6,10 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-/**
- * 목록 Data
- *
- * /list?page=1&limit=100
- *
- */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class ListData<T> {
-
-    // 목록 Data
-    private List<T> items;
-
-    // Paging 기초 Data
-    private Pagination pagination;
+    private List<T> items; // 목록 데이터
+    private Pagination pagination; // 페이징 기초 데이터
 }

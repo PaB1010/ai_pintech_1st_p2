@@ -7,9 +7,7 @@ import lombok.Data;
 
 @Data
 public class RequestComment {
-
     private String mode;
-
     private Long seq;
 
     @NotNull
@@ -18,7 +16,7 @@ public class RequestComment {
     @NotBlank
     private String commenter;
 
-    @Size(min=4, max = 50)
+    @Size(min=4)
     private String guestPw;
 
     @NotBlank

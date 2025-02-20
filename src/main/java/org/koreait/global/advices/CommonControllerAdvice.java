@@ -19,111 +19,66 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-/**
- * AOP Programing
- *
- * 정의한 범위에 있는 모든 @Controller 처리전에 적용되는 공통 기능
- * 현재는 Error Page 처리를 위해 Error 발생하는 모든 Controller 에
- * @ApplyErrorPage Annotation 사용해 범위 설정
- *
- * @ControllerAdvice 범위가 Controller.class 가 아닌 Annotation 인 이유
- * @RestController 는 Controller 를 상속 받기 때문에 설정을 Controller.class 로 사용시
- * RestController 도 영향을 받게되어 일반 Controller 는 Annotation 으로 범위 설정
- *
- */
 @ControllerAdvice(annotations = ApplyErrorPage.class)
 @RequiredArgsConstructor
 public class CommonControllerAdvice {
-
     private final Utils utils;
-
     private final CodeValueService codeValueService;
+
 
     @ExceptionHandler(Exception.class)
     public ModelAndView errorHandler(Exception e, HttpServletRequest request) {
-
         Map<String, Object> data = new HashMap<>();
 
-        // 기본 응답 코드 500
-        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-
-        // 기본 출력 Template
-        String tpl = "error/error";
-
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR; // 기본 응답 코드 500
+        String tpl = "error/error"; // 기본 출력 템플릿
         String message = e.getMessage();
 
-        // 자주 쓰이는 요청 데이터들 S
         data.put("method", request.getMethod());
-
         data.put("path", request.getContextPath() + request.getRequestURI());
-
         data.put("querystring", request.getQueryString());
-
         data.put("exception", e);
 
-        // 자주 쓰이는 요청 데이터들 E
-
         if (e instanceof CommonException commonException) {
-
-            // ★ 응답 코드별로 다르게 처리하기 위해 ★
             status = commonException.getStatus();
-
-            // ErrorCode로 message를 출력하는 것이라면 true
             message = commonException.isErrorCode() ? utils.getMessage(message) : message;
 
             StringBuffer sb = new StringBuffer(2048);
-
             if (e instanceof AlertException) {
-
-                // Script 실행을 위한 HTML Template
-                tpl = "common/_execute_script";
-
+                tpl = "common/_execute_script"; // 스크립트를 실행하기 위한 HTML 템플릿
                 sb.append(String.format("alert('%s');", message));
             }
 
             if (e instanceof AlertBackException backException) {
-
                 String target = backException.getTarget();
-
                 sb.append(String.format("%s.history.back();", target));
             }
 
             if (e instanceof AlertRedirectException redirectException) {
-
                 String target = redirectException.getTarget();
-
                 String url = redirectException.getUrl();
-
-                // replace -> method=POST 일경우 Back 할때마다 Data가 계속 들어가는 문제 해결
-                sb.append(String.format("%s.location.replace(%s);", target, url));
+                sb.append(String.format("%s.location.replace('%s');", target, url));
             }
 
-            if(!sb.isEmpty()) {
-
+            if (!sb.isEmpty()) {
                 data.put("script", sb.toString());
             }
         }
 
-        // 숫자 형태
         data.put("status", status.value());
-        // 문자 형태
         data.put("_status", status);
-
         data.put("message", message);
 
-        SiteConfig siteConfig = Objects.requireNonNullElseGet(codeValueService.get("siteConfig", SiteConfig.class), SiteConfig::new) ;
-
+        SiteConfig siteConfig = Objects.requireNonNullElseGet(codeValueService.get("siteConfig", SiteConfig.class), SiteConfig::new);
         data.put("siteConfig", siteConfig);
 
-        // data.put("addCss", List.of("error/style"));
-
         ModelAndView mv = new ModelAndView();
-
-        // 응답코드
         mv.setStatus(status);
         mv.addAllObjects(data);
         mv.setViewName(tpl);
+
         e.printStackTrace();
+
         return mv;
     }
 }

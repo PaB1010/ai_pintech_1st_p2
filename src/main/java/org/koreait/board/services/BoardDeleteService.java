@@ -12,26 +12,21 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class BoardDeleteService {
-
     private final BoardInfoService infoService;
-
-    private final BoardDataRepository boardDataRepository;
-
+    private final BoardDataRepository boardRepository;
     private final FileDeleteService fileDeleteService;
-
     private final HttpSession session;
 
     public void delete(Long seq) {
 
         BoardData item = infoService.get(seq);
-
         String gid = item.getGid();
 
         // 파일 삭제
         fileDeleteService.deletes(gid);
 
-        boardDataRepository.delete(item);
-        boardDataRepository.flush();
+        boardRepository.delete(item);
+        boardRepository.flush();
 
         // 비회원 인증 정보 삭제
         session.removeAttribute("board_" + seq);

@@ -6,19 +6,13 @@ import org.koreait.member.libs.MemberUtil;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-/**
- * 관리자 공통
- *
- */
 @RequiredArgsConstructor
 @ControllerAdvice("org.koreait.admin")
 public class AdminControllerAdvice {
-
     private final MemberUtil memberUtil;
 
     @ModelAttribute("profile")
     public Member profile() {
-
         return memberUtil.getMember();
     }
 }

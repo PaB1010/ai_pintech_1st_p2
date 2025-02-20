@@ -3,19 +3,19 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{admin/layouts/main}">
 <div layout:fragment="content">
-    <h1>사이트 기본 정보 설정</h1>
+    <h1>사이트 기본정보 설정</h1>
     <form name="frmConfig" method="POST" th:action="@{/admin/basic/siteConfig}" autocomplete="off" th:object="${siteConfig}">
         <input type="hidden" name="_method" value="PATCH">
         <h2>기본 정보</h2>
         <table class="table-cols mb30">
             <tr>
-                <th>사이트명</th>
+                <th width="200">사이트명</th>
                 <td>
                     <input type="text" name="siteTitle" th:field="*{siteTitle}">
                 </td>
             </tr>
             <tr>
-                <th width="200">사이트 설명</th>
+                <th>사이트 설명</th>
                 <td>
                     <input type="text" name="description" th:field="*{description}">
                 </td>
@@ -30,21 +30,22 @@
                 <th>화면</th>
                 <td>
                     <span class="radio">
-                        <input type="radio" name="device" value="ALL" th:filed="*{device}" id="device-ALL">
+                        <input type="radio" name="device" value="ALL" th:field="*{device}" id="device-ALL">
                         <label for="device-ALL">PC + MOBILE</label>
                     </span>
                     <span class="radio">
-                        <input type="radio" name="device" value="PC" th:filed="*{device}" id="device-PC">
+                        <input type="radio" name="device" value="PC" th:field="*{device}" id="device-PC">
                         <label for="device-PC">PC</label>
                     </span>
                     <span class="radio">
-                        <input type="radio" name="device" value="MOBILE" th:filed="*{device}" id="device-MOBILE">
+                        <input type="radio" name="device" value="MOBILE" th:field="*{device}" id="device-MOBILE">
                         <label for="device-MOBILE">MOBILE</label>
                     </span>
                 </td>
             </tr>
         </table>
-        <h2>CSS & JS 버전</h2>
+
+        <h2>CSS, JS 버전</h2>
         <table class="table-cols mb30">
             <tr>
                 <th width="200">CSS 버전</th>
@@ -60,25 +61,23 @@
             </tr>
         </table>
 
-
-        <h2>회원 가입 설정</h2>
+        <h2>회원 가입설정</h2>
         <table class="table-cols mb30">
             <tr>
                 <th width="200">이메일 인증</th>
                 <td>
                     <input type="radio" name="useEmailAuth" value="true" id="use-email-auth-true" th:field="*{useEmailAuth}">
                     <label for="use-email-auth-true">사용</label>
+
                     <input type="radio" name="useEmailAuth" value="false" id="use-email-auth-false" th:field="*{useEmailAuth}">
                     <label for="use-email-auth-false">미사용</label>
-<!--                    <input type="checkbox" id="checkbox">-->
-<!--                    <label for="checkbox">체크 박스 테스트</label>-->
                 </td>
             </tr>
         </table>
-<!--        소셜 로그인 선택 설정-->
+
         <div class="button-group">
-            <button type="reset" class="btn">초기화</button>
-            <button type="submit" class="btn black">저장하기</button>
+            <button type="reset" class="btn">다시입력</button>
+            <button type="submit"class="btn black">저장하기</button>
         </div>
     </form>
 </div>

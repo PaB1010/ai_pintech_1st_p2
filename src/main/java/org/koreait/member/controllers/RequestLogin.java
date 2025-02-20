@@ -14,14 +14,10 @@ public class RequestLogin implements Serializable {
 
     @NotBlank
     private String password;
+    private String redirectUrl; // 로그인 완료 후 이동할 주소
 
-    // Login 완료 후 이동할 주소가 있으면 여기로 없으면 main 페이지로
-    private String redirectUrl;
-    
-    // Email & PW 검증 후 ErrorCode
     private List<String> errorCodes;
 
     private String kakaoLoginUrl;
-
-    // private String NaverLoginUrl;
 }
+

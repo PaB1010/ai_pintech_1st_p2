@@ -4,11 +4,8 @@ import org.koreait.global.exceptions.scripts.AlertBackException;
 import org.springframework.http.HttpStatus;
 
 public class MemberNotFoundException extends AlertBackException {
-
     public MemberNotFoundException() {
-
-        super("NofFound.member", HttpStatus.NOT_FOUND);
-
+        super("NotFound.member", HttpStatus.NOT_FOUND);
         setErrorCode(true);
     }
 }

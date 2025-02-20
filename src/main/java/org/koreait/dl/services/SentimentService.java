@@ -10,10 +10,6 @@ import org.springframework.stereotype.Service;
 import java.io.InputStream;
 import java.util.List;
 
-/**
- * 감정 예측 기능
- *
- */
 @Lazy
 @Service
 @Profile("dl")
@@ -32,28 +28,20 @@ public class SentimentService {
     private ObjectMapper om;
 
     public double[] predict(List<String> items) {
-
         try {
-
             String data = String.join("__", items);
 
-            // Process Builder 이용 Python 명령어 사용
-            // python naver.py D:/naver_bert data
             ProcessBuilder builder = new ProcessBuilder(runPath, scriptPath + "naver.py", bertPath, data);
-
             Process process = builder.start();
-
             InputStream in = process.getInputStream();
 
-            // process.waitFor();
+            process.waitFor();
 
-            // System.out.printf("%s, %s, %s%n", runPath, scriptPath, bertPath);
-
-            // process 형태로 반환된 값을 double 변환
             return om.readValue(in.readAllBytes(), double[].class);
 
-
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return null;
     }

@@ -8,9 +8,10 @@
         </div>
         <div class="right">
             <span class="welcome" th:text="${#messages.msg('LOGIN_MSG', profile.name, profile.email)}"></span>
-            <a th:href="@{/member/logout}">로그아웃
-                <i class="xi-log-out"></i></a>
-<!--            쪽지함 추가 예정-->
+            <a th:href="@{/member/logout}">
+                <i class="xi-log-out"></i>
+                로그아웃
+            </a>
         </div>
     </header>
 </html>

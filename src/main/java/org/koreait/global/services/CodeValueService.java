@@ -10,31 +10,23 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * JSON(Code & Value) CRUD Service
- *
- */
-@Service
 @Lazy
+@Service
 @RequiredArgsConstructor
 public class CodeValueService {
-
     private final CodeValueRepository repository;
-
     private final ObjectMapper om;
 
     /**
-     * JSON 문자열로 변환 후 저장
+     * JSON 문자열로 변환후 저장
      *
      * @param code
-     * @param value - 변환되는 Data, Save 시에는 Object 해도 상관 X
+     * @param value
      */
     public void save(String code, Object value) {
-
         CodeValue item = repository.findById(code).orElseGet(CodeValue::new);
 
         try {
-            // Object -> String 변환
             String json = om.writeValueAsString(value);
 
             item.setCode(code);
@@ -43,53 +35,29 @@ public class CodeValueService {
             repository.saveAndFlush(item);
 
         } catch (JsonProcessingException e) {}
-
-
     }
 
-    /**
-     * Json 조회 후 다시 원래 자료형으로 변환
-     *
-     * @param code
-     * @param cls
-     * @return
-     * @param <R>
-     */
     public <R> R get(String code, Class<R> cls) {
-
         CodeValue item = repository.findById(code).orElse(null);
 
         if (item != null) {
-
             String json = item.getValue();
-
             try {
-                return om.readValue(json, cls);
+               return om.readValue(json, cls);
 
             } catch (JsonProcessingException e) {}
+
         }
+
         return null;
     }
 
-    /**
-     * 개별 삭제
-     *
-     * @param code
-     */
     public void remove(String code) {
-
         remove(List.of(code));
     }
 
-    /**
-     * 복수 삭제
-     *
-     * @param codes
-     */
     public void remove(List<String> codes) {
-
         repository.deleteAllById(codes);
-
         repository.flush();
     }
 }
